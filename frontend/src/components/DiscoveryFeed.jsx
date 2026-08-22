@@ -56,7 +56,7 @@ export default function DiscoveryFeed({ profiles, onLike, onPass, onSuperSpark, 
 
   return (
     <div className="relative flex min-h-[72dvh] flex-col px-4 pb-4">
-      <div className="relative mx-auto w-full max-w-sm">
+      <div className="relative mx-auto aspect-[3/4] w-full max-w-sm min-h-[480px]">
         {profiles.slice(index, index + 2).map((p, i) => {
           const isFront = i === 0;
           const photoUrl = p.photo || p.photo_url || `https://ui-avatars.com/api/?name=${encodeURIComponent(p.name)}&size=600&background=random`;
