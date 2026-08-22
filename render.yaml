@@ -14,7 +14,7 @@ services:
     name: dinanwuye-backend
     env: node
     plan: free
-    buildCommand: pnpm install --frozen-lockfile --prod=false && pnpm --filter @dinanwuye/auth-service... run build
+    buildCommand: pnpm install --frozen-lockfile --prod=false && pnpm --filter @dinanwuye/auth-service exec prisma generate --schema prisma/schema.prisma && pnpm --filter @dinanwuye/auth-service... run build
     startCommand: node auth-service/dist/main.js
     envVariables:
       NODE_ENV: production
