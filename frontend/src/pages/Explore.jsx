@@ -8,8 +8,8 @@ import { matchingApi } from '@services/api';
 import { DeckResponseSchema } from '@utils/schemas';
 
 const Explore = () => {
-  const deck = useAppStore((s) => s.discover.deck);
-  const loading = useAppStore((s) => s.discover.loading);
+  const deck = useAppStore((s) => (Array.isArray(s.discover?.deck) ? s.discover.deck : []));
+  const loading = useAppStore((s) => s.discover?.loading ?? false);
   const setDiscoverDeck = useAppStore((s) => s.setDiscoverDeck);
   const setDiscoverLoading = useAppStore((s) => s.setDiscoverLoading);
   const [error, setError] = useState('');

@@ -43,9 +43,9 @@ const initials = (name) =>
 
 const Discover = () => {
   const navigate = useNavigate();
-  const currentIndex = useAppStore((s) => s.discover.currentIndex);
-  const deck = useAppStore((s) => s.discover.deck);
-  const loading = useAppStore((s) => s.discover.loading);
+  const currentIndex = useAppStore((s) => s.discover?.currentIndex ?? 0);
+  const deck = useAppStore((s) => (Array.isArray(s.discover?.deck) ? s.discover.deck : []));
+  const loading = useAppStore((s) => s.discover?.loading ?? false);
   const setDiscoverDeck = useAppStore((s) => s.setDiscoverDeck);
   const setDiscoverLoading = useAppStore((s) => s.setDiscoverLoading);
   const nextProfile = useAppStore((s) => s.nextProfile);
