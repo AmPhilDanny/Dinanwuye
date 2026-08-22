@@ -9,7 +9,7 @@ async function main() {
         serviceName: 'auth-service',
         version: '0.1.0',
         description: 'Dinanwuye Auth & Identity Service',
-        port: Number(process.env.AUTH_SERVICE_PORT ?? shared_2.PORTS.AUTH),
+        port: Number(process.env.PORT ?? process.env.AUTH_SERVICE_PORT ?? shared_2.PORTS.AUTH),
         corsOrigins: (process.env.CORS_ORIGIN ?? 'http://localhost:8100').split(','),
     });
 }

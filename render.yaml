@@ -14,8 +14,8 @@ services:
     name: dinanwuye-backend
     env: node
     plan: free
-    buildCommand: auth-service/node_modules/.bin/nest build
-    startCommand: node dist/main.js
+    buildCommand: pnpm install --frozen-lockfile --prod=false && pnpm --filter @dinanwuye/auth-service... run build
+    startCommand: node auth-service/dist/main.js
     envVariables:
       NODE_ENV: production
       DATABASE_URL: "postgresql://postgres:dinanwuye@2026@db.ysvqvrskwyyjbeepbyuc.supabase.co:5432/postgres?schema=auth"
