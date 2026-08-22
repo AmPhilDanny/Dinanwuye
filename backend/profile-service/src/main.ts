@@ -8,7 +8,7 @@ async function main(): Promise<void> {
     serviceName: 'profile-service',
     version: '0.1.0',
     description: 'Dinanwuye Profile Service',
-    port: Number(process.env.PROFILE_SERVICE_PORT ?? PORTS.PROFILE),
+    port: Number(process.env.PORT ?? process.env.PROFILE_SERVICE_PORT ?? PORTS.PROFILE),
     corsOrigins: (process.env.CORS_ORIGIN ?? 'http://localhost:8100').split(','),
   });
 }

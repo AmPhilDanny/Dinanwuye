@@ -14,10 +14,10 @@ const authUrl = (configuredAuthUrl || 'https://dinanwuye-back.onrender.com/api/v
 
 export const SERVICES = {
   auth: authUrl,
-  profile: import.meta.env.VITE_PROFILE_URL || 'http://localhost:3002/api/v1',
-  messaging: import.meta.env.VITE_MESSAGING_URL || 'http://localhost:3003/api/v1',
+  profile: import.meta.env.VITE_PROFILE_URL || 'https://dinanwuye-profile.onrender.com/api/v1',
+  messaging: import.meta.env.VITE_MESSAGING_URL || 'https://dinanwuye-messaging.onrender.com/api/v1',
   safety: import.meta.env.VITE_SAFETY_URL || 'http://localhost:3005/api/v1',
-  matching: import.meta.env.VITE_MATCHING_URL || 'http://localhost:8000/api/v1',
+  matching: import.meta.env.VITE_MATCHING_URL || 'https://dinanwuye-matching.onrender.com/api/v1',
 };
 
 // Socket.IO gateway lives at the server root (not under /api/v1)
