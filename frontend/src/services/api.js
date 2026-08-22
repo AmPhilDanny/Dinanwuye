@@ -7,7 +7,7 @@
 import axios from 'axios';
 
 export const SERVICES = {
-  auth: import.meta.env.VITE_AUTH_URL || 'http://localhost:3001/api/v1',
+  auth: import.meta.env.VITE_AUTH_URL || import.meta.env.VITE_API_URL || 'https://dinanwuye-back.onrender.com/api/v1',
   profile: import.meta.env.VITE_PROFILE_URL || 'http://localhost:3002/api/v1',
   messaging: import.meta.env.VITE_MESSAGING_URL || 'http://localhost:3003/api/v1',
   safety: import.meta.env.VITE_SAFETY_URL || 'http://localhost:3005/api/v1',

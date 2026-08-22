@@ -8,7 +8,7 @@ export default defineConfig({
     react(),
     VitePWA({
       registerType: 'autoUpdate',
-      includeAssets: ['favicon.ico', 'robots.txt', 'apple-touch-icon.png'],
+      includeAssets: ['favicon.svg'],
       manifest: {
         name: 'Dinanwuye',
         short_name: 'Dinanwuye',
@@ -19,38 +19,10 @@ export default defineConfig({
         orientation: 'portrait-primary',
         scope: '/',
         start_url: '/',
-        icons: [
-          {
-            src: 'pwa-192x192.png',
-            sizes: '192x192',
-            type: 'image/png',
-            purpose: 'any maskable'
-          },
-          {
-            src: 'pwa-512x512.png',
-            sizes: '512x512',
-            type: 'image/png',
-            purpose: 'any maskable'
-          }
-        ],
+        icons: [],
         categories: ['lifestyle', 'social'],
         screenshots: [],
-        shortcuts: [
-          {
-            name: 'Discover',
-            short_name: 'Discover',
-            description: 'Browse potential matches',
-            url: '/discover',
-            icons: [{ src: 'shortcut-discover.png', sizes: '192x192' }]
-          },
-          {
-            name: 'Messages',
-            short_name: 'Messages',
-            description: 'View your conversations',
-            url: '/matches',
-            icons: [{ src: 'shortcut-messages.png', sizes: '192x192' }]
-          }
-        ]
+        shortcuts: []
       },
       workbox: {
         globPatterns: ['**/*.{js,css,html,ico,png,svg,woff2}'],
