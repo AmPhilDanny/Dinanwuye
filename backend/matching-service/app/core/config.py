@@ -16,7 +16,7 @@ class Settings(BaseSettings):
     PROJECT_NAME: str = "Dinanwuye Matching Service"
 
     # CORS
-    CORS_ORIGINS: list[str] = ["https://dinanwuye.com", "https://www.dinanwuye.com"]
+    CORS_ORIGINS: str = "https://dinanwuye.com,https://www.dinanwuye.com"
 
     # Database
     DATABASE_URL: str = os.getenv("DATABASE_URL", "postgresql+asyncpg://postgres:postgres@localhost:5432/dinanwuye")
