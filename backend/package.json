@@ -1,0 +1,39 @@
+{
+  "name": "dinanwuye-backend",
+  "private": true,
+  "version": "0.1.0",
+  "description": "Dinanwuye Backend Services — NestJS/TypeScript + Python/FastAPI",
+  "workspaces": [
+    "auth-service",
+    "profile-service",
+    "messaging-service",
+    "trust-safety-service",
+    "notification-service",
+    "payment-service",
+    "api-gateway",
+    "shared"
+  ],
+  "scripts": {
+    "build": "turbo run build",
+    "dev": "turbo run dev",
+    "lint": "turbo run lint",
+    "test": "turbo run test",
+    "db:migrate": "turbo run db:migrate",
+    "db:seed": "turbo run db:seed",
+    "docker:build": "docker compose build",
+    "docker:up": "docker compose up -d",
+    "docker:down": "docker compose down"
+  },
+  "devDependencies": {
+    "turbo": "^1.11.0",
+    "typescript": "^5.3.0",
+    "@types/node": "^20.10.0",
+    "eslint": "^8.55.0",
+    "prettier": "^3.1.0"
+  },
+  "engines": {
+    "node": ">=20.0.0",
+    "pnpm": ">=8.0.0"
+  },
+  "packageManager": "pnpm@8.15.0"
+}

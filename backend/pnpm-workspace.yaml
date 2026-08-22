@@ -1,0 +1,10 @@
+packages:
+  - 'auth-service'
+  - 'profile-service'
+  - 'messaging-service'
+  - 'trust-safety-service'
+  - 'notification-service'
+  - 'payment-service'
+  - 'api-gateway'
+  - 'shared'
+# matching-service is Python/FastAPI — NOT a pnpm workspace member

@@ -1,0 +1,72 @@
+// Dinanwuye Profile Service — Prisma schema
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Profile {
+  id               String   @id @default(uuid())
+  userId           String   @unique // FK to auth-service User.id (cross-service by convention)
+  name             String
+  dob              DateTime
+  gender           String // male | female | non_binary
+  seeking          String[] // genders interested in
+  bio              String?
+  heightCm         Int?
+  ethnicity        String?
+  religion         String?
+  relationshipIntent String?
+  education        String?
+  occupation       String?
+  languages        String[]
+  interests        String[] // for matching heuristic (Jaccard overlap)
+  locationLat      Float? // V0: plain lat/lng (PostGIS geometry comes later)
+  locationLng      Float?
+  locationName     String?
+  isVerified       Boolean  @default(false)
+  isActive         Boolean  @default(true)
+  isPremium        Boolean  @default(false)
+  lastActiveAt     DateTime @default(now())
+  onboardingStep   Int      @default(0) // 0..N, resume point
+  onboardingComplete Boolean @default(false)
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  photos      Photo[]
+  preferences Preference?
+  @@index([gender, seeking])
+  @@index([isVerified])
+}
+
+model Photo {
+  id               String   @id @default(uuid())
+  profileId        String
+  profile          Profile  @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  s3Key            String
+  order            Int      @default(0)
+  moderationStatus String   @default("pending") // pending | approved | rejected | in_review
+  createdAt        DateTime @default(now())
+
+  @@index([profileId])
+}
+
+model Preference {
+  id          String  @id @default(uuid())
+  profileId   String  @unique
+  profile     Profile @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  ageMin      Int     @default(21)
+  ageMax      Int     @default(45)
+  distanceKm  Int     @default(50)
+  filtersJson Json?
+  showOnlineStatus Boolean @default(true)
+  showDistance Boolean @default(true)
+  incognitoMode Boolean @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}

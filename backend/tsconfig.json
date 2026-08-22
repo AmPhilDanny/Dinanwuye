@@ -1,0 +1,33 @@
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+    "lib": ["ES2022"],
+    "outDir": "./dist",
+    "rootDir": ".",
+    "strict": true,
+    "isolatedModules": true,
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "resolveJsonModule": true,
+    "declaration": true,
+    "declarationMap": true,
+    "sourceMap": true,
+    "baseUrl": ".",
+    "paths": {
+      "@dinanwuye/shared": ["shared/dist"],
+      "@dinanwuye/auth-service": ["auth-service/src"],
+      "@dinanwuye/profile-service": ["profile-service/src"],
+      "@dinanwuye/messaging-service": ["messaging-service/src"],
+      "@dinanwuye/trust-safety-service": ["trust-safety-service/src"],
+      "@dinanwuye/notification-service": ["notification-service/src"],
+      "@dinanwuye/payment-service": ["payment-service/src"],
+      "@dinanwuye/api-gateway": ["api-gateway/src"]
+    }
+  },
+  "exclude": ["node_modules", "dist", "**/node_modules/**"]
+}

@@ -1,0 +1,234 @@
+/**
+ * Dinanwuye Design Tokens
+ * Brand: Red/White/Blue
+ * Mobile-first, compatible with Ionic theming (CSS variables)
+ */
+
+:root {
+  /* ========================================
+     BRAND COLORS
+     ======================================== */
+  --color-primary: #E4172B;        /* Primary Red - CTAs, like/heart, brand mark */
+  --color-primary-pressed: #B00F1F; /* Deep Red - pressed state, gradient end */
+  --color-primary-light: #FCE4E6;   /* Light Red - backgrounds, subtle accents */
+  --color-secondary: #1B4CE0;       /* Primary Blue - verification, trust, secondary CTA */
+  --color-secondary-light: #E8EDFC; /* Light Blue - backgrounds, info states */
+
+  /* ========================================
+     NEUTRALS / SURFACES
+     ======================================== */
+  --color-white: #FFFFFF;
+  --color-surface: #FFFFFF;
+  --color-surface-elevated: #FFFFFF;
+  --color-background: #F5F5F7;      /* Page background */
+  --color-background-alt: #FFFFFF;  /* Card background */
+
+  --color-gray-50:  #F5F5F7;
+  --color-gray-100: #EDEDED;
+  --color-gray-200: #D1D1D6;
+  --color-gray-300: #B0B0B8;
+  --color-gray-400: #8A8A8E;        /* Text secondary, borders */
+  --color-gray-500: #6E6E73;
+  --color-gray-600: #5A5A5E;
+  --color-gray-700: #424245;
+  --color-gray-800: #2D2D30;
+  --color-gray-900: #1D1D1F;        /* Text primary */
+
+  /* ========================================
+     SEMANTIC COLORS
+     ======================================== */
+  --color-success: #34C759;
+  --color-success-light: #E8F5E9;
+  --color-warning: #FF9F0A;
+  --color-warning-light: #FFF3E0;
+  --color-error: #FF3B30;
+  --color-error-light: #FDEDEA;
+  --color-info: #1B4CE0;
+  --color-info-light: #E8EDFC;
+
+  /* ========================================
+     MATCH GRADIENT — "It's a Match!" moment
+     ======================================== */
+  --gradient-match: linear-gradient(135deg, #E4172B 0%, #1B4CE0 100%);
+  --gradient-match-reverse: linear-gradient(315deg, #E4172B 0%, #1B4CE0 100%);
+  --gradient-match-vertical: linear-gradient(180deg, #E4172B 0%, #1B4CE0 100%);
+
+  /* ========================================
+     TYPOGRAPHY — Mobile-first scale
+     ======================================== */
+  /* Font families */
+  --font-family-base: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  --font-family-display: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  --font-family-mono: 'SF Mono', 'Fira Code', 'Fira Mono', Menlo, Consolas, monospace;
+
+  /* Font sizes (rem) — base 16px, mobile-first */
+  --font-size-xs: 0.75rem;      /* 12px — labels, captions */
+  --font-size-sm: 0.875rem;     /* 14px — body small, secondary text */
+  --font-size-base: 1rem;       /* 16px — body text */
+  --font-size-lg: 1.125rem;     /* 18px — body large */
+  --font-size-xl: 1.25rem;      /* 20px — headings small */
+  --font-size-2xl: 1.5rem;      /* 24px — headings medium */
+  --font-size-3xl: 1.875rem;    /* 30px — headings large */
+  --font-size-4xl: 2.25rem;     /* 36px — display */
+  --font-size-5xl: 3rem;        /* 48px — hero */
+
+  /* Font weights */
+  --font-weight-normal: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+
+  /* Line heights */
+  --line-height-tight: 1.1;
+  --line-height-snug: 1.375;
+  --line-height-normal: 1.5;
+  --line-height-relaxed: 1.625;
+
+  /* ========================================
+     SPACING — 4px base unit
+     ======================================== */
+  --space-0: 0;
+  --space-1: 0.25rem;   /* 4px */
+  --space-2: 0.5rem;    /* 8px */
+  --space-3: 0.75rem;   /* 12px */
+  --space-4: 1rem;      /* 16px */
+  --space-5: 1.25rem;   /* 20px */
+  --space-6: 1.5rem;    /* 24px */
+  --space-8: 2rem;      /* 32px */
+  --space-10: 2.5rem;   /* 40px */
+  --space-12: 3rem;     /* 48px */
+  --space-16: 4rem;     /* 64px */
+  --space-20: 5rem;     /* 80px */
+  --space-24: 6rem;     /* 96px */
+
+  /* ========================================
+     BORDER RADIUS
+     ======================================== */
+  --radius-none: 0;
+  --radius-sm: 0.25rem;   /* 4px */
+  --radius-md: 0.5rem;    /* 8px */
+  --radius-lg: 0.75rem;   /* 12px */
+  --radius-xl: 1rem;      /* 16px */
+  --radius-2xl: 1.5rem;   /* 24px */
+  --radius-full: 9999px;  /* Pills, avatars */
+
+  /* ========================================
+     SHADOWS / ELEVATION
+     ======================================== */
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  --shadow-inner: inset 0 2px 4px 0 rgba(0, 0, 0, 0.06);
+
+  /* ========================================
+     TRANSITIONS / ANIMATION
+     ======================================== */
+  --duration-fast: 150ms;
+  --duration-normal: 250ms;
+  --duration-slow: 350ms;
+  --ease-out: cubic-bezier(0.0, 0.0, 0.2, 1);
+  --ease-in-out: cubic-bezier(0.4, 0.0, 0.2, 1);
+
+  /* ========================================
+     Z-INDEX LAYERS
+     ======================================== */
+  --z-dropdown: 100;
+  --z-sticky: 200;
+  --z-fixed: 300;
+  --z-modal-backdrop: 400;
+  --z-modal: 500;
+  --z-popover: 600;
+  --z-tooltip: 700;
+  --z-toast: 800;
+
+  /* ========================================
+     TOUCH TARGETS (mobile-first)
+     ======================================== */
+  --touch-target-min: 44px;  /* iOS HIG minimum */
+  --touch-target-comfortable: 48px; /* Material Design recommended */
+
+  /* ========================================
+     IONIC THEME OVERRIDES
+     ======================================== */
+  /* These map to Ionic's CSS custom properties */
+  --ion-color-primary: var(--color-primary);
+  --ion-color-primary-rgb: 228, 23, 43;
+  --ion-color-primary-contrast: #FFFFFF;
+  --ion-color-primary-contrast-rgb: 255, 255, 255;
+  --ion-color-primary-shade: var(--color-primary-pressed);
+  --ion-color-primary-tint: #E83D4E;
+
+  --ion-color-secondary: var(--color-secondary);
+  --ion-color-secondary-rgb: 27, 76, 224;
+  --ion-color-secondary-contrast: #FFFFFF;
+  --ion-color-secondary-contrast-rgb: 255, 255, 255;
+  --ion-color-secondary-shade: #1842C4;
+  --ion-color-secondary-tint: #335CE3;
+
+  --ion-color-success: var(--color-success);
+  --ion-color-success-rgb: 52, 199, 89;
+  --ion-color-success-contrast: #FFFFFF;
+  --ion-color-success-contrast-rgb: 255, 255, 255;
+  --ion-color-success-shade: #2DD34E;
+  --ion-color-success-tint: #4BC96B;
+
+  --ion-color-warning: var(--color-warning);
+  --ion-color-warning-rgb: 255, 159, 10;
+  --ion-color-warning-contrast: #FFFFFF;
+  --ion-color-warning-contrast-rgb: 255, 255, 255;
+  --ion-color-warning-shade: #E08C09;
+  --ion-color-warning-tint: #FFAD27;
+
+  --ion-color-danger: var(--color-error);
+  --ion-color-danger-rgb: 255, 59, 48;
+  --ion-color-danger-contrast: #FFFFFF;
+  --ion-color-danger-contrast-rgb: 255, 255, 255;
+  --ion-color-danger-shade: #E0342D;
+  --ion-color-danger-tint: #FF544A;
+
+  --ion-color-light: var(--color-gray-100);
+  --ion-color-light-rgb: 237, 237, 237;
+  --ion-color-light-contrast: #000000;
+  --ion-color-light-contrast-rgb: 0, 0, 0;
+  --ion-color-light-shade: #D1D1D1;
+  --ion-color-light-tint: #EFF0F0;
+
+  --ion-color-medium: var(--color-gray-400);
+  --ion-color-medium-rgb: 138, 138, 142;
+  --ion-color-medium-contrast: #FFFFFF;
+  --ion-color-medium-contrast-rgb: 255, 255, 255;
+  --ion-color-medium-shade: #79797C;
+  --ion-color-medium-tint: #969699;
+
+  --ion-color-dark: var(--color-gray-900);
+  --ion-color-dark-rgb: 29, 29, 31;
+  --ion-color-dark-contrast: #FFFFFF;
+  --ion-color-dark-contrast-rgb: 255, 255, 255;
+  --ion-color-dark-shade: #19191A;
+  --ion-color-dark-tint: #333335;
+
+  /* Ionic spacing */
+  --ion-grid-column-gutter: var(--space-4);
+  --ion-grid-row-gutter: var(--space-4);
+  --ion-grid-padding: var(--space-4);
+
+  /* Ionic border radius */
+  --ion-border-radius: var(--radius-lg);
+}
+
+/* ========================================
+   DARK MODE (optional, for future)
+   ======================================== */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --color-background: #1D1D1F;
+    --color-background-alt: #2D2D30;
+    --color-surface: #2D2D30;
+    --color-surface-elevated: #3A3A3C;
+    --color-gray-50: #1D1D1F;
+    --color-gray-100: #2D2D30;
+    --color-gray-900: #F5F5F7;
+    /* Adjust other tokens as needed */
+  }
+}

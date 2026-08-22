@@ -1,0 +1,103 @@
+# Dinanwuye — cPanel .htaccess (SPA routing + security headers)
+# Place in public_html/ (uploaded with frontend build via FTP deploy)
+
+# ---- SPA Routing ----
+# Route all non-file, non-directory requests to index.html
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    RewriteBase /
+
+    # Don't rewrite existing files (assets, images, fonts, sw.js, manifest)
+    RewriteCond %{REQUEST_FILENAME} -f [OR]
+    RewriteCond %{REQUEST_FILENAME} -d
+    RewriteRule ^ - [L]
+
+    # Don't rewrite well-known paths (e.g., for ACME if ever needed)
+    RewriteCond %{REQUEST_URI} ^/\.well-known [NC]
+    RewriteRule ^ - [L]
+
+    # Route everything else to the SPA entry point
+    RewriteRule ^ index.html [L]
+</IfModule>
+
+# ---- Cache Control ----
+<IfModule mod_expires.c>
+    ExpiresActive On
+
+    # HTML: no-cache (always check for updates)
+    ExpiresByType text/html "access plus 0 seconds"
+
+    # Manifest + service worker: short cache
+    ExpiresByType application/manifest+json "access plus 1 hour"
+    ExpiresByType application/javascript "access plus 1 hour"
+
+    # Assets with content hashes: long cache (vite emits hashed filenames)
+    ExpiresByType text/css "access plus 1 year"
+    ExpiresByType application/javascript "access plus 1 year"
+    ExpiresByType image/svg+xml "access plus 1 year"
+    ExpiresByType image/png "access plus 1 year"
+    ExpiresByType image/jpeg "access plus 1 year"
+    ExpiresByType image/webp "access plus 1 year"
+    ExpiresByType image/avif "access plus 1 year"
+    ExpiresByType font/woff2 "access plus 1 year"
+    ExpiresByType font/woff "access plus 1 year"
+    ExpiresByType application/vnd.ms-fontobject "access plus 1 year"
+    ExpiresByType image/x-icon "access plus 1 year"
+</IfModule>
+
+<IfModule mod_headers.c>
+    # Service worker must not be cached by browsers
+    <FilesMatch "sw\.js$">
+        Header set Cache-Control "no-cache, no-store, must-revalidate"
+        Header set Pragma "no-cache"
+        Header set Expires "0"
+    </FilesMatch>
+
+    # index.html: no-cache so users always get latest shell
+    <FilesMatch "index\.html$">
+        Header set Cache-Control "no-cache, no-store, must-revalidate"
+        Header set Pragma "no-cache"
+        Header set Expires "0"
+    </FilesMatch>
+</IfModule>
+
+# ---- Compression ----
+<IfModule mod_deflate.c>
+    AddOutputFilterByType DEFLATE text/html text/plain text/css
+    AddOutputFilterByType DEFLATE application/javascript application/json
+    AddOutputFilterByType DEFLATE application/xml image/svg+xml
+    AddOutputFilterByType DEFLATE font/woff2 font/woff
+</IfModule>
+
+# ---- Security Headers ----
+<IfModule mod_headers.c>
+    # X-Frame-Options: DENY (don't allow embedding the app)
+    Header always set X-Frame-Options "DENY"
+
+    # Content-Type sniffing protection
+    Header always set X-Content-Type-Options "nosniff"
+
+    # XSS protection (legacy browsers)
+    Header always set X-XSS-Protection "1; mode=block"
+
+    # Referrer policy: don't leak tokens in referrer
+    Header always set Referrer-Policy "strict-origin-when-cross-origin"
+
+    # Permissions policy (restrict device APIs we don't use on web)
+    Header always set Permissions-Policy "camera=(self), geolocation=(self), microphone=(), notifications=(self), payment=()"
+
+    # HSTS only if SSL is enforced (comment out if no SSL yet)
+    # Header always set Strict-Transport-Security "max-age=31536000; includeSubDomains"
+</IfModule>
+
+# ---- Block sensitive files ----
+<FilesMatch "^(\.env|\.gitignore|package\.json|pnpm-lock\.yaml|vite\.config\.js|tailwind\.config\.js|postcss\.config\.js|AGENTS\.md)">
+    Require all denied
+</FilesMatch>
+
+# ---- Prevent directory listing ----
+Options -Indexes
+
+# ---- Custom error pages ----
+ErrorDocument 404 /index.html
+ErrorDocument 403 /index.html

@@ -1,0 +1,874 @@
+openapi: 3.0.3
+info:
+  title: Dinanwuye API
+  version: 0.1.0
+  description: |
+    Dinanwuye — Mobile-First Matchmaking Web App API contract.
+    "Dinanwuye" = Igbo for "Husband and Wife".
+    Base URL: https://api.dinanwuye.com/api/v1
+    This is the initial spec stub for Phase 0 — endpoints will be
+    generated per-service (NestJS Swagger + FastAPI) and merged here.
+  contact:
+    name: Dinanwuye Team
+    email: admin@dinanwuye.com
+  license:
+    name: Proprietary
+servers:
+  - url: https://api.dinanwuye.com/api/v1
+    description: Production
+  - url: http://localhost:3000/api/v1
+    description: Local development
+tags:
+  - name: auth
+    description: Authentication & identity
+  - name: profile
+    description: User profiles
+  - name: matching
+    description: Discovery, swipes, matches
+  - name: messaging
+    description: Chat & realtime messaging
+  - name: trust-safety
+    description: Verification, moderation, blocks/reports
+  - name: notifications
+    description: Push/email/in-app notifications
+  - name: payments
+    description: Premium subscriptions & payments
+  - name: health
+    description: Service health checks
+paths:
+  # ---------------- HEALTH ----------------
+  /health:
+    get:
+      tags: [health]
+      summary: API gateway health check
+      responses:
+        '200':
+          description: Healthy
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HealthCheck'
+
+  # ---------------- AUTH ----------------
+  /auth/signup:
+    post:
+      tags: [auth]
+      summary: Create a new account
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SignupRequest'
+      responses:
+        '201':
+          description: Account created, OTP sent
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthResponse'
+        '409':
+          description: Account already exists
+  /auth/login:
+    post:
+      tags: [auth]
+      summary: Log in with email/phone + password
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginRequest'
+      responses:
+        '200':
+          description: Tokens issued
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthResponse'
+        '401':
+          description: Invalid credentials
+  /auth/verify-otp:
+    post:
+      tags: [auth]
+      summary: Verify email/phone OTP
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/VerifyOtpRequest'
+      responses:
+        '200':
+          description: OTP verified
+  /auth/refresh:
+    post:
+      tags: [auth]
+      summary: Refresh access token
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RefreshRequest'
+      responses:
+        '200':
+          description: New tokens issued
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthResponse'
+  /auth/logout:
+    post:
+      tags: [auth]
+      summary: Invalidate refresh token
+      security:
+        - bearerAuth: []
+      responses:
+        '204':
+          description: Logged out
+
+  # ---------------- PROFILE ----------------
+  /profiles/me:
+    get:
+      tags: [profile]
+      summary: Get current user's profile
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Profile
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Profile'
+    patch:
+      tags: [profile]
+      summary: Update current user's profile
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProfileUpdate'
+      responses:
+        '200':
+          description: Updated profile
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Profile'
+  /profiles/{id}:
+    get:
+      tags: [profile]
+      summary: Get a public profile by ID
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Public profile
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PublicProfile'
+        '404':
+          description: Profile not found
+  /profiles/me/photos:
+    post:
+      tags: [profile]
+      summary: Upload a profile photo (multipart)
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  format: binary
+      responses:
+        '201':
+          description: Photo uploaded
+  /profiles/me/photos/{photoId}:
+    delete:
+      tags: [profile]
+      summary: Remove a profile photo
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: photoId
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '204':
+          description: Photo removed
+
+  # ---------------- MATCHING ----------------
+  /matching/deck:
+    get:
+      tags: [matching]
+      summary: Get discovery deck of candidates
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: query
+          name: limit
+          schema:
+            type: integer
+            default: 20
+            maximum: 50
+        - in: query
+          name: cursor
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Deck
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DeckResponse'
+  /matching/swipe:
+    post:
+      tags: [matching]
+      summary: Record a swipe (like | pass | superlike)
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SwipeRequest'
+      responses:
+        '200':
+          description: Swipe recorded
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SwipeResponse'
+  /matching/matches:
+    get:
+      tags: [matching]
+      summary: List current user's matches
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Matches
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Match'
+  /matching/matches/{id}:
+    delete:
+      tags: [matching]
+      summary: Unmatch
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '204':
+          description: Unmatched
+
+  # ---------------- MESSAGING ----------------
+  /conversations:
+    get:
+      tags: [messaging]
+      summary: List conversations
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Conversations
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Conversation'
+  /conversations/{id}/messages:
+    get:
+      tags: [messaging]
+      summary: Get message history for a conversation
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - in: query
+          name: before
+          schema:
+            type: string
+            format: date-time
+      responses:
+        '200':
+          description: Messages
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Message'
+  /conversations/{id}/messages:
+    post:
+      tags: [messaging]
+      summary: Send a message
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MessageSend'
+      responses:
+        '201':
+          description: Message sent
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+
+  # ---------------- TRUST & SAFETY ----------------
+  /safety/verify-identity:
+    post:
+      tags: [trust-safety]
+      summary: Start identity verification flow
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Verification session created
+  /safety/blocks:
+    post:
+      tags: [trust-safety]
+      summary: Block a user
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BlockRequest'
+      responses:
+        '201':
+          description: User blocked
+  /safety/reports:
+    post:
+      tags: [trust-safety]
+      summary: Report a user
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ReportRequest'
+      responses:
+        '201':
+          description: Report submitted
+
+  # ---------------- NOTIFICATIONS ----------------
+  /notifications/devices:
+    post:
+      tags: [notifications]
+      summary: Register a push device token
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DeviceToken'
+      responses:
+        '201':
+          description: Device registered
+  /notifications:
+    get:
+      tags: [notifications]
+      summary: List in-app notifications
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Notifications
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Notification'
+
+  # ---------------- PAYMENTS ----------------
+  /payments/plans:
+    get:
+      tags: [payments]
+      summary: List premium plans
+      responses:
+        '200':
+          description: Plans
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Plan'
+  /payments/checkout:
+    post:
+      tags: [payments]
+      summary: Create a checkout session (Stripe / Paystack)
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CheckoutRequest'
+      responses:
+        '200':
+          description: Checkout session
+  /payments/webhooks/{provider}:
+    post:
+      tags: [payments]
+      summary: Payment provider webhook (stripe | paystack)
+      parameters:
+        - in: path
+          name: provider
+          required: true
+          schema:
+            type: string
+            enum: [stripe, paystack]
+      responses:
+        '200':
+          description: Webhook acknowledged
+  /payments/subscription:
+    get:
+      tags: [payments]
+      summary: Get current subscription status
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Subscription
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Subscription'
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  schemas:
+    # ---------- Common ----------
+    HealthCheck:
+      type: object
+      properties:
+        status:
+          type: string
+          example: healthy
+        service:
+          type: string
+    Error:
+      type: object
+      properties:
+        statusCode:
+          type: integer
+        message:
+          type: string
+          example: Validation failed
+        errors:
+          type: array
+          items:
+            type: object
+    # ---------- Auth ----------
+    SignupRequest:
+      type: object
+      required: [email, password]
+      properties:
+        email:
+          type: string
+          format: email
+        phone:
+          type: string
+        password:
+          type: string
+          minLength: 8
+        firstName:
+          type: string
+        lastName:
+          type: string
+    LoginRequest:
+      type: object
+      required: [identifier, password]
+      properties:
+        identifier:
+          type: string
+          description: Email or phone
+        password:
+          type: string
+    VerifyOtpRequest:
+      type: object
+      required: [identifier, otp]
+      properties:
+        identifier:
+          type: string
+        otp:
+          type: string
+          minLength: 6
+          maxLength: 6
+    RefreshRequest:
+      type: object
+      required: [refreshToken]
+      properties:
+        refreshToken:
+          type: string
+    AuthResponse:
+      type: object
+      properties:
+        accessToken:
+          type: string
+        refreshToken:
+          type: string
+        user:
+          $ref: '#/components/schemas/PublicProfile'
+    # ---------- Profile ----------
+    Profile:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        email:
+          type: string
+        firstName:
+          type: string
+        lastName:
+          type: string
+        dateOfBirth:
+          type: string
+          format: date
+        gender:
+          type: string
+          enum: [male, female, non_binary]
+        interestedIn:
+          type: string
+          enum: [male, female, everyone]
+        location:
+          $ref: '#/components/schemas/GeoPoint'
+        bio:
+          type: string
+        photos:
+          type: array
+          items:
+            $ref: '#/components/schemas/Photo'
+        interests:
+          type: array
+          items:
+            type: string
+        isVerified:
+          type: boolean
+        isPremium:
+          type: boolean
+        createdAt:
+          type: string
+          format: date-time
+    PublicProfile:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        firstName:
+          type: string
+        age:
+          type: integer
+        location:
+          type: string
+        bio:
+          type: string
+        photos:
+          type: array
+          items:
+            $ref: '#/components/schemas/Photo'
+        isVerified:
+          type: boolean
+        isPremium:
+          type: boolean
+    ProfileUpdate:
+      type: object
+      properties:
+        bio:
+          type: string
+          maxLength: 500
+        interests:
+          type: array
+          items:
+            type: string
+        location:
+          $ref: '#/components/schemas/GeoPoint'
+        dateOfBirth:
+          type: string
+          format: date
+        gender:
+          type: string
+        interestedIn:
+          type: string
+    Photo:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        url:
+          type: string
+        order:
+          type: integer
+    GeoPoint:
+      type: object
+      properties:
+        lat:
+          type: number
+          format: float
+        lng:
+          type: number
+          format: float
+    # ---------- Matching ----------
+    DeckResponse:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/DeckItem'
+        has_more:
+          type: boolean
+        next_cursor:
+          type: string
+          nullable: true
+    DeckItem:
+      allOf:
+        - $ref: '#/components/schemas/PublicProfile'
+        - type: object
+          properties:
+            distance_km:
+              type: number
+            compatibility_score:
+              type: integer
+              maximum: 100
+    SwipeRequest:
+      type: object
+      required: [target_id, action]
+      properties:
+        target_id:
+          type: string
+          format: uuid
+        action:
+          type: string
+          enum: [like, pass, superlike]
+    SwipeResponse:
+      type: object
+      properties:
+        matched:
+          type: boolean
+        match:
+          $ref: '#/components/schemas/Match'
+        remaining_likes:
+          type: integer
+    Match:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        other_user:
+          $ref: '#/components/schemas/PublicProfile'
+        last_message:
+          $ref: '#/components/schemas/Message'
+        unread_count:
+          type: integer
+        created_at:
+          type: string
+          format: date-time
+    # ---------- Messaging ----------
+    Conversation:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        other_user:
+          $ref: '#/components/schemas/PublicProfile'
+        last_message:
+          $ref: '#/components/schemas/Message'
+        unread_count:
+          type: integer
+        updated_at:
+          type: string
+          format: date-time
+    Message:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        conversation_id:
+          type: string
+          format: uuid
+        sender_id:
+          type: string
+          format: uuid
+        content:
+          type: string
+        content_type:
+          type: string
+          enum: [text, image]
+        created_at:
+          type: string
+          format: date-time
+    MessageSend:
+      type: object
+      required: [content]
+      properties:
+        content:
+          type: string
+          maxLength: 2000
+        content_type:
+          type: string
+          enum: [text, image]
+    # ---------- Trust & Safety ----------
+    BlockRequest:
+      type: object
+      required: [target_id]
+      properties:
+        target_id:
+          type: string
+          format: uuid
+        reason:
+          type: string
+    ReportRequest:
+      type: object
+      required: [target_id, reason]
+      properties:
+        target_id:
+          type: string
+          format: uuid
+        reason:
+          type: string
+          enum: [harassment, fake_profile, inappropriate_content, other]
+        details:
+          type: string
+    # ---------- Notifications ----------
+    DeviceToken:
+      type: object
+      required: [token, platform]
+      properties:
+        token:
+          type: string
+        platform:
+          type: string
+          enum: [web, ios, android]
+    Notification:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        type:
+          type: string
+          enum: [match, message, like, superlike, premium, system]
+        title:
+          type: string
+        body:
+          type: string
+        data:
+          type: object
+        read:
+          type: boolean
+        created_at:
+          type: string
+          format: date-time
+    # ---------- Payments ----------
+    Plan:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        price_monthly:
+          type: number
+        price_annual:
+          type: number
+        features:
+          type: array
+          items:
+            type: string
+    CheckoutRequest:
+      type: object
+      required: [plan_id, provider]
+      properties:
+        plan_id:
+          type: string
+        provider:
+          type: string
+          enum: [stripe, paystack]
+        success_url:
+          type: string
+        cancel_url:
+          type: string
+    Subscription:
+      type: object
+      properties:
+        plan_id:
+          type: string
+        status:
+          type: string
+          enum: [active, past_due, canceled, trialing]
+        current_period_end:
+          type: string
+          format: date-time
+        provider:
+          type: string
+          enum: [stripe, paystack]

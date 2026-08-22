@@ -1,0 +1,17 @@
+# Phase 1 runtime deps (ML ranker/lightgbm/pgvector arrive in Phase 2)
+fastapi>=0.100,<1.0
+uvicorn[standard]>=0.23,<1.0
+pydantic>=2.6,<3.0
+pydantic-settings>=2.0,<3.0
+sqlalchemy[asyncio]>=2.0,<3.0
+asyncpg>=0.28,<1.0
+httpx>=0.24,<1.0
+python-jose[cryptography]>=3.3,<4.0
+redis>=4.6,<6.0
+
+# dev
+pytest>=7.4,<9.0
+pytest-asyncio>=0.21,<1.0
+pytest-cov>=4.1,<6.0
+ruff>=0.1,<1.0
+mypy>=1.4,<2.0

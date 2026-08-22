@@ -1,0 +1,64 @@
+# .gitignore for Dinanwuye
+# See https://github.com/github/gitignore for more templates
+# git ig .gitignore
+
+# Dependencies
+node_modules/
+p-lockfile.yaml
+
+# Prisma
+.prisma/
+generated/
+
+# Environment variables
+.env*
+.env.example
+
+# Production build
+.next/
+/out
+
+# Prisma generated client
+backend/**/generated/
+
+# Uploads and media
+/uploads/
+/uploads/
+
+# Logs
+logs/
+*.log
+
+# Runtime storage
+*.pid
+*.seed.*
+
+# Testing
+/.nyc_output/
+coverage/
+*.test.*
+*.spec.*
+
+# OmCode specific
+.omo/
+
+# Deployment
+deployment/
+
+# Jiffy disk images
+*.jiffy
+*.jfif
+
+# Sensitive data
+*.env*
+docs/
+
+# Document root
+/public
+
+# .git folder
+.git/
+
+# Sensitive data
+*.env*
+```
