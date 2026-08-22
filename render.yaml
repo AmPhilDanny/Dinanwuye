@@ -14,7 +14,7 @@ services:
     name: dinanwuye-backend
     env: node
     plan: free
-    buildCommand: npm run build
+    buildCommand: nest build
     startCommand: node dist/main.js
     envVariables:
       NODE_ENV: production
