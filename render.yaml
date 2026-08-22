@@ -5,25 +5,37 @@ services:
     plan: free
     buildCommand: pnpm install && pnpm run build
     startCommand: npx serve -s dist -l $PORT
-    envVariables:
-      NODE_ENV: production
-      VITE_API_URL: "https://dinanwuye-backend.onrender.com"
-      VITE_SUPABASE_URL: "https://ysvqvrskwyyjbeepbyuc.supabase.co"
-      VITE_SUPABASE_ANON_KEY: "sb_publishable_DBbHW-Oy1p1kb2v_EKGYKQ_h6xwgCGY"
+      envVars:
+        - key: NODE_ENV
+          value: production
+        - key: VITE_API_URL
+          value: "https://dinanwuye-back.onrender.com"
+        - key: VITE_SUPABASE_URL
+          value: "https://ysvqvrskwyyjbeepbyuc.supabase.co"
+        - key: VITE_SUPABASE_ANON_KEY
+          sync: false
   - type: web
     name: dinanwuye-backend
     env: node
     plan: free
     buildCommand: pnpm install --frozen-lockfile --prod=false && pnpm --filter @dinanwuye/auth-service exec prisma generate --schema prisma/schema.prisma && pnpm --filter @dinanwuye/auth-service... run build
     startCommand: node auth-service/dist/main.js
-    envVariables:
-      NODE_ENV: production
-      DATABASE_URL: "postgresql://postgres:dinanwuye@2026@db.ysvqvrskwyyjbeepbyuc.supabase.co:5432/postgres?schema=auth"
-      JWT_SECRET: "change-this-to-a-secure-secret"
-      JWT_EXPIRES_IN: "1h"
-      SUPABASE_URL: "https://ysvqvrskwyyjbeepbyuc.supabase.co"
-      SUPABASE_SERVICE_KEY: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InlzdnF2cnNrd3l5amJlZXBieXVjIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc4NzM4NDU2NiwiZXhwIjoyMTAyOTYwNTY2fQ.zoIHnHM5KHp49TW5Mctue-95s1IUfyC3GE_W2w24EhU"
-      SUPABASE_ANON_KEY: "sb_publishable_DBbHW-Oy1p1kb2v_EKGYKQ_h6xwgCGY"
-      CORS_ORIGIN: "https://dinanwuye-frontend.onrender.com"
-    healthCheckPath: "/health"
+      envVars:
+        - key: NODE_ENV
+          value: production
+        - key: DATABASE_URL
+          sync: false
+        - key: JWT_SECRET
+          sync: false
+        - key: JWT_EXPIRES_IN
+          value: "1h"
+        - key: SUPABASE_URL
+          value: "https://ysvqvrskwyyjbeepbyuc.supabase.co"
+        - key: SUPABASE_SERVICE_KEY
+          sync: false
+        - key: SUPABASE_ANON_KEY
+          sync: false
+        - key: CORS_ORIGIN
+          value: "https://dinanwuye.onrender.com"
+      healthCheckPath: "/api/v1/health"
     healthCheckTimeout: 5
