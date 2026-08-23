@@ -6,5 +6,6 @@ packages:
   - 'notification-service'
   - 'payment-service'
   - 'api-gateway'
+  - 'admin-service'
   - 'shared'
-# matching-service is Python/FastAPI — NOT a pnpm workspace member
+  # matching-service is Python/FastAPI — NOT a pnpm workspace member

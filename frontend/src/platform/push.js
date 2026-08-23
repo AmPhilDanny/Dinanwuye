@@ -5,14 +5,19 @@
  */
 
 let cordovaPush = null;
-let swRegistration = null;
+let capacitorPush = null;
 
-const loadCordovaPush = async () => {
-  if (cordovaPush) return cordovaPush;
+const loadNativePush = async () => {
+  if (cordovaPush || capacitorPush) return cordovaPush || capacitorPush;
 
   if (typeof window !== 'undefined' && window.cordova && window.PushNotification) {
     cordovaPush = window.PushNotification;
     return cordovaPush;
+  }
+
+  if (typeof window !== 'undefined' && window.Capacitor && window.Capacitor.Plugins && window.Capacitor.Plugins.PushNotifications) {
+    capacitorPush = window.Capacitor.Plugins.PushNotifications;
+    return capacitorPush;
   }
 
   return null;
@@ -29,25 +34,26 @@ const loadCordovaPush = async () => {
 export const initPush = async (options = {}) => {
   const { onNotification, onRegistration, senderID } = options;
 
-  const cordova = await loadCordovaPush();
-  if (cordova) {
-    // Cordova PushNotification plugin (phonegap-plugin-push)
+  const native = await loadNativePush();
+  if (native) {
+    // Native plugin (Cordova or Capacitor)
     return new Promise((resolve, reject) => {
-      const push = cordova.init({
-        android: { senderID: senderID || 'YOUR_SENDER_ID' },
-        ios: { alert: true, badge: true, sound: true },
-        windows: {},
-      });
-
-      push.on('registration', (data) => {
-        onRegistration?.(data.registrationId);
-        resolve(data.registrationId);
-      });
-
+      const push = native.init;
+      push(
+        {
+          android: { senderID: senderID || 'YOUR_SENDER_ID' },
+          ios: { alert: true, badge: true, sound: true },
+          windows: {},
+        },
+        (data) => {
+          onRegistration?.(data.registrationId);
+          resolve(data.registrationId);
+        },
+        (err) => reject(err)
+      );
       push.on('notification', (data) => {
         onNotification?.(data);
       });
-
       push.on('error', (err) => {
         reject(err);
       });

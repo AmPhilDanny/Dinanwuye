@@ -5,13 +5,19 @@
  */
 
 let cordovaGeolocation = null;
+let capacitorGeolocation = null;
 
-const loadCordovaGeolocation = async () => {
-  if (cordovaGeolocation) return cordovaGeolocation;
+const loadNativeGeolocation = async () => {
+  if (cordovaGeolocation || capacitorGeolocation) return cordovaGeolocation || capacitorGeolocation;
 
   if (typeof window !== 'undefined' && window.cordova && window.navigator.geolocation) {
     cordovaGeolocation = window.navigator.geolocation;
     return cordovaGeolocation;
+  }
+
+  if (typeof window !== 'undefined' && window.Capacitor && window.Capacitor.Plugins && window.Capacitor.Plugins.Geolocation) {
+    capacitorGeolocation = window.Capacitor.Plugins.Geolocation;
+    return capacitorGeolocation;
   }
 
   return null;
@@ -32,10 +38,10 @@ export const getLocation = async (options = {}) => {
     maximumAge = 0,
   } = options;
 
-  const cordova = await loadCordovaGeolocation();
-  if (cordova) {
+  const native = await loadNativeGeolocation();
+  if (native) {
     return new Promise((resolve, reject) => {
-      cordova.getCurrentPosition(resolve, reject, {
+      native.getCurrentPosition(resolve, reject, {
         enableHighAccuracy,
         timeout,
         maximumAge,

@@ -5,15 +5,22 @@
  */
 
 let cordovaCamera = null;
+let capacitorCamera = null;
 
-// Lazy-load Cordova plugin only when needed (in native build)
-const loadCordovaCamera = async () => {
-  if (cordovaCamera) return cordovaCamera;
+// Lazy-load native plugin only when needed (in native build)
+const loadNativeCamera = async () => {
+  if (cordovaCamera || capacitorCamera) return cordovaCamera || capacitorCamera;
 
   // In a Cordova build, `window.cordova` exists and plugins are available
   if (typeof window !== 'undefined' && window.cordova && window.navigator.camera) {
     cordovaCamera = window.navigator.camera;
     return cordovaCamera;
+  }
+
+  // In a Capacitor build, `window.Capacitor.Plugins.Camera` exists
+  if (typeof window !== 'undefined' && window.Capacitor && window.Capacitor.Plugins && window.Capacitor.Plugins.Camera) {
+    capacitorCamera = window.Capacitor.Plugins.Camera;
+    return capacitorCamera;
   }
 
   return null;
@@ -38,11 +45,12 @@ export const capturePhoto = async (options = {}) => {
     sourceType = 'camera',
   } = options;
 
-  // Try Cordova first (native build)
-  const cordova = await loadCordovaCamera();
-  if (cordova) {
+  // Try native plugin first (Cordova or Capacitor)
+  const native = await loadNativeCamera();
+  if (native) {
     return new Promise((resolve, reject) => {
-      cordova.getPicture(
+      const camera = native.getPicture;
+      camera(
         (imageData) => resolve(`data:image/jpeg;base64,${imageData}`),
         (err) => reject(new Error(err)),
         {
@@ -50,10 +58,10 @@ export const capturePhoto = async (options = {}) => {
           allowEdit,
           targetWidth,
           targetHeight,
-          sourceType: sourceType === 'camera' ? cordova.PictureSourceType.CAMERA : cordova.PictureSourceType.PHOTOLIBRARY,
-          destinationType: cordova.DestinationType.DATA_URL,
-          encodingType: cordova.EncodingType.JPEG,
-          mediaType: cordova.MediaType.PICTURE,
+          sourceType: sourceType === 'camera' ? native.PictureSourceType.CAMERA : native.PictureSourceType.PHOTOLIBRARY,
+          destinationType: native.DestinationType.DATA_URL,
+          encodingType: native.EncodingType.JPEG,
+          mediaType: native.MediaType.PICTURE,
           correctOrientation: true,
           saveToPhotoAlbum: false,
         }

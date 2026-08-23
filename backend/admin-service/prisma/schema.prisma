@@ -1,0 +1,79 @@
+// Dinanwuye Admin Dashboard Service — Prisma schema
+// Database: PostgreSQL (shared `dinanwuye` database, admin schema)
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// Admin user management
+model AdminUser {
+  id           String   @id @default(uuid())
+  email        String   @unique
+  name         String
+  passwordHash String
+  role         String   @default("admin") // super_admin | admin | moderator
+  permissions  String[] @default([])     // granular permissions
+  isActive     Boolean  @default(true)
+  lastLoginAt  DateTime?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  auditLogs AuditLog[]
+
+  @@index([email])
+  @@index([role])
+}
+
+// Audit log for all admin actions
+model AuditLog {
+  id        String   @id @default(uuid())
+  adminId   String
+  admin     AdminUser @relation(fields: [adminId], references: [id], onDelete: Cascade)
+  action    String   // create | read | update | delete | bulk_update | bulk_delete
+  entity    String   // User | Profile | Photo | Match | Swipe | AdminUser | etc.
+  entityId  String?
+  oldData   Json?
+  newData   Json?
+  ipAddress String?
+  userAgent String?
+  createdAt DateTime @default(now())
+
+  @@index([adminId])
+  @@index([entity])
+  @@index([entityId])
+  @@index([createdAt])
+}
+
+// Admin sessions for JWT token management
+model AdminSession {
+  id        String   @id @default(uuid())
+  adminId   String
+  admin     AdminUser @relation(fields: [adminId], references: [id], onDelete: Cascade)
+  token     String   @unique
+  expiresAt DateTime
+  revokedAt DateTime?
+  ipAddress String?
+  userAgent String?
+  createdAt DateTime @default(now())
+
+  @@index([adminId])
+  @@index([token])
+}
+
+// Admin activity metrics
+model AdminActivity {
+  id        String   @id @default(uuid())
+  adminId   String
+  date      DateTime @db.Date
+  actions   Json     // { create: 5, read: 10, update: 3, delete: 1 }
+  createdAt DateTime @default(now())
+
+  @@unique([adminId, date])
+  @@index([date])
+}
