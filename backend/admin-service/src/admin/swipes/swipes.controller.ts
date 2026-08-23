@@ -1,6 +1,6 @@
 import 'reflect-metadata';
 import { Controller, Get, Delete, Param, Query, UseGuards } from '@nestjs/common';
-import { JwtAuthGuard } from '../jwt-auth.guard';
+import { JwtAuthGuard } from '../../auth/jwt-auth.guard';
 import { SwipesService } from './swipes.service';
 
 @Controller('swipes')

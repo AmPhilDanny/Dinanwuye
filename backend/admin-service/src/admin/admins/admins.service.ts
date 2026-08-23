@@ -1,6 +1,7 @@
 import 'reflect-metadata';
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
+import { AdminUser } from '../../common/types';
 
 @Injectable()
 export class AdminsService {
@@ -14,49 +15,40 @@ export class AdminsService {
       ORDER BY createdAt DESC
       OFFSET ${skip} LIMIT ${limit}
     `;
-    const totalCount = await this.prisma.adminUser.count();
-    return { admins, total: totalCount };
+    const totalCount = await this.prisma.$executeRaw`SELECT COUNT(*) FROM "AdminUser"`;
+    return { admins, total: (total as any) || 0 };
   }
 
   async findOne(id: string) {
-    const admin = await this.prisma.adminUser.findUnique({
-      where: { id },
-    });
-    if (!admin) {
+    const admin = await this.prisma.$queryRaw<AdminUser[]>`
+      SELECT id, email, name, role, isActive, lastLoginAt, createdAt
+      FROM "AdminUser"
+      WHERE id = ${id}
+    `;
+    if (!admin || admin.length === 0) {
       throw new NotFoundException(`Admin with ID ${id} not found`);
     }
-    const { passwordHash, ...result } = admin;
-    return result;
+    return admin[0];
   }
 
   async create(createAdminDto: { email: string; name: string; passwordHash: string; role?: string; permissions?: string[] }) {
-    const admin = await this.prisma.adminUser.create({
-      data: {
-        email: createAdminDto.email,
-        name: createAdminDto.name,
-        passwordHash: createAdminDto.passwordHash,
-        role: createAdminDto.role || 'admin',
-        isActive: true,
-        permissions: createAdminDto.permissions || [],
-      },
-    });
-    const { passwordHash, ...result } = admin;
-    return result;
+    await this.prisma.$executeRaw`INSERT INTO "AdminUser" (email, name, passwordHash, role, isActive, permissions)
+      VALUES (${createAdminDto.email}, ${createAdminDto.name}, ${createAdminDto.passwordHash}, ${createAdminDto.role || 'admin'}, true, ${createAdminDto.permissions || '[]'})`;
+    return { inserted: true };
   }
 
   async update(id: string, updateAdminDto: { email?: string; name?: string; role?: string; isActive?: boolean; permissions?: string[] }) {
-    const admin = await this.prisma.adminUser.update({
-      where: { id },
-      data: updateAdminDto,
-    });
-    const { passwordHash, ...result } = admin;
-    return result;
+    const setClause = Object.entries(updateAdminDto)
+      .filter(([key]) => key in { email: true, name: true, role: true, isActive: true, permissions: true })
+      .map(([key, value]) => `"${key}" = ${typeof value === 'string' ? `'${value}'` : value}`)
+      .join(', ');
+    
+    await this.prisma.$executeRaw`UPDATE "AdminUser" SET ${setClause} WHERE id = ${id}`;
+    return { updated: true };
   }
 
   async remove(id: string) {
-    await this.prisma.adminUser.delete({
-      where: { id },
-    });
-    return { message: `Admin ${id} deleted successfully` };
+    await this.prisma.$executeRaw`DELETE FROM "AdminUser" WHERE id = ${id}`;
+    return { deleted: true };
   }
 }

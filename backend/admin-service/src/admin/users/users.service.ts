@@ -1,6 +1,7 @@
 import 'reflect-metadata';
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { PrismaService } from '../prisma/prisma.service';
+import { PrismaService } from '../../prisma/prisma.service';
+import { User } from '../../common/types';
 
 @Injectable()
 export class UsersService {
@@ -10,16 +11,16 @@ export class UsersService {
     const skip = (page - 1) * limit;
     const [users, total] = await this.prisma.$queryRaw<User[]>`
       SELECT id, email, phone, status, role, isVerified, createdAt, updatedAt
-      FROM "AdminUser"
+      FROM "User"
       ORDER BY createdAt DESC
       OFFSET ${skip} LIMIT ${limit}
     `;
-    const totalCount = await this.prisma.adminUser.count();
+    const totalCount = await this.prisma.user.count();
     return { users, total: totalCount };
   }
 
   async findOne(id: string) {
-    const user = await this.prisma.adminUser.findUnique({
+    const user = await this.prisma.user.findUnique({
       where: { id },
     });
     if (!user) {
@@ -29,12 +30,12 @@ export class UsersService {
   }
 
   async create(createUserDto: { email: string; name: string; passwordHash: string; role?: string }) {
-    const user = await this.prisma.adminUser.create({
+    const user = await this.prisma.user.create({
       data: {
         email: createUserDto.email,
         name: createUserDto.name,
         passwordHash: createUserDto.passwordHash,
-        role: createUserDto.role || 'admin',
+        role: createUserDto.role || 'user',
         isActive: true,
       },
     });
@@ -43,17 +44,18 @@ export class UsersService {
   }
 
   async update(id: string, updateUserDto: { email?: string; name?: string; role?: string; isActive?: boolean }) {
-    const user = await this.prisma.adminUser.update({
+    const user = await this.prisma.user.update({
       where: { id },
       data: updateUserDto,
     });
-    const { passwordHash, ...result } = updateUserDto;
+    const { passwordHash, ...result } = user;
     return result;
   }
 
   async remove(id: string) {
-    await this.prisma.adminUser.delete({
+    await this.prisma.user.delete({
       where: { id },
     });
     return { message: `User ${id} deleted successfully` };
   }
+}

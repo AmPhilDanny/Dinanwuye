@@ -1,7 +1,7 @@
 export class CreateUserDto {
-  email: string;
-  name: string;
-  passwordHash: string;
+  email: string = '';
+  name: string = '';
+  passwordHash: string = '';
   role?: string;
 }
 

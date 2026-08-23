@@ -1,6 +1,7 @@
 import 'reflect-metadata';
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { PrismaService } from '../prisma/prisma.service';
+import { PrismaService } from '../../prisma/prisma.service';
+import { Profile } from '../../common/types';
 
 @Injectable()
 export class ProfilesService {
@@ -90,3 +91,4 @@ export class ProfilesService {
     });
     return { message: `Profile ${id} deleted successfully` };
   }
+}

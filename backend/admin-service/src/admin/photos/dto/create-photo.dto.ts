@@ -1,6 +1,6 @@
 export class CreatePhotoDto {
-  profileId: string;
-  s3Key: string;
+  profileId: string = '';
+  s3Key: string = '';
   order?: number;
   moderationStatus?: string;
 }

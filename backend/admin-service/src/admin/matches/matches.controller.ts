@@ -1,6 +1,6 @@
 import 'reflect-metadata';
 import { Controller, Get, Put, Delete, Body, Param, Query, UseGuards } from '@nestjs/common';
-import { JwtAuthGuard } from '../jwt-auth.guard';
+import { JwtAuthGuard } from '../../auth/jwt-auth.guard';
 import { MatchesService } from './matches.service';
 import { UpdateMatchDto } from './dto/update-match.dto';
 

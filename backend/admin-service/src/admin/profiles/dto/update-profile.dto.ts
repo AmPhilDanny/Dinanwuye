@@ -1,23 +1,3 @@
-export class CreateProfileDto {
-  userId: string = '';
-  name: string = '';
-  dob: string = '';
-  gender: string = '';
-  seeking: string[] = [];
-  bio?: string;
-  heightCm?: number;
-  ethnicity?: string;
-  religion?: string;
-  relationshipIntent?: string;
-  education?: string;
-  occupation?: string;
-  languages?: string[];
-  interests?: string[];
-  locationLat?: number;
-  locationLng?: number;
-  locationName?: string;
-}
-
 export class UpdateProfileDto {
   name?: string;
   dob?: string;

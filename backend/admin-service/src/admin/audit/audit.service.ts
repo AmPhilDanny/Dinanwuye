@@ -1,6 +1,7 @@
 import 'reflect-metadata';
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { PrismaService } from '../prisma/prisma.service';
+import { PrismaService } from '../../prisma/prisma.service';
+import { AuditLog } from '../../common/types';
 
 @Injectable()
 export class AuditService {
@@ -8,7 +9,7 @@ export class AuditService {
 
   async findAll(page: number = 1, limit: number = 50, entity?: string, adminId?: string) {
     const skip = (page - 1) * limit;
-    whereClause: any = {};
+    let whereClause: any = {};
     if (entity) whereClause.entity = entity;
     if (adminId) whereClause.adminId = adminId;
 

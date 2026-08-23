@@ -1,6 +1,7 @@
 import 'reflect-metadata';
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { PrismaService } from '../prisma/prisma.service';
+import { PrismaService } from '../../prisma/prisma.service';
+import { Photo } from '../../common/types';
 
 @Injectable()
 export class PhotosService {
