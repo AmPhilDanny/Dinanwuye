@@ -11,6 +11,7 @@
     "notification-service",
     "payment-service",
     "api-gateway",
+    "admin-service",
     "shared"
   ],
   "scripts": {
