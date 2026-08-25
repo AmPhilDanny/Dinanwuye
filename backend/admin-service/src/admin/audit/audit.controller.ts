@@ -1,10 +1,13 @@
 import 'reflect-metadata';
 import { Controller, Get, Query, Param, UseGuards } from '@nestjs/common';
 import { JwtAuthGuard } from '../../auth/jwt-auth.guard';
+import { PermissionGuard } from '../../auth/permission.guard';
+import { RequirePermission } from '../../auth/permissions';
 import { AuditService } from './audit.service';
 
 @Controller('audit')
-@UseGuards(JwtAuthGuard)
+@UseGuards(JwtAuthGuard, PermissionGuard)
+@RequirePermission('audit:read')
 export class AuditController {
   constructor(private readonly auditService: AuditService) {}
 

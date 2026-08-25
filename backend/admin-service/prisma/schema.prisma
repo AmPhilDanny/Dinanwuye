@@ -25,9 +25,93 @@ model AdminUser {
   updatedAt    DateTime @updatedAt
 
   auditLogs AuditLog[]
+  sessions   AdminSession[]
 
   @@index([email])
   @@index([role])
+}
+
+model User {
+  id                 String   @id @default(uuid())
+  email              String?  @unique
+  phone              String?  @unique
+  emailHash          String?
+  phoneHash          String?
+  passwordHash       String?
+  status             String   @default("active")
+  role               String   @default("user")
+  isVerified         Boolean  @default(false)
+  deviceFingerprint  String?
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+
+  @@index([status])
+}
+
+model Profile {
+  id                  String   @id @default(uuid())
+  userId              String   @unique
+  name                String
+  dob                 DateTime
+  gender              String
+  seeking             String[]
+  bio                 String?
+  heightCm            Int?
+  ethnicity           String?
+  religion            String?
+  relationshipIntent  String?
+  education           String?
+  occupation          String?
+  languages           String[]
+  interests           String[]
+  locationLat         Float?
+  locationLng         Float?
+  locationName        String?
+  isVerified          Boolean  @default(false)
+  isActive            Boolean  @default(true)
+  isPremium           Boolean  @default(false)
+  lastActiveAt        DateTime @default(now())
+  onboardingStep      Int      @default(0)
+  onboardingComplete  Boolean  @default(false)
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt
+  photos              Photo[]
+
+  @@index([isActive])
+}
+
+model Photo {
+  id               String   @id @default(uuid())
+  profileId        String
+  profile          Profile  @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  s3Key            String
+  order            Int      @default(0)
+  moderationStatus String   @default("pending")
+  createdAt        DateTime @default(now())
+
+  @@index([profileId])
+}
+
+model Match {
+  id        String   @id @default(uuid())
+  userAId   String
+  userBId   String
+  status    String   @default("active")
+  createdAt DateTime @default(now())
+
+  @@unique([userAId, userBId])
+  @@map("matches")
+}
+
+model Swipe {
+  id        String   @id @default(uuid())
+  actorId   String
+  targetId  String
+  action    String
+  createdAt DateTime @default(now())
+
+  @@unique([actorId, targetId])
+  @@map("swipes")
 }
 
 // Audit log for all admin actions

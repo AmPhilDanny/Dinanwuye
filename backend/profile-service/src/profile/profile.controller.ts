@@ -1,8 +1,7 @@
-import { Body, Controller, Delete, Get, HttpCode, HttpStatus, Param, Patch, Post, Req } from '@nestjs/common';
+import { Body, Controller, Delete, Get, HttpCode, HttpStatus, Param, Patch, Post, Req, UseGuards } from '@nestjs/common';
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { JwtAuthGuard, getUserFromRequest } from '@dinanwuye/shared';
 import type { JwtRequest } from '@dinanwuye/shared';
-import { UseGuards } from '@nestjs/common';
 import { ProfileService } from './profile.service';
 import { PhotosService } from './photos.service';
 import { PreferencesService } from './preferences.service';
@@ -14,6 +13,7 @@ import {
   ProfileResponseDto,
   UpdatePreferencesDto,
   UpdateProfileDto,
+  PublicProfileDto,
 } from './dto/profile.dto';
 
 @ApiTags('profiles')
@@ -50,12 +50,6 @@ export class ProfileController {
   getCandidates(@Req() request: JwtRequest): Promise<CandidateDto[]> {
     const { sub } = getUserFromRequest(request);
     return this.profiles.getCandidates(sub);
-  }
-
-  @Get(':id')
-  @ApiOperation({ summary: 'Public profile by id' })
-  getPublic(@Param('id') id: string): Promise<ProfileResponseDto> {
-    return this.profiles.getPublicProfile(id);
   }
 
   @Get('me/photos')
@@ -102,5 +96,13 @@ export class ProfileController {
   updatePreferences(@Req() request: JwtRequest, @Body() dto: UpdatePreferencesDto): Promise<PreferencesDto> {
     const { sub } = getUserFromRequest(request);
     return this.preferences.updatePreferences(sub, dto);
+  }
+
+  @Get(':id')
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Public profile by id' })
+  getPublic(@Param('id') id: string): Promise<PublicProfileDto> {
+    return this.profiles.getPublicProfile(id);
   }
 }

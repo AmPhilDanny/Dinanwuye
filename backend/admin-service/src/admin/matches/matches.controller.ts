@@ -1,11 +1,14 @@
 import 'reflect-metadata';
 import { Controller, Get, Put, Delete, Body, Param, Query, UseGuards } from '@nestjs/common';
 import { JwtAuthGuard } from '../../auth/jwt-auth.guard';
+import { PermissionGuard } from '../../auth/permission.guard';
+import { RequirePermission } from '../../auth/permissions';
 import { MatchesService } from './matches.service';
 import { UpdateMatchDto } from './dto/update-match.dto';
 
 @Controller('matches')
-@UseGuards(JwtAuthGuard)
+@UseGuards(JwtAuthGuard, PermissionGuard)
+@RequirePermission('matches:read')
 export class MatchesController {
   constructor(private readonly matchesService: MatchesService) {}
 
@@ -20,11 +23,13 @@ export class MatchesController {
   }
 
   @Put(':id')
+  @RequirePermission('matches:moderate')
   async update(@Param('id') id: string, @Body() updateMatchDto: UpdateMatchDto) {
     return this.matchesService.update(id, updateMatchDto);
   }
 
   @Delete(':id')
+  @RequirePermission('matches:moderate')
   async remove(@Param('id') id: string) {
     return this.matchesService.remove(id);
   }

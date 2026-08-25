@@ -3,6 +3,8 @@ Matching endpoints: deck, swipes, matches, unmatch.
 All routes require a Bearer JWT (see app/api/deps.py).
 """
 
+from datetime import datetime, time, timezone
+
 from fastapi import APIRouter, Depends, HTTPException, Query, status
 from fastapi.security import HTTPAuthorizationCredentials
 from sqlalchemy import or_, select
@@ -62,11 +64,13 @@ async def swipe(
         raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail="Already swiped on this profile")
 
     if swipe_data.action in (SwipeAction.like, SwipeAction.superlike):
+        start_of_day = datetime.combine(datetime.now(timezone.utc).date(), time.min, tzinfo=timezone.utc)
         likes_today = (
             await db.execute(
                 select(Swipe).where(
                     Swipe.actor_id == user_id,
                     Swipe.action.in_(["like", "superlike"]),
+                    Swipe.created_at >= start_of_day,
                 )
             )
         ).scalars().all()

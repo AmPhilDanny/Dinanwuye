@@ -19,6 +19,7 @@ class CandidateProfile(BaseModel):
     model_config = ConfigDict(from_attributes=True)
 
     id: str
+    userId: str
     age: int
     gender: str
     seeking: list[str] = []

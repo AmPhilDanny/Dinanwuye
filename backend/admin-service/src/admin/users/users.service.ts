@@ -33,20 +33,23 @@ export class UsersService {
     const user = await this.prisma.user.create({
       data: {
         email: createUserDto.email,
-        name: createUserDto.name,
         passwordHash: createUserDto.passwordHash,
         role: createUserDto.role || 'user',
-        isActive: true,
+        status: 'active',
       },
     });
     const { passwordHash, ...result } = user;
     return result;
   }
 
-  async update(id: string, updateUserDto: { email?: string; name?: string; role?: string; isActive?: boolean }) {
+  async update(id: string, updateUserDto: { email?: string; role?: string; isActive?: boolean }) {
     const user = await this.prisma.user.update({
       where: { id },
-      data: updateUserDto,
+      data: {
+        email: updateUserDto.email,
+        role: updateUserDto.role,
+        ...(updateUserDto.isActive === undefined ? {} : { status: updateUserDto.isActive ? 'active' : 'suspended' }),
+      },
     });
     const { passwordHash, ...result } = user;
     return result;

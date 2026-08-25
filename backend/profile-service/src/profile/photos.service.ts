@@ -1,4 +1,7 @@
 import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
+import { mkdir, writeFile } from 'node:fs/promises';
+import { join } from 'node:path';
+import { randomUUID } from 'node:crypto';
 import { PrismaService } from '../prisma/prisma.module';
 import { CreatePhotoDto, PhotoDto } from './dto/profile.dto';
 
@@ -19,10 +22,21 @@ export class PhotosService {
       throw new BadRequestException(`Maximum of ${MAX_PHOTOS} photos allowed`);
     }
 
+    const match = dto.dataUrl.match(/^data:image\/(jpeg|png|webp);base64,([A-Za-z0-9+/=]+)$/);
+    if (!match) {
+      throw new BadRequestException('Photo must be a jpeg, png, or webp data URL');
+    }
+
+    const extension = match[1] === 'jpeg' ? 'jpg' : match[1];
+    const key = `uploads/${randomUUID()}.${extension}`;
+    const filePath = join(process.cwd(), key);
+    await mkdir(join(process.cwd(), 'uploads'), { recursive: true });
+    await writeFile(filePath, Buffer.from(match[2], 'base64'));
+
     const photo = await this.prisma.photo.create({
       data: {
         profileId: profile.id,
-        s3Key: dto.s3Key,
+        s3Key: key,
         order: dto.order ?? count,
       },
     });

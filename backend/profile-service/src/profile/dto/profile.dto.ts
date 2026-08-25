@@ -139,11 +139,11 @@ export class UpdateProfileDto {
 }
 
 export class CreatePhotoDto {
-  @ApiProperty({ example: 'uploads/abc-123.jpg' })
+  @ApiProperty({ example: 'data:image/jpeg;base64,/9j/4AAQSkZJRg...' })
   @IsString()
   @MinLength(5)
-  @MaxLength(300)
-  s3Key!: string;
+  @MaxLength(12_000_000)
+  dataUrl!: string;
 
   @ApiProperty({ example: 0 })
   @IsOptional()
@@ -227,6 +227,9 @@ export class PreferencesDto {
 export class CandidateDto {
   @ApiProperty({ example: 'uuid' })
   id!: string;
+
+  @ApiProperty({ example: 'uuid', description: 'Auth service user ID used by matching and messaging' })
+  userId!: string;
 
   @ApiProperty({ example: 29 })
   age!: number;
@@ -327,6 +330,38 @@ export class ProfileResponseDto {
 
   @ApiProperty({ example: false })
   onboardingComplete!: boolean;
+
+  @ApiProperty({ type: [PhotoDto] })
+  photos!: PhotoDto[];
+}
+
+export class PublicProfileDto {
+  @ApiProperty({ example: 'uuid' })
+  id!: string;
+
+  @ApiProperty({ example: 'uuid' })
+  userId!: string;
+
+  @ApiProperty({ example: 'Chinelo' })
+  name!: string;
+
+  @ApiProperty({ example: 29 })
+  age!: number;
+
+  @ApiProperty({ example: 'female' })
+  gender!: string;
+
+  @ApiPropertyOptional()
+  bio?: string | null;
+
+  @ApiProperty({ type: [String] })
+  interests!: string[];
+
+  @ApiPropertyOptional()
+  locationName?: string | null;
+
+  @ApiProperty({ example: true })
+  isVerified!: boolean;
 
   @ApiProperty({ type: [PhotoDto] })
   photos!: PhotoDto[];

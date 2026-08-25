@@ -1,6 +1,7 @@
 services:
   - type: web
     name: dinanwuye-frontend
+    rootDir: frontend
     env: node
     plan: free
     buildCommand: pnpm install && pnpm run build
@@ -9,9 +10,9 @@ services:
       - key: NODE_ENV
         value: production
       - key: VITE_API_URL
-        value: "https://dinanwuye-back.onrender.com"
+        value: "https://dinanwuye-backend.onrender.com"
       - key: VITE_AUTH_URL
-        value: "https://dinanwuye-back.onrender.com/api/v1"
+        value: "https://dinanwuye-backend.onrender.com/api/v1"
       - key: VITE_PROFILE_URL
         value: "https://dinanwuye-profile.onrender.com/api/v1"
       - key: VITE_MESSAGING_URL
@@ -24,6 +25,7 @@ services:
         sync: false
   - type: web
     name: dinanwuye-backend
+    rootDir: backend
     env: node
     plan: free
     buildCommand: pnpm install --frozen-lockfile --prod=false && pnpm --filter @dinanwuye/auth-service exec prisma generate --schema prisma/schema.prisma && pnpm --filter @dinanwuye/auth-service... run build
@@ -44,6 +46,36 @@ services:
       - key: SUPABASE_ANON_KEY
         sync: false
       - key: CORS_ORIGIN
-        value: "https://dinanwuye.onrender.com"
+        value: "https://dinanwuye-frontend.onrender.com"
     healthCheckPath: "/api/v1/health"
     healthCheckTimeout: 5
+  - type: web
+    name: dinanwuye-admin-api
+    rootDir: backend
+    env: node
+    plan: free
+    buildCommand: pnpm install --frozen-lockfile --prod=false && pnpm --filter @dinanwuye/admin-service exec prisma generate --schema prisma/schema.prisma && pnpm --filter @dinanwuye/admin-service run build
+    startCommand: node admin-service/dist/main.js
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: DATABASE_URL
+        sync: false
+      - key: JWT_SECRET
+        sync: false
+      - key: CORS_ORIGIN
+        value: "https://dinanwuye-admin.onrender.com"
+    healthCheckPath: "/api/v1/admin/docs"
+    healthCheckTimeout: 5
+  - type: web
+    name: dinanwuye-admin
+    rootDir: admin-frontend
+    env: node
+    plan: free
+    buildCommand: pnpm install --frozen-lockfile && pnpm run build
+    startCommand: npx serve -s dist -l $PORT
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: VITE_ADMIN_API_URL
+        value: "https://dinanwuye-admin-api.onrender.com/api/v1/admin"

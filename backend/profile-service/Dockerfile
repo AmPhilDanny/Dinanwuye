@@ -6,12 +6,14 @@ FROM base AS deps
 RUN apk add --no-cache libc6-compat
 WORKDIR /app
 
-COPY package.json pnpm-lock.yaml* ./
+COPY package.json pnpm-lock.yaml pnpm-workspace.yaml turbo.json ./
+COPY profile-service/package.json profile-service/package.json
+COPY shared/package.json shared/package.json
 RUN corepack enable pnpm && pnpm install --frozen-lockfile
 
 # Generate Prisma Client
-COPY prisma ./prisma/
-RUN npx prisma generate
+COPY profile-service/prisma ./profile-service/prisma/
+RUN pnpm --filter @dinanwuye/profile-service exec prisma generate --schema prisma/schema.prisma
 
 # Build the application
 FROM base AS builder
@@ -32,7 +34,7 @@ RUN adduser --system --uid 1001 nestjs
 COPY --from=builder /app/dist ./dist
 COPY --from=builder /app/node_modules ./node_modules
 COPY --from=builder /app/package.json ./package.json
-COPY --from=builder /app/prisma ./prisma
+COPY --from=builder /app/profile-service/prisma ./prisma
 
 USER nestjs
 

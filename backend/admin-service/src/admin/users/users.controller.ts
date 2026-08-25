@@ -1,12 +1,15 @@
 import 'reflect-metadata';
 import { Controller, Get, Post, Put, Delete, Body, Param, Query, UseGuards, Req } from '@nestjs/common';
 import { JwtAuthGuard } from '../../auth/jwt-auth.guard';
+import { PermissionGuard } from '../../auth/permission.guard';
+import { RequirePermission } from '../../auth/permissions';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 
 @Controller('users')
-@UseGuards(JwtAuthGuard)
+@UseGuards(JwtAuthGuard, PermissionGuard)
+@RequirePermission('users:read')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
@@ -21,16 +24,19 @@ export class UsersController {
   }
 
   @Post()
+  @RequirePermission('users:manage')
   async create(@Body() createUserDto: CreateUserDto, @Req() req: any) {
     return this.usersService.create(createUserDto);
   }
 
   @Put(':id')
+  @RequirePermission('users:manage')
   async update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto, @Req() req: any) {
     return this.usersService.update(id, updateUserDto);
   }
 
   @Delete(':id')
+  @RequirePermission('users:manage')
   async remove(@Param('id') id: string, @Req() req: any) {
     return this.usersService.remove(id);
   }

@@ -1,6 +1,6 @@
 import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.module';
-import { UpdateProfileDto, ProfileResponseDto, CandidateDto } from './dto/profile.dto';
+import { UpdateProfileDto, ProfileResponseDto, CandidateDto, PublicProfileDto } from './dto/profile.dto';
 
 function computeAge(dob: Date): number {
   const now = new Date();
@@ -75,15 +75,31 @@ export class ProfileService {
   }
 
   /** Public profile by id (any authenticated or unauthenticated caller). */
-  async getPublicProfile(profileId: string): Promise<ProfileResponseDto> {
-    const profile = await this.prisma.profile.findUnique({
-      where: { id: profileId },
+  async getPublicProfile(profileId: string): Promise<PublicProfileDto> {
+    const profile = await this.prisma.profile.findFirst({
+      where: { OR: [{ id: profileId }, { userId: profileId }] },
       include: { photos: { orderBy: { order: 'asc' } } },
     });
     if (!profile) {
       throw new NotFoundException('Profile not found');
     }
-    return toProfileResponse(profile);
+    return {
+      id: profile.id,
+      userId: profile.userId,
+      name: profile.name,
+      age: computeAge(profile.dob),
+      gender: profile.gender,
+      bio: profile.bio,
+      interests: profile.interests,
+      locationName: profile.locationName,
+      isVerified: profile.isVerified,
+      photos: profile.photos.map((photo) => ({
+        id: photo.id,
+        s3Key: photo.s3Key,
+        order: photo.order,
+        moderationStatus: photo.moderationStatus,
+      })),
+    };
   }
 
   /** Candidate list for the matching service (basic filters only; matching ranks). */
@@ -112,6 +128,7 @@ export class ProfileService {
       })
       .map((c) => ({
         id: c.id,
+        userId: c.userId,
         age: computeAge(c.dob),
         gender: c.gender,
         seeking: c.seeking,

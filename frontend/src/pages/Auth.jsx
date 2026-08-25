@@ -119,12 +119,13 @@ const Auth = () => {
     setLoading(true);
     try {
       const { data } = await authApi.signup(payload);
-      tokenStorage.set(data.accessToken, data.refreshToken);
-      setAuthUser(data);
-      await authApi.sendOtp(trimmed, 'signup');
-      setMode('otp');
-      sonnerToast.success('Verification code sent');
-      startCountdown(30);
+      if (payload.phone) {
+        setMode('otp');
+        sonnerToast.success('Verification code sent');
+        startCountdown(30);
+      } else {
+        finishAuth(data);
+      }
     } catch (err) {
       sonnerToast.error(extractError(err));
     } finally {

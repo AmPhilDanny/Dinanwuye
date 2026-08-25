@@ -136,7 +136,7 @@ export const profileApi = {
   getCandidates: () => profileClient.get('/profiles/candidates'),
   getPublic: (id) => profileClient.get(`/profiles/${id}`),
   getPhotos: () => profileClient.get('/profiles/me/photos'),
-  addPhoto: (s3Key, order = 0) => profileClient.post('/profiles/me/photos', { s3Key, order }),
+  addPhoto: (dataUrl, order = 0) => profileClient.post('/profiles/me/photos', { dataUrl, order }),
   removePhoto: (photoId) => profileClient.delete(`/profiles/me/photos/${photoId}`),
   getPreferences: () => profileClient.get('/profiles/me/preferences'),
   updatePreferences: (data) => profileClient.patch('/profiles/me/preferences', data),
