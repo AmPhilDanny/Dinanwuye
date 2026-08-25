@@ -11,10 +11,21 @@ const nav = [
   ['Audit log', 'audit'],
 ];
 
+const DEMO_CREDENTIALS = {
+  email: 'demo@dinanwuye.com',
+  password: 'demo123456',
+};
+
 function Login({ onLogin }) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+
+  const fillDemo = () => {
+    setEmail(DEMO_CREDENTIALS.email);
+    setPassword(DEMO_CREDENTIALS.password);
+  };
+
   const submit = async (event) => {
     event.preventDefault();
     setError('');
@@ -28,7 +39,48 @@ function Login({ onLogin }) {
       onLogin(data.accessToken || data.token);
     } catch (exception) { setError(exception.message); }
   };
-  return <main className="login-page"><div className="login-panel"><p className="eyebrow">DINANWUYE / CONTROL ROOM</p><h1>Keep the community in good hands.</h1><p className="muted">Sign in to review members, safety signals, and the daily health of the platform.</p><form onSubmit={submit}><label>Email<input type="email" required value={email} onChange={(event) => setEmail(event.target.value)} /></label><label>Password<input type="password" required value={password} onChange={(event) => setPassword(event.target.value)} /></label>{error && <p className="error">{error}</p>}<button className="primary" type="submit">Sign in</button></form></div></main>;
+
+  return (
+    <main className="login-page">
+      <div className="login-panel">
+        <p className="eyebrow">DINANWUYE / CONTROL ROOM</p>
+        <h1>Keep the community in good hands.</h1>
+        <p className="muted">Sign in to review members, safety signals, and the daily health of the platform.</p>
+        <form onSubmit={submit}>
+          <label>
+            Email
+            <input
+              type="email"
+              required
+              value={email}
+              onChange={(event) => setEmail(event.target.value)}
+            />
+          </label>
+          <label>
+            Password
+            <input
+              type="password"
+              required
+              value={password}
+              onChange={(event) => setPassword(event.target.value)}
+            />
+          </label>
+          {error && <p className="error">{error}</p>}
+          <button className="primary" type="submit">Sign in</button>
+        </form>
+        <div className="demo-credentials">
+          <p className="demo-label">Quick access (demo):</p>
+          <button type="button" className="demo-fill" onClick={fillDemo}>
+            Fill demo credentials
+          </button>
+          <p className="demo-hint">
+            <strong>Email:</strong> {DEMO_CREDENTIALS.email}<br />
+            <strong>Password:</strong> {DEMO_CREDENTIALS.password}
+          </p>
+        </div>
+      </div>
+    </main>
+  );
 }
 
 function App() {

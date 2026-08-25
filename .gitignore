@@ -11,7 +11,9 @@ p-lockfile.yaml
 generated/
 
 # Environment variables
-.env*
+.env
+.env.local
+.env.*.local
 !.env.example
 
 # Production build
@@ -50,7 +52,6 @@ deployment/
 *.jfif
 
 # Sensitive data
-*.env*
 docs/
 
 # Document root
@@ -58,7 +59,4 @@ docs/
 
 # .git folder
 .git/
-
-# Sensitive data
-*.env*
 ```
