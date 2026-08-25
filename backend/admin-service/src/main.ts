@@ -18,9 +18,13 @@ async function bootstrap() {
     }),
   );
 
-  // CORS
+  // CORS - support multiple origins (comma-separated)
+  const corsOrigins = (process.env.CORS_ORIGIN || 'https://dinanwuye-frontend.onrender.com,https://dinanwuye-admin.onrender.com')
+    .split(',')
+    .map((o) => o.trim())
+    .filter(Boolean);
   app.enableCors({
-    origin: process.env.CORS_ORIGIN || 'https://dinanwuye-frontend.onrender.com',
+    origin: corsOrigins,
     credentials: true,
   });
 
