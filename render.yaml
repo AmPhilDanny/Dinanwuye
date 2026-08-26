@@ -64,7 +64,7 @@ services:
       - key: JWT_SECRET
         sync: false
       - key: CORS_ORIGIN
-        value: "https://dinanwuye-frontend.onrender.com,https://dinanwuye-admin.onrender.com"
+        value: "https://dinanwuye.onrender.com,https://dinanwuye-admin.onrender.com"
     healthCheckPath: "/api/v1/admin/docs"
     healthCheckTimeout: 5
   - type: web

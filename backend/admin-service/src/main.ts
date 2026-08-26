@@ -19,7 +19,7 @@ async function bootstrap() {
   );
 
   // CORS - support multiple origins (comma-separated)
-  const corsOrigins = (process.env.CORS_ORIGIN || 'https://dinanwuye-frontend.onrender.com,https://dinanwuye-admin.onrender.com')
+  const corsOrigins = (process.env.CORS_ORIGIN || 'https://dinanwuye.onrender.com,https://dinanwuye-admin.onrender.com')
     .split(',')
     .map((o) => o.trim())
     .filter(Boolean);
