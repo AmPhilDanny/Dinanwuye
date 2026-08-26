@@ -19,6 +19,7 @@ generated/
 # Production build
 .next/
 /out
+**/dist/
 
 # Prisma generated client
 backend/**/generated/
