@@ -156,7 +156,7 @@ export class PhotoDto {
   @ApiProperty({ example: 'uuid' })
   id!: string;
 
-  @ApiProperty({ example: 'uploads/abc-123.jpg' })
+  @ApiProperty({ example: 'data:image/jpeg;base64,/9j/4AAQSkZJRg...' })
   s3Key!: string;
 
   @ApiProperty({ example: 0 })

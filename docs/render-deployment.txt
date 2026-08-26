@@ -61,14 +61,14 @@ production. Values marked secret must never be committed.
 ```text
 NODE_ENV=production
 DATABASE_URL=<PostgreSQL connection string>
-JWT_SECRET=<shared signing secret>
-JWT_REFRESH_SECRET=<refresh-token secret>
+JWT_SECRET=a2a62831ae8b3651feac2d74801673cbd06feeec9bb583c333d5e44442e15b54
+JWT_REFRESH_SECRET=34e56b9749b411a2691311881b911c023b920de168e420f04ea155b073ba7200
 JWT_EXPIRES_IN=15m
 JWT_REFRESH_EXPIRES_IN=7d
-OTP_SECRET=<OTP secret>
+OTP_SECRET=fad482221b139ba86efa118dbea3321d
 SUPABASE_URL=https://ysvqvrskwyyjbeepbyuc.supabase.co
-SUPABASE_SERVICE_KEY=<Supabase server/service-role key>
-SUPABASE_ANON_KEY=<Supabase publishable/anon key>
+SUPABASE_SERVICE_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InlzdnF2cnNrd3l5amJlZXBieXVjIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc4NzM4NDU2NiwiZXhwIjoyMTAyOTYwNTY2fQ.zoIHnHM5KHp49TW5Mctue-95s1IUfyC3GE_W2w24EhU
+SUPABASE_ANON_KEY=sb_publishable_DBbHW-Oy1p1kb2v_EKGYKQ_h6xwgCGY
 CORS_ORIGIN=https://dinanwuye.onrender.com,https://dinanwuye-admin.onrender.com
 ```
 
@@ -129,7 +129,7 @@ VITE_PROFILE_URL=https://dinanwuye-profile.onrender.com/api/v1
 VITE_MESSAGING_URL=https://dinanwuye-messaging.onrender.com/api/v1
 VITE_MATCHING_URL=https://dinanwuye-matching.onrender.com/api/v1
 VITE_SUPABASE_URL=https://ysvqvrskwyyjbeepbyuc.supabase.co
-VITE_SUPABASE_ANON_KEY=<Supabase publishable/anon key>
+VITE_SUPABASE_ANON_KEY=sb_publishable_DBbHW-Oy1p1kb2v_EKGYKQ_h6xwgCGY
 ```
 
 ### Admin static site (`dinanwuye-admin`)
@@ -224,15 +224,6 @@ isolated and cannot share one installed Node runtime or `node_modules` folder.
 ## Official references
 
 - Render Blueprints: https://render.com/docs/blueprint-spec
-- Render web services: https://render.com/docs/web-services
-- Render static sites: https://render.com/docs/static-sites
-- Render environment variables: https://render.com/docs/configure-environment-variables
-- Render PostgreSQL: https://render.com/docs/postgresql
-- Supabase database connection: https://supabase.com/docs/guides/database/connecting-to-postgres
-- Supabase API keys: https://supabase.com/docs/guides/api/api-keys
-- Prisma deployment: https://www.prisma.io/docs/orm/prisma-client/deployment
-- pnpm CLI: https://pnpm.io/cli/install
-
 
 ## 📋 SERVICE INVENTORY (from Render CLI)
 

@@ -62,7 +62,7 @@ const ProfileWizard = () => {
   const [location, setLocation] = useState(null); // { lat, lng, name }
   const [locating, setLocating] = useState(false);
 
-  // Step 2 — Photos (V0: base64 data URL stored as s3Key; S3 swap in Phase 2)
+  // Step 2 — Photos (V0: data URL stored in the database; object storage later)
   const [photos, setPhotos] = useState([]); // [{ dataUrl, order }]
 
   // Step 3 — About You
@@ -160,7 +160,7 @@ const ProfileWizard = () => {
 
   const uploadPhotos = async () => {
     for (const photo of photos) {
-      // V0: store data URL as s3Key (media serving arrives with S3 in Phase 2)
+      // V0: store the data URL in the profile database.
       await profileApi.addPhoto(photo.dataUrl, photo.order);
     }
   };
