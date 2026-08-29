@@ -10,8 +10,8 @@ export declare class ProfilesController {
         total: number;
     }>;
     findOne(id: string): Promise<{
-        name: string;
         id: string;
+        name: string;
         isActive: boolean;
         createdAt: Date;
         updatedAt: Date;
@@ -38,8 +38,8 @@ export declare class ProfilesController {
         onboardingComplete: boolean;
     }>;
     create(createProfileDto: CreateProfileDto): Promise<{
-        name: string;
         id: string;
+        name: string;
         isActive: boolean;
         createdAt: Date;
         updatedAt: Date;
@@ -66,8 +66,8 @@ export declare class ProfilesController {
         onboardingComplete: boolean;
     }>;
     update(id: string, updateProfileDto: UpdateProfileDto): Promise<{
-        name: string;
         id: string;
+        name: string;
         isActive: boolean;
         createdAt: Date;
         updatedAt: Date;

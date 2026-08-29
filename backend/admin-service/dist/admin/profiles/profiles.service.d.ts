@@ -9,8 +9,8 @@ export declare class ProfilesService {
         total: number;
     }>;
     findOne(id: string): Promise<{
-        name: string;
         id: string;
+        name: string;
         isActive: boolean;
         createdAt: Date;
         updatedAt: Date;
@@ -55,8 +55,8 @@ export declare class ProfilesService {
         locationLng?: number;
         locationName?: string;
     }): Promise<{
-        name: string;
         id: string;
+        name: string;
         isActive: boolean;
         createdAt: Date;
         updatedAt: Date;
@@ -106,8 +106,8 @@ export declare class ProfilesService {
         onboardingStep?: number;
         onboardingComplete?: boolean;
     }): Promise<{
-        name: string;
         id: string;
+        name: string;
         isActive: boolean;
         createdAt: Date;
         updatedAt: Date;

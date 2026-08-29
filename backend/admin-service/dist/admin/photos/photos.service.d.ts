@@ -5,8 +5,8 @@ export declare class PhotosService {
     constructor(prisma: PrismaService);
     findAll(): Promise<({
         profile: {
-            name: string;
             id: string;
+            name: string;
             userId: string;
         };
     } & {
@@ -19,8 +19,8 @@ export declare class PhotosService {
     })[]>;
     findOne(id: string): Promise<{
         profile: {
-            name: string;
             id: string;
+            name: string;
             userId: string;
         };
     } & {

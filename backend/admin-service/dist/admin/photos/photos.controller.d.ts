@@ -7,8 +7,8 @@ export declare class PhotosController {
     constructor(photosService: PhotosService);
     findAll(): Promise<({
         profile: {
-            name: string;
             id: string;
+            name: string;
             userId: string;
         };
     } & {
@@ -21,8 +21,8 @@ export declare class PhotosController {
     })[]>;
     findOne(id: string): Promise<{
         profile: {
-            name: string;
             id: string;
+            name: string;
             userId: string;
         };
     } & {
