@@ -7,16 +7,18 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.JwtAuthGuard = void 0;
+require("reflect-metadata");
 const common_1 = require("@nestjs/common");
 const passport_1 = require("@nestjs/passport");
-let JwtAuthGuard = class JwtAuthGuard extends (0, passport_1.PassportStrategy)('jwt') {
-    validate(request) {
-        const userId = request['user']['sub'];
-        const userRole = request['user']['role'];
-        if (!userId || !userRole) {
-            throw new common_1.UnauthorizedException('Invalid admin credentials');
+let JwtAuthGuard = class JwtAuthGuard extends (0, passport_1.AuthGuard)('jwt') {
+    canActivate(context) {
+        return super.canActivate(context);
+    }
+    handleRequest(err, user, info, context) {
+        if (err || !user) {
+            throw err || new common_1.UnauthorizedException('Invalid or expired token');
         }
-        return userId;
+        return user;
     }
 };
 exports.JwtAuthGuard = JwtAuthGuard;

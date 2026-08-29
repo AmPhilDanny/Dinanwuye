@@ -6,14 +6,18 @@ export declare class AdminsController {
     private readonly adminsService;
     constructor(adminsService: AdminsService);
     findAll(page?: number, limit?: number): Promise<{
-        admins: any;
+        admins: import("../../common/types").AdminUser;
         total: any;
     }>;
-    findOne(id: string): Promise<any>;
-    create(createAdminDto: CreateAdminDto): Promise<any>;
-    update(id: string, updateAdminDto: UpdateAdminDto): Promise<any>;
+    findOne(id: string): Promise<import("../../common/types").AdminUser>;
+    create(createAdminDto: CreateAdminDto): Promise<{
+        inserted: boolean;
+    }>;
+    update(id: string, updateAdminDto: UpdateAdminDto): Promise<{
+        updated: boolean;
+    }>;
     remove(id: string): Promise<{
-        message: string;
+        deleted: boolean;
     }>;
 }
 //# sourceMappingURL=admins.controller.d.ts.map

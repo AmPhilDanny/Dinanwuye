@@ -2,9 +2,9 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.UpdateAdminDto = exports.CreateAdminDto = void 0;
 class CreateAdminDto {
-    email;
-    name;
-    passwordHash;
+    email = '';
+    name = '';
+    passwordHash = '';
     role;
     permissions;
 }

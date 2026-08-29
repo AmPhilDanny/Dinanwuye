@@ -1,29 +1,61 @@
 import 'reflect-metadata';
-import { PrismaService } from '../prisma/prisma.service';
+import { PrismaService } from '../../prisma/prisma.service';
+import { User } from '../../common/types';
 export declare class UsersService {
     private readonly prisma;
     constructor(prisma: PrismaService);
     findAll(page?: number, limit?: number): Promise<{
-        users: any;
-        total: any;
+        users: User;
+        total: number;
     }>;
-    findOne(id: string): Promise<any>;
+    findOne(id: string): Promise<{
+        id: string;
+        email: string | null;
+        passwordHash: string | null;
+        role: string;
+        createdAt: Date;
+        updatedAt: Date;
+        phone: string | null;
+        emailHash: string | null;
+        phoneHash: string | null;
+        status: string;
+        isVerified: boolean;
+        deviceFingerprint: string | null;
+    }>;
     create(createUserDto: {
         email: string;
         name: string;
         passwordHash: string;
         role?: string;
-    }): Promise<any>;
+    }): Promise<{
+        id: string;
+        email: string | null;
+        role: string;
+        createdAt: Date;
+        updatedAt: Date;
+        phone: string | null;
+        emailHash: string | null;
+        phoneHash: string | null;
+        status: string;
+        isVerified: boolean;
+        deviceFingerprint: string | null;
+    }>;
     update(id: string, updateUserDto: {
         email?: string;
-        name?: string;
         role?: string;
         isActive?: boolean;
     }): Promise<{
-        email?: string;
-        name?: string;
-        role?: string;
-        isActive?: boolean;
+        id: string;
+        email: string | null;
+        role: string;
+        createdAt: Date;
+        updatedAt: Date;
+        phone: string | null;
+        emailHash: string | null;
+        phoneHash: string | null;
+        status: string;
+        isVerified: boolean;
+        deviceFingerprint: string | null;
     }>;
     remove(id: string): Promise<{
         message: string;

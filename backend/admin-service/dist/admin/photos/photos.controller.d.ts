@@ -5,10 +5,50 @@ import { UpdatePhotoDto } from './dto/update-photo.dto';
 export declare class PhotosController {
     private readonly photosService;
     constructor(photosService: PhotosService);
-    findAll(): Promise<any>;
-    findOne(id: string): Promise<any>;
-    create(createPhotoDto: CreatePhotoDto): Promise<any>;
-    update(id: string, updatePhotoDto: UpdatePhotoDto): Promise<any>;
+    findAll(): Promise<({
+        profile: {
+            name: string;
+            id: string;
+            userId: string;
+        };
+    } & {
+        id: string;
+        createdAt: Date;
+        profileId: string;
+        s3Key: string;
+        order: number;
+        moderationStatus: string;
+    })[]>;
+    findOne(id: string): Promise<{
+        profile: {
+            name: string;
+            id: string;
+            userId: string;
+        };
+    } & {
+        id: string;
+        createdAt: Date;
+        profileId: string;
+        s3Key: string;
+        order: number;
+        moderationStatus: string;
+    }>;
+    create(createPhotoDto: CreatePhotoDto): Promise<{
+        id: string;
+        createdAt: Date;
+        profileId: string;
+        s3Key: string;
+        order: number;
+        moderationStatus: string;
+    }>;
+    update(id: string, updatePhotoDto: UpdatePhotoDto): Promise<{
+        id: string;
+        createdAt: Date;
+        profileId: string;
+        s3Key: string;
+        order: number;
+        moderationStatus: string;
+    }>;
     remove(id: string): Promise<{
         message: string;
     }>;

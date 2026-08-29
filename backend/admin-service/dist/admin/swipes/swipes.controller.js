@@ -15,7 +15,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.SwipesController = void 0;
 require("reflect-metadata");
 const common_1 = require("@nestjs/common");
-const jwt_auth_guard_1 = require("../jwt-auth.guard");
+const jwt_auth_guard_1 = require("../../auth/jwt-auth.guard");
 const swipes_service_1 = require("./swipes.service");
 let SwipesController = class SwipesController {
     swipesService;

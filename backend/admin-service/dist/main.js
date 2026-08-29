@@ -15,10 +15,16 @@ async function bootstrap() {
             enableImplicitConversion: true,
         },
     }));
-    // CORS
+    // CORS - support multiple origins (comma-separated)
+    const corsOrigins = (process.env.CORS_ORIGIN || 'https://dinanwuye.onrender.com,https://dinanwuye-admin.onrender.com')
+        .split(',')
+        .map((o) => o.trim())
+        .filter(Boolean);
     app.enableCors({
-        origin: process.env.CORS_ORIGIN || 'https://dinanwuye-frontend.onrender.com',
+        origin: corsOrigins,
         credentials: true,
+        methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+        allowedHeaders: ['Content-Type', 'Authorization', 'Accept'],
     });
     // Global prefix
     app.setGlobalPrefix('api/v1/admin');

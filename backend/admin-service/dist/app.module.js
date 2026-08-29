@@ -12,14 +12,6 @@ const config_1 = require("@nestjs/config");
 const throttler_1 = require("@nestjs/throttler");
 const prisma_module_1 = require("./prisma/prisma.module");
 const admin_module_1 = require("./admin/admin.module");
-const auth_module_1 = require("./admin/auth/auth.module");
-const users_module_1 = require("./admin/users/users.module");
-const profiles_module_1 = require("./admin/profiles/profiles.module");
-const photos_module_1 = require("./admin/photos/photos.module");
-const matches_module_1 = require("./admin/matches/matches.module");
-const swipes_module_1 = require("./admin/swipes/swipes.module");
-const audit_module_1 = require("./admin/audit/audit.module");
-const admins_module_1 = require("./admin/admins/admins.module");
 let AppModule = class AppModule {
 };
 exports.AppModule = AppModule;
@@ -38,14 +30,6 @@ exports.AppModule = AppModule = __decorate([
             ]),
             prisma_module_1.PrismaModule,
             admin_module_1.AdminModule,
-            auth_module_1.AuthModule,
-            users_module_1.UsersModule,
-            profiles_module_1.ProfilesModule,
-            photos_module_1.PhotosModule,
-            matches_module_1.MatchesModule,
-            swipes_module_1.SwipesModule,
-            audit_module_1.AuditModule,
-            admins_module_1.AdminsModule,
         ],
     })
 ], AppModule);

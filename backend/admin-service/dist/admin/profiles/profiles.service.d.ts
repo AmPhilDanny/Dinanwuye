@@ -1,13 +1,41 @@
 import 'reflect-metadata';
-import { PrismaService } from '../prisma/prisma.service';
+import { PrismaService } from '../../prisma/prisma.service';
+import { Profile } from '../../common/types';
 export declare class ProfilesService {
     private readonly prisma;
     constructor(prisma: PrismaService);
     findAll(page?: number, limit?: number): Promise<{
-        profiles: any;
-        total: any;
+        profiles: Profile;
+        total: number;
     }>;
-    findOne(id: string): Promise<any>;
+    findOne(id: string): Promise<{
+        name: string;
+        id: string;
+        isActive: boolean;
+        createdAt: Date;
+        updatedAt: Date;
+        isVerified: boolean;
+        userId: string;
+        dob: Date;
+        gender: string;
+        seeking: string[];
+        bio: string | null;
+        heightCm: number | null;
+        ethnicity: string | null;
+        religion: string | null;
+        relationshipIntent: string | null;
+        education: string | null;
+        occupation: string | null;
+        languages: string[];
+        interests: string[];
+        locationLat: number | null;
+        locationLng: number | null;
+        locationName: string | null;
+        isPremium: boolean;
+        lastActiveAt: Date;
+        onboardingStep: number;
+        onboardingComplete: boolean;
+    }>;
     create(createProfileDto: {
         userId: string;
         name: string;
@@ -26,7 +54,34 @@ export declare class ProfilesService {
         locationLat?: number;
         locationLng?: number;
         locationName?: string;
-    }): Promise<any>;
+    }): Promise<{
+        name: string;
+        id: string;
+        isActive: boolean;
+        createdAt: Date;
+        updatedAt: Date;
+        isVerified: boolean;
+        userId: string;
+        dob: Date;
+        gender: string;
+        seeking: string[];
+        bio: string | null;
+        heightCm: number | null;
+        ethnicity: string | null;
+        religion: string | null;
+        relationshipIntent: string | null;
+        education: string | null;
+        occupation: string | null;
+        languages: string[];
+        interests: string[];
+        locationLat: number | null;
+        locationLng: number | null;
+        locationName: string | null;
+        isPremium: boolean;
+        lastActiveAt: Date;
+        onboardingStep: number;
+        onboardingComplete: boolean;
+    }>;
     update(id: string, updateProfileDto: {
         name?: string;
         dob?: string;
@@ -50,7 +105,34 @@ export declare class ProfilesService {
         lastActiveAt?: string;
         onboardingStep?: number;
         onboardingComplete?: boolean;
-    }): Promise<any>;
+    }): Promise<{
+        name: string;
+        id: string;
+        isActive: boolean;
+        createdAt: Date;
+        updatedAt: Date;
+        isVerified: boolean;
+        userId: string;
+        dob: Date;
+        gender: string;
+        seeking: string[];
+        bio: string | null;
+        heightCm: number | null;
+        ethnicity: string | null;
+        religion: string | null;
+        relationshipIntent: string | null;
+        education: string | null;
+        occupation: string | null;
+        languages: string[];
+        interests: string[];
+        locationLat: number | null;
+        locationLng: number | null;
+        locationName: string | null;
+        isPremium: boolean;
+        lastActiveAt: Date;
+        onboardingStep: number;
+        onboardingComplete: boolean;
+    }>;
     remove(id: string): Promise<{
         message: string;
     }>;

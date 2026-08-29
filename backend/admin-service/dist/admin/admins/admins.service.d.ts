@@ -1,29 +1,34 @@
 import 'reflect-metadata';
-import { PrismaService } from '../prisma/prisma.service';
+import { PrismaService } from '../../prisma/prisma.service';
+import { AdminUser } from '../../common/types';
 export declare class AdminsService {
     private readonly prisma;
     constructor(prisma: PrismaService);
     findAll(page?: number, limit?: number): Promise<{
-        admins: any;
+        admins: AdminUser;
         total: any;
     }>;
-    findOne(id: string): Promise<any>;
+    findOne(id: string): Promise<AdminUser>;
     create(createAdminDto: {
         email: string;
         name: string;
         passwordHash: string;
         role?: string;
         permissions?: string[];
-    }): Promise<any>;
+    }): Promise<{
+        inserted: boolean;
+    }>;
     update(id: string, updateAdminDto: {
         email?: string;
         name?: string;
         role?: string;
         isActive?: boolean;
         permissions?: string[];
-    }): Promise<any>;
+    }): Promise<{
+        updated: boolean;
+    }>;
     remove(id: string): Promise<{
-        message: string;
+        deleted: boolean;
     }>;
 }
 //# sourceMappingURL=admins.service.d.ts.map

@@ -8,12 +8,11 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
-var _a;
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.UsersService = void 0;
 require("reflect-metadata");
 const common_1 = require("@nestjs/common");
-const prisma_service_1 = require("../prisma/prisma.service");
+const prisma_service_1 = require("../../prisma/prisma.service");
 let UsersService = class UsersService {
     prisma;
     constructor(prisma) {
@@ -23,15 +22,15 @@ let UsersService = class UsersService {
         const skip = (page - 1) * limit;
         const [users, total] = await this.prisma.$queryRaw `
       SELECT id, email, phone, status, role, isVerified, createdAt, updatedAt
-      FROM "AdminUser"
+      FROM "User"
       ORDER BY createdAt DESC
       OFFSET ${skip} LIMIT ${limit}
     `;
-        const totalCount = await this.prisma.adminUser.count();
+        const totalCount = await this.prisma.user.count();
         return { users, total: totalCount };
     }
     async findOne(id) {
-        const user = await this.prisma.adminUser.findUnique({
+        const user = await this.prisma.user.findUnique({
             where: { id },
         });
         if (!user) {
@@ -40,28 +39,31 @@ let UsersService = class UsersService {
         return user;
     }
     async create(createUserDto) {
-        const user = await this.prisma.adminUser.create({
+        const user = await this.prisma.user.create({
             data: {
                 email: createUserDto.email,
-                name: createUserDto.name,
                 passwordHash: createUserDto.passwordHash,
-                role: createUserDto.role || 'admin',
-                isActive: true,
+                role: createUserDto.role || 'user',
+                status: 'active',
             },
         });
         const { passwordHash, ...result } = user;
         return result;
     }
     async update(id, updateUserDto) {
-        const user = await this.prisma.adminUser.update({
+        const user = await this.prisma.user.update({
             where: { id },
-            data: updateUserDto,
+            data: {
+                email: updateUserDto.email,
+                role: updateUserDto.role,
+                ...(updateUserDto.isActive === undefined ? {} : { status: updateUserDto.isActive ? 'active' : 'suspended' }),
+            },
         });
-        const { passwordHash, ...result } = updateUserDto;
+        const { passwordHash, ...result } = user;
         return result;
     }
     async remove(id) {
-        await this.prisma.adminUser.delete({
+        await this.prisma.user.delete({
             where: { id },
         });
         return { message: `User ${id} deleted successfully` };
@@ -70,6 +72,6 @@ let UsersService = class UsersService {
 exports.UsersService = UsersService;
 exports.UsersService = UsersService = __decorate([
     (0, common_1.Injectable)(),
-    __metadata("design:paramtypes", [typeof (_a = typeof prisma_service_1.PrismaService !== "undefined" && prisma_service_1.PrismaService) === "function" ? _a : Object])
+    __metadata("design:paramtypes", [prisma_service_1.PrismaService])
 ], UsersService);
 //# sourceMappingURL=users.service.js.map

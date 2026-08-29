@@ -11,12 +11,13 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 var __param = (this && this.__param) || function (paramIndex, decorator) {
     return function (target, key) { decorator(target, key, paramIndex); }
 };
-var _a;
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ProfilesController = void 0;
 require("reflect-metadata");
 const common_1 = require("@nestjs/common");
-const jwt_auth_guard_1 = require("../jwt-auth.guard");
+const jwt_auth_guard_1 = require("../../auth/jwt-auth.guard");
+const permission_guard_1 = require("../../auth/permission.guard");
+const permissions_1 = require("../../auth/permissions");
 const profiles_service_1 = require("./profiles.service");
 const create_profile_dto_1 = require("./dto/create-profile.dto");
 const update_profile_dto_1 = require("./dto/update-profile.dto");
@@ -69,7 +70,7 @@ __decorate([
     __param(0, (0, common_1.Param)('id')),
     __param(1, (0, common_1.Body)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String, typeof (_a = typeof update_profile_dto_1.UpdateProfileDto !== "undefined" && update_profile_dto_1.UpdateProfileDto) === "function" ? _a : Object]),
+    __metadata("design:paramtypes", [String, update_profile_dto_1.UpdateProfileDto]),
     __metadata("design:returntype", Promise)
 ], ProfilesController.prototype, "update", null);
 __decorate([
@@ -81,7 +82,8 @@ __decorate([
 ], ProfilesController.prototype, "remove", null);
 exports.ProfilesController = ProfilesController = __decorate([
     (0, common_1.Controller)('profiles'),
-    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard, permission_guard_1.PermissionGuard),
+    (0, permissions_1.RequirePermission)('profiles:read'),
     __metadata("design:paramtypes", [profiles_service_1.ProfilesService])
 ], ProfilesController);
 //# sourceMappingURL=profiles.controller.js.map

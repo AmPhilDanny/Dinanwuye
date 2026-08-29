@@ -8,10 +8,7 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.AdminModule = void 0;
 const common_1 = require("@nestjs/common");
-const config_1 = require("@nestjs/config");
-const jwt_1 = require("@nestjs/jwt");
-const passport_1 = require("@nestjs/passport");
-const jwt_auth_guard_1 = require("../auth/jwt-auth.guard");
+const auth_module_1 = require("../auth/auth.module");
 const users_module_1 = require("./users/users.module");
 const profiles_module_1 = require("./profiles/profiles.module");
 const photos_module_1 = require("./photos/photos.module");
@@ -25,17 +22,7 @@ exports.AdminModule = AdminModule;
 exports.AdminModule = AdminModule = __decorate([
     (0, common_1.Module)({
         imports: [
-            config_1.ConfigModule.forRoot({
-                isGlobal: true,
-                envFilePath: ['.env', '.env.local'],
-            }),
-            jwt_1.JwtModule.register({
-                global: true,
-                secret: process.env.JWT_SECRET || 'dinanwuye-admin-secret',
-                signOptions: { expiresIn: '24h' },
-            }),
-            passport_1.PassportModule.register({ defaultStrategy: 'jwt' }),
-            jwt_auth_guard_1.JwtAuthGuard,
+            auth_module_1.AuthModule,
             users_module_1.UsersModule,
             profiles_module_1.ProfilesModule,
             photos_module_1.PhotosModule,

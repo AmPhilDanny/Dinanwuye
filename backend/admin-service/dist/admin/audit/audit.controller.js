@@ -15,7 +15,9 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.AuditController = void 0;
 require("reflect-metadata");
 const common_1 = require("@nestjs/common");
-const jwt_auth_guard_1 = require("../jwt-auth.guard");
+const jwt_auth_guard_1 = require("../../auth/jwt-auth.guard");
+const permission_guard_1 = require("../../auth/permission.guard");
+const permissions_1 = require("../../auth/permissions");
 const audit_service_1 = require("./audit.service");
 let AuditController = class AuditController {
     auditService;
@@ -45,15 +47,15 @@ __decorate([
 ], AuditController.prototype, "findAll", null);
 __decorate([
     (0, common_1.Get)('entity/:entity/:entityId'),
-    __param(0, Param('entity')),
-    __param(1, Param('entityId')),
+    __param(0, (0, common_1.Param)('entity')),
+    __param(1, (0, common_1.Param)('entityId')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String, String]),
     __metadata("design:returntype", Promise)
 ], AuditController.prototype, "findByEntity", null);
 __decorate([
     (0, common_1.Get)('admin/:adminId'),
-    __param(0, Param('adminId')),
+    __param(0, (0, common_1.Param)('adminId')),
     __param(1, (0, common_1.Query)('page')),
     __param(2, (0, common_1.Query)('limit')),
     __metadata("design:type", Function),
@@ -62,7 +64,8 @@ __decorate([
 ], AuditController.prototype, "findByAdmin", null);
 exports.AuditController = AuditController = __decorate([
     (0, common_1.Controller)('audit'),
-    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard, permission_guard_1.PermissionGuard),
+    (0, permissions_1.RequirePermission)('audit:read'),
     __metadata("design:paramtypes", [audit_service_1.AuditService])
 ], AuditController);
 //# sourceMappingURL=audit.controller.js.map

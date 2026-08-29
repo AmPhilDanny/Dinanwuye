@@ -15,7 +15,9 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.MatchesController = void 0;
 require("reflect-metadata");
 const common_1 = require("@nestjs/common");
-const jwt_auth_guard_1 = require("../jwt-auth.guard");
+const jwt_auth_guard_1 = require("../../auth/jwt-auth.guard");
+const permission_guard_1 = require("../../auth/permission.guard");
+const permissions_1 = require("../../auth/permissions");
 const matches_service_1 = require("./matches.service");
 const update_match_dto_1 = require("./dto/update-match.dto");
 let MatchesController = class MatchesController {
@@ -54,6 +56,7 @@ __decorate([
 ], MatchesController.prototype, "findOne", null);
 __decorate([
     (0, common_1.Put)(':id'),
+    (0, permissions_1.RequirePermission)('matches:moderate'),
     __param(0, (0, common_1.Param)('id')),
     __param(1, (0, common_1.Body)()),
     __metadata("design:type", Function),
@@ -62,6 +65,7 @@ __decorate([
 ], MatchesController.prototype, "update", null);
 __decorate([
     (0, common_1.Delete)(':id'),
+    (0, permissions_1.RequirePermission)('matches:moderate'),
     __param(0, (0, common_1.Param)('id')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String]),
@@ -69,7 +73,8 @@ __decorate([
 ], MatchesController.prototype, "remove", null);
 exports.MatchesController = MatchesController = __decorate([
     (0, common_1.Controller)('matches'),
-    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard, permission_guard_1.PermissionGuard),
+    (0, permissions_1.RequirePermission)('matches:read'),
     __metadata("design:paramtypes", [matches_service_1.MatchesService])
 ], MatchesController);
 //# sourceMappingURL=matches.controller.js.map

@@ -2,9 +2,9 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.UpdateUserDto = exports.CreateUserDto = void 0;
 class CreateUserDto {
-    email;
-    name;
-    passwordHash;
+    email = '';
+    name = '';
+    passwordHash = '';
     role;
 }
 exports.CreateUserDto = CreateUserDto;

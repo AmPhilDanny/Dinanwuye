@@ -5,11 +5,23 @@ export declare class MatchesController {
     private readonly matchesService;
     constructor(matchesService: MatchesService);
     findAll(page?: number, limit?: number): Promise<{
-        matches: any;
-        total: any;
+        matches: import("../../common/types").Match;
+        total: number;
     }>;
-    findOne(id: string): Promise<any>;
-    update(id: string, updateMatchDto: UpdateMatchDto): Promise<any>;
+    findOne(id: string): Promise<{
+        id: string;
+        createdAt: Date;
+        status: string;
+        userAId: string;
+        userBId: string;
+    }>;
+    update(id: string, updateMatchDto: UpdateMatchDto): Promise<{
+        id: string;
+        createdAt: Date;
+        status: string;
+        userAId: string;
+        userBId: string;
+    }>;
     remove(id: string): Promise<{
         message: string;
     }>;

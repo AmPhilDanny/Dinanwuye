@@ -2,11 +2,11 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.UpdateProfileDto = exports.CreateProfileDto = void 0;
 class CreateProfileDto {
-    userId;
-    name;
-    dob;
-    gender;
-    seeking;
+    userId = '';
+    name = '';
+    dob = '';
+    gender = '';
+    seeking = [];
     bio;
     heightCm;
     ethnicity;

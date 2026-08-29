@@ -2,8 +2,8 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.UpdatePhotoDto = exports.CreatePhotoDto = void 0;
 class CreatePhotoDto {
-    profileId;
-    s3Key;
+    profileId = '';
+    s3Key = '';
     order;
     moderationStatus;
 }

@@ -4,10 +4,16 @@ export declare class SwipesController {
     private readonly swipesService;
     constructor(swipesService: SwipesService);
     findAll(page?: number, limit?: number): Promise<{
-        swipes: any;
-        total: any;
+        swipes: import("../../common/types").Swipe;
+        total: number;
     }>;
-    findOne(id: string): Promise<any>;
+    findOne(id: string): Promise<{
+        id: string;
+        createdAt: Date;
+        actorId: string;
+        targetId: string;
+        action: string;
+    }>;
     remove(id: string): Promise<{
         message: string;
     }>;
