@@ -5,7 +5,7 @@ services:
     runtime: node
     plan: starter
     buildCommand: cd backend/consolidated-app && pnpm install && pnpm run build && pnpm run db:migrate:deploy
-    startCommand: cd backend/consolidated-app && pnpm run start:prod
+    startCommand: cd backend/consolidated-app && npx prisma migrate resolve --applied 20260830000000_init && npx prisma migrate deploy && pnpm run start:prod
     envVars:
       - key: NODE_ENV
         value: production
