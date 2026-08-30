@@ -1,4 +1,5 @@
 packages:
+  - 'consolidated-app'
   - 'auth-service'
   - 'profile-service'
   - 'messaging-service'

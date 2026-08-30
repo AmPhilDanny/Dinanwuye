@@ -1,81 +1,44 @@
 services:
+  # Consolidated Backend API (NestJS)
   - type: web
-    name: dinanwuye-frontend
-    rootDir: frontend
-    env: node
-    plan: free
-    buildCommand: pnpm install && pnpm run build
-    startCommand: npx serve -s dist -l $PORT
+    name: dinanwuye-api
+    runtime: node
+    plan: starter
+    buildCommand: cd backend/consolidated-app && pnpm install && pnpm run build && pnpm run db:migrate:deploy
+    startCommand: cd backend/consolidated-app && pnpm run start:prod
     envVars:
       - key: NODE_ENV
         value: production
-      - key: VITE_API_URL
-        value: "https://dinanwuye-backend.onrender.com"
-      - key: VITE_AUTH_URL
-        value: "https://dinanwuye-backend.onrender.com/api/v1"
-      - key: VITE_PROFILE_URL
-        value: "https://dinanwuye-profile.onrender.com/api/v1"
-      - key: VITE_MESSAGING_URL
-        value: "https://dinanwuye-messaging.onrender.com/api/v1"
-      - key: VITE_MATCHING_URL
-        value: "https://dinanwuye-matching.onrender.com/api/v1"
-      - key: VITE_SUPABASE_URL
-        value: "https://ysvqvrskwyyjbeepbyuc.supabase.co"
-      - key: VITE_SUPABASE_ANON_KEY
-        sync: false
-  - type: web
-    name: dinanwuye-backend
-    rootDir: backend
-    env: node
-    plan: free
-    buildCommand: pnpm install --frozen-lockfile --prod=false && pnpm --filter @dinanwuye/auth-service exec prisma generate --schema prisma/schema.prisma && pnpm --filter @dinanwuye/auth-service... run build
-    startCommand: node auth-service/dist/main.js
-    envVars:
-      - key: NODE_ENV
-        value: production
+      - key: PORT
+        value: 3000
       - key: DATABASE_URL
-        sync: false
+        fromDatabase:
+          name: dinanwuye-db
+          property: connectionString
+      - key: REDIS_URL
+        fromService:
+          name: dinanwuye-redis
+          property: connectionString
       - key: JWT_SECRET
-        sync: false
-      - key: JWT_EXPIRES_IN
-        value: "1h"
-      - key: SUPABASE_URL
-        value: "https://ysvqvrskwyyjbeepbyuc.supabase.co"
-      - key: SUPABASE_SERVICE_KEY
-        sync: false
-      - key: SUPABASE_ANON_KEY
-        sync: false
+        generateValue: true
+      - key: JWT_REFRESH_SECRET
+        generateValue: true
       - key: CORS_ORIGIN
-        value: "https://dinanwuye-frontend.onrender.com"
-    healthCheckPath: "/api/v1/health"
-    healthCheckTimeout: 5
-  - type: web
-    name: dinanwuye-admin-api
-    rootDir: backend
-    env: node
-    plan: free
-    buildCommand: pnpm install --frozen-lockfile --prod=false && pnpm --filter @dinanwuye/admin-service exec prisma generate --schema prisma/schema.prisma && pnpm --filter @dinanwuye/admin-service run build
-    startCommand: node admin-service/dist/main.js
-    envVars:
-      - key: NODE_ENV
-        value: production
-      - key: DATABASE_URL
-        sync: false
-      - key: JWT_SECRET
-        sync: false
-      - key: CORS_ORIGIN
-        value: "https://dinanwuye.onrender.com,https://dinanwuye-admin.onrender.com"
-    healthCheckPath: "/api/v1/admin/docs"
-    healthCheckTimeout: 5
-  - type: web
-    name: dinanwuye-admin
-    rootDir: admin-frontend
-    env: node
-    plan: free
-    buildCommand: pnpm install --frozen-lockfile && pnpm run build
-    startCommand: npx serve -s dist -l $PORT
-    envVars:
-      - key: NODE_ENV
-        value: production
-      - key: VITE_ADMIN_API_URL
-        value: "https://dinanwuye-admin-api.onrender.com/api/v1/admin"
+        value: https://dinanwuye.onrender.com,https://dinanwuye-admin.onrender.com
+    healthCheckPath: /api/v1/health
+    autoDeploy: true
+    rootDir: backend/consolidated-app
+
+  # PostgreSQL with pgvector
+  - type: postgresql
+    name: dinanwuye-db
+    plan: starter
+    databaseName: dinanwuye
+    ipAllowList: []
+
+  # Redis
+  - type: redis
+    name: dinanwuye-redis
+    plan: starter
+    ipAllowList: []
+    maxmemoryPolicy: allkeys-lru
