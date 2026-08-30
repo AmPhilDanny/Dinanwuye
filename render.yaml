@@ -4,7 +4,7 @@ services:
     name: dinanwuye-api
     runtime: node
     plan: starter
-    buildCommand: pnpm install --no-frozen-lockfile && pnpm run build
+    buildCommand: pnpm install --no-frozen-lockfile && npx nest build
     startCommand: npx prisma migrate resolve --applied 20260830000000_init && npx prisma migrate deploy && pnpm run start:prod
     envVars:
       - key: NODE_ENV
