@@ -1,12 +1,3 @@
 packages:
   - 'consolidated-app'
-  - 'auth-service'
-  - 'profile-service'
-  - 'messaging-service'
-  - 'trust-safety-service'
-  - 'notification-service'
-  - 'payment-service'
-  - 'api-gateway'
-  - 'admin-service'
-  - 'shared'
   # matching-service is Python/FastAPI — NOT a pnpm workspace member
