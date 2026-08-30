@@ -34,9 +34,9 @@ async def get_db() -> AsyncSession:
 
 
 async def init_db():
-    """Initialize database tables"""
+    """Verify database connection (tables managed by Prisma migrations)"""
     async with engine.begin() as conn:
-        await conn.run_sync(Base.metadata.create_all)
+        await conn.execute("SELECT 1")
 
 
 async def close_db():
