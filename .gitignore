@@ -1,14 +1,6 @@
-# .gitignore for Dinanwuye
-# See https://github.com/github/gitignore for more templates
-# git ig .gitignore
-
 # Dependencies
 node_modules/
-p-lockfile.yaml
-
-# Prisma
-.prisma/
-generated/
+pnpm-lock.yaml
 
 # Environment variables
 .env
@@ -16,16 +8,14 @@ generated/
 .env.*.local
 !.env.example
 
-# Production build
-.next/
-/out
+# Build output (Render builds on deploy)
 **/dist/
+/out
 
-# Prisma generated client
-backend/**/generated/
+# Playwright MCP (local only)
+.playwright-mcp/
 
 # Uploads and media
-/uploads/
 /uploads/
 
 # Logs
@@ -34,30 +24,18 @@ logs/
 
 # Runtime storage
 *.pid
-# *.seed.* - allow seed files to be committed
 
 # Testing
 /.nyc_output/
 coverage/
-*.test.*
-*.spec.*
 
 # OmCode specific
 .omo/
 
-# Deployment
-deployment/
+# Scripts (local helper scripts)
+fix-env-vars.ps1
+scripts/
 
-# Jiffy disk images
-*.jiffy
-*.jfif
-
-# Sensitive data
-docs/
-
-# Document root
-/public
-
-# .git folder
-.git/
-```
+# OS files
+Thumbs.db
+.DS_Store

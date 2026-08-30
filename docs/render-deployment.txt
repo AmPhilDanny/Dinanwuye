@@ -1,460 +1,407 @@
 # Dinanwuye Render Deployment Runbook
 # Updated: 2026-08-26
 
-This project is a monorepo. Node services share the `backend` pnpm workspace,
-but Render runs each web service in an isolated runtime. Never put secrets in
-Git or frontend `VITE_*` variables.
 
-## Deployment model
+Sites: supabase.com
+Username: fhinovaxsolutions@gmail.com
+Passwor: NovaxSupa@2023
 
-Deploy from `AmPhilDanny/Dinanwuye`, branch `master`:
+ Site:renderS
+Username: fhinovaxsolutions@gmail.com
+Password: NovaxRender@2023
 
-| Service | Render type | Root directory | Build command | Start command | Health check |
-|---|---|---|---|---|---|
-| Main web app | Static site | `frontend` | `pnpm install --frozen-lockfile && pnpm run build` | Publish `dist` | N/A |
-| Admin web app | Static site | `admin-frontend` | `pnpm install --frozen-lockfile && pnpm run build` | Publish `dist` | N/A |
-| Auth API | Web service | `backend` | `pnpm install --frozen-lockfile --prod=false && pnpm --filter @dinanwuye/auth-service exec prisma generate --schema prisma/schema.prisma && pnpm --filter @dinanwuye/auth-service... run build` | `node auth-service/dist/main.js` | `/api/v1/health` |
-| Profile API | Web service | `backend` | `pnpm install --frozen-lockfile --prod=false && pnpm --filter @dinanwuye/profile-service exec prisma generate --schema prisma/schema.prisma && pnpm --filter @dinanwuye/profile-service... run build` | `node profile-service/dist/main.js` | `/api/v1/health` |
-| Messaging API | Web service | `backend` | `pnpm install --frozen-lockfile --prod=false && pnpm --filter @dinanwuye/messaging-service exec prisma generate --schema prisma/schema.prisma && pnpm --filter @dinanwuye/messaging-service... run build` | `node messaging-service/dist/main.js` | `/api/v1/health` |
-| Admin API | Web service | `backend` | `pnpm install --frozen-lockfile --prod=false && pnpm --filter @dinanwuye/admin-service exec prisma generate --schema prisma/schema.prisma && pnpm --filter @dinanwuye/admin-service run build` | `node admin-service/dist/main.js` | `/api/v1/admin/docs` |
-| Matching API | Web service | `backend/matching-service` | `pip install -r requirements.txt` | `python -m uvicorn main:app --host 0.0.0.0 --port $PORT` | `/health` |
 
-Notification, payment, trust-safety, and api-gateway packages exist in the
-repository but are not in `render.yaml`; deploy them only after their routes
-and environment requirements are verified.
 
-## Current service URLs
+Password: dinanwuye@2026  dinanwuye%402026 
+Project URL: https://ysvqvrskwyyjbeepbyuc.supabase.co
+Publisable Key: sb_publishable_DBbHW-Oy1p1kb2v_EKGYKQ_h6xwgCGY
+Direct Connection string: postgresql://postgres:dinanwuye@2026@db.ysvqvrskwyyjbeepbyuc.supabase.co:5432/postgres
+CLI setup command supabase login
+supabase init
+supabase link --project-ref ysvqvrskwyyjbeepbyuc
+Service key: <see Supabase dashboard — Settings > API>
+Secret Key: <see Supabase dashboard — Settings > API>
+Access Token: <see Supabase dashboard — Account > Access Tokens>
 
-```text
-Main app:       https://dinanwuye.onrender.com
-Admin app:      https://dinanwuye-admin.onrender.com
-Auth API:       https://dinanwuye-back.onrender.com
-Profile API:    https://dinanwuye-profile.onrender.com
-Messaging API:  https://dinanwuye-messaging.onrender.com
-Matching API:   https://dinanwuye-matching.onrender.com
-Admin API:      https://dinanwuye-admin-api.onrender.com
-```
 
-## Install services in Render
 
-The preferred route is Render Dashboard -> New -> Blueprint. Select the GitHub
-repository and the root `render.yaml`, review the service list, then apply it.
-If a service already exists, update it instead of creating a duplicate.
 
-For manual creation, use New -> Web Service for APIs and New -> Static Site
-for frontends. Set the root directory, build command, start command, publish
-directory, and health check exactly as shown in the table. Choose the Free
-plan for testing. Deploy APIs before frontends. After changing a `VITE_*`
-variable, redeploy the static site because Vite embeds it at build time.
-
-For static sites, set Publish Directory to `dist`. Add a rewrite from `/*` to
-`/index.html` when client-side routes return 404 after a browser refresh.
-
-## Environment variables
-
-Open a Render service -> Environment -> Add Environment Variable -> Save
-Changes -> Manual Deploy. Render supplies `PORT`; do not hard-code it in
-production. Values marked secret must never be committed.
-
-### Auth API (`dinanwuye-back`)
-
-```text
-NODE_ENV=production
-DATABASE_URL=<PostgreSQL connection string>
+PS C:\Users\user pc\Desktop\Dinanwuyeapp> Write-Output "JWT_SECRET=$(New-HexSecret 32)"
 JWT_SECRET=a2a62831ae8b3651feac2d74801673cbd06feeec9bb583c333d5e44442e15b54
+PS C:\Users\user pc\Desktop\Dinanwuyeapp> Write-Output "JWT_REFRESH_SECRET=$(New-HexSecret 32)"
 JWT_REFRESH_SECRET=34e56b9749b411a2691311881b911c023b920de168e420f04ea155b073ba7200
-JWT_EXPIRES_IN=15m
-JWT_REFRESH_EXPIRES_IN=7d
+PS C:\Users\user pc\Desktop\Dinanwuyeapp> Write-Output "OTP_SECRET=$(New-HexSecret 16)"
 OTP_SECRET=fad482221b139ba86efa118dbea3321d
-SUPABASE_URL=https://ysvqvrskwyyjbeepbyuc.supabase.co
-SUPABASE_SERVICE_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InlzdnF2cnNrd3l5amJlZXBieXVjIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc4NzM4NDU2NiwiZXhwIjoyMTAyOTYwNTY2fQ.zoIHnHM5KHp49TW5Mctue-95s1IUfyC3GE_W2w24EhU
-SUPABASE_ANON_KEY=sb_publishable_DBbHW-Oy1p1kb2v_EKGYKQ_h6xwgCGY
-CORS_ORIGIN=https://dinanwuye.onrender.com,https://dinanwuye-admin.onrender.com
-```
-
-### Profile API (`dinanwuye-profile`)
-
-```text
-NODE_ENV=production
-DATABASE_URL=<PostgreSQL connection string>
-JWT_SECRET=<same signing secret as Auth API>
-JWT_REFRESH_SECRET=<same refresh secret if required>
-REDIS_URL=<Redis connection string if enabled>
-S3_ENDPOINT=<object-storage endpoint if photo storage is enabled>
-S3_ACCESS_KEY=<object-storage access key>
-S3_SECRET_KEY=<object-storage secret key>
-S3_BUCKET=<bucket name>
-S3_REGION=auto
-S3_PUBLIC_URL=<public media URL>
-CORS_ORIGIN=https://dinanwuye.onrender.com,https://dinanwuye-admin.onrender.com
-```
-
-### Messaging API (`dinanwuye-messaging`)
-
-```text
-NODE_ENV=production
-DATABASE_URL=<PostgreSQL connection string>
-JWT_SECRET=<same signing secret as Auth API>
-JWT_REFRESH_SECRET=<same refresh secret if required>
-REDIS_URL=<Redis connection string>
-CORS_ORIGIN=https://dinanwuye.onrender.com,https://dinanwuye-admin.onrender.com
-```
-
-### Admin API (`dinanwuye-admin-api`)
-
-```text
-NODE_ENV=production
-DATABASE_URL=<PostgreSQL connection string>
-JWT_SECRET=<strong signing secret>
-CORS_ORIGIN=https://dinanwuye.onrender.com,https://dinanwuye-admin.onrender.com
-```
-
-### Matching API (`dinanwuye-matching`)
-
-```text
-ENVIRONMENT=production
-DATABASE_URL=<PostgreSQL URL accepted by the Python driver>
-REDIS_URL=<Redis connection string>
-JWT_SECRET_KEY=<token verification secret>
-PROFILE_SERVICE_URL=https://dinanwuye-profile.onrender.com
-MESSAGING_SERVICE_URL=https://dinanwuye-messaging.onrender.com
-```
-
-### Main static site (`dinanwuye`)
-
-```text
-VITE_API_URL=https://dinanwuye-back.onrender.com
-VITE_AUTH_URL=https://dinanwuye-back.onrender.com/api/v1
-VITE_PROFILE_URL=https://dinanwuye-profile.onrender.com/api/v1
-VITE_MESSAGING_URL=https://dinanwuye-messaging.onrender.com/api/v1
-VITE_MATCHING_URL=https://dinanwuye-matching.onrender.com/api/v1
-VITE_SUPABASE_URL=https://ysvqvrskwyyjbeepbyuc.supabase.co
-VITE_SUPABASE_ANON_KEY=sb_publishable_DBbHW-Oy1p1kb2v_EKGYKQ_h6xwgCGY
-```
-
-### Admin static site (`dinanwuye-admin`)
-
-```text
-VITE_ADMIN_API_URL=https://dinanwuye-admin-api.onrender.com/api/v1/admin
-```
-
-## Where values come from
-
-**PostgreSQL:** Render Dashboard -> New -> PostgreSQL -> Connect -> Internal
-Database URL for Render services. Use the External URL only from your local
-computer. For Supabase, use Project Settings -> Database -> Connection string.
-URL-encode special characters in passwords.
-
-**Supabase:** Project Settings -> API provides the Project URL and publishable
-or anon key. The service-role key is server-only. Never put it in a `VITE_*`
-variable.
-
-**Secrets:** Generate locally in PowerShell and paste directly into Render:
-
-```powershell
-node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"
-node -e "console.log(require('crypto').randomBytes(16).toString('hex'))"
-```
-
-Use different values for JWT, refresh-token, and OTP secrets. Use the same JWT
-signing secret wherever a service verifies tokens. Rotate any value previously
-committed or exposed.
-
-**Redis:** Render Dashboard -> New -> Key Value -> Connect provides the
-connection URL. Use the internal URL for services in the same region.
-
-**Cloudflare R2:** Cloudflare Dashboard -> R2 -> Overview provides the
-endpoint. R2 API Tokens provides access and secret keys. The bucket name is the
-bucket you create; configure a custom public domain only when intended.
-
-## Database initialization
-
-Run this once against the intended production database, using the external URL
-from your local machine:
-
-```powershell
-Set-Location .\backend
-pnpm install --frozen-lockfile
-$env:DATABASE_URL = '<external database URL for local administration>'
-pnpm --filter @dinanwuye/admin-service exec prisma generate --schema prisma/schema.prisma
-pnpm --filter @dinanwuye/admin-service run db:push
-pnpm --filter @dinanwuye/admin-service run db:seed
-```
-
-Prefer a reviewed Prisma migration for an existing production database.
-Confirm the admin seed credentials are changed before real production use.
-
-## Verification
-
-1. Check Render logs for a successful build and the expected start command.
-2. Open each health endpoint listed in the table.
-3. Test main-app sign-up and sign-in.
-4. Test admin login and confirm the browser response includes the matching CORS
-	origin header.
-5. Test photo upload only after object-storage credentials are configured.
-
-```powershell
-render whoami
-render services --output json
-render logs --resources <service-id> --output json
-render deploys create --service <service-id>
-```
-
-This Render CLI version has no simple `render env set` command. Set secrets in
-the Dashboard or an approved Render API/IaC workflow.
-
-## Local installation and storage
-
-Install Node.js once on Windows. The backend already declares pnpm and its
-workspace. pnpm uses one shared store, although each project retains links and
-its own build output. To reinstall cleanly:
-
-```powershell
-Remove-Item .\backend\node_modules, .\frontend\node_modules, .\admin-frontend\node_modules -Recurse -Force
-Set-Location .\backend; pnpm install --frozen-lockfile
-Set-Location ..\frontend; pnpm install --frozen-lockfile
-Set-Location ..\admin-frontend; pnpm install --frozen-lockfile
-pnpm store prune
-npm cache clean --force
-```
-
-Do not run the removal while a dev server is active. Render services remain
-isolated and cannot share one installed Node runtime or `node_modules` folder.
-
-## Official references
-
-- Render Blueprints: https://render.com/docs/blueprint-spec
-
-## 📋 SERVICE INVENTORY (from Render CLI)
-
-| Service ID | Name | Type | URL | Root Dir | Status |
-|------------|------|------|-----|----------|--------|
-| srv-da6h5eajnfac73amn64g | Dinanwuye-admin | static_site | https://dinanwuye-admin.onrender.com | admin-frontend | ✅ Deployed |
-| srv-da4pp9k9v7es738tua40 | Dinanwuye | web_service | https://dinanwuye.onrender.com | frontend/ | ✅ Deployed |
-| srv-da4pso8n74is73eb4fug | Dinanwuye-back | web_service | https://dinanwuye-back.onrender.com | backend (auth-service) | ✅ Deployed |
-| srv-da51ps8u01pc73dn62gg | dinanwuye-profile | web_service | https://dinanwuye-profile.onrender.com | backend (profile-service) | ✅ Deployed |
-| srv-da51pv8u01pc73dn6a1g | dinanwuye-messaging | web_service | https://dinanwuye-messaging.onrender.com | backend (messaging-service) | ✅ Deployed |
-| srv-da51q2vqj5pc73bhvl70 | dinanwuye-matching | web_service | https://dinanwuye-matching.onrender.com | backend/matching-service | ✅ Deployed |
-| srv-da6h5eajnfac73amn64g | dinanwuye-admin-api | web_service | https://dinanwuye-admin-api.onrender.com | backend | ❌ **CREATE/REDEPLOY REQUIRED** |
-
-
-## 🌐 PUBLIC URLS (Configured in Frontend .env)
-
-### Main Frontend (dinanwuye.onrender.com)
-```
-VITE_API_URL=https://dinanwuye-back.onrender.com
-VITE_AUTH_URL=https://dinanwuye-back.onrender.com/api/v1
-VITE_PROFILE_URL=https://dinanwuye-profile.onrender.com/api/v1
-VITE_MESSAGING_URL=https://dinanwuye-messaging.onrender.com/api/v1
-VITE_MATCHING_URL=https://dinanwuye-matching.onrender.com/api/v1
-VITE_SUPABASE_URL=https://ysvqvrskwyyjbeepbyuc.supabase.co
-VITE_SUPABASE_ANON_KEY=<from supabase dashboard>
-```
-
-### Admin Frontend (dinanwuye-admin.onrender.com)
-```
-VITE_ADMIN_API_URL=https://dinanwuye-admin-api.onrender.com/api/v1/admin
-```
-
-
-## 🔐 ENVIRONMENT VARIABLES PER SERVICE
-
-### 1. Dinanwuye-back (auth-service) — srv-da4pso8n74is73eb4fug
-**Root:** `backend` | **Build:** auth-service | **Start:** `node auth-service/dist/main.js`
-```
-NODE_ENV=production
-DATABASE_URL=postgresql://postgres:xxx@xxx:5432/dinanwuye          # Render Postgres
-JWT_SECRET=<64-char-hex>                                           # openssl rand -hex 32
-JWT_REFRESH_SECRET=<64-char-hex>                                   # openssl rand -hex 32
-JWT_EXPIRES_IN=15m
-JWT_REFRESH_EXPIRES_IN=7d
-OTP_SECRET=<32-char-secret>                                        # openssl rand -hex 16
-SUPABASE_URL=https://ysvqvrskwyyjbeepbyuc.supabase.co
-SUPABASE_SERVICE_KEY=<service-role-key-from-supabase>
-SUPABASE_ANON_KEY=<anon-key-from-supabase>
-CORS_ORIGIN=https://dinanwuye.onrender.com,https://dinanwuye-admin.onrender.com
-PORT=3001
-```
-
-### 2. dinanwuye-profile — srv-da51ps8u01pc73dn62gg
-**Root:** `backend` | **Build:** profile-service | **Start:** `node profile-service/dist/main.js`
-```
-NODE_ENV=production
-DATABASE_URL=postgresql://postgres:xxx@xxx:5432/dinanwuye
-JWT_SECRET=<same-as-auth-service>
-JWT_REFRESH_SECRET=<same-as-auth-service>
-REDIS_URL=redis://default:xxx@xxx:6379
-S3_ENDPOINT=https://xxx.r2.cloudflarestorage.com
-S3_ACCESS_KEY=<r2-access-key>
-S3_SECRET_KEY=<r2-secret-key>
-S3_BUCKET=dinanwuye-media
-S3_REGION=auto
-S3_PUBLIC_URL=https://cdn.dinanwuye.com
-CORS_ORIGIN=https://dinanwuye.onrender.com,https://dinanwuye-admin.onrender.com
-PORT=3002
-```
-
-### 3. dinanwuye-messaging — srv-da51pv8u01pc73dn6a1g
-**Root:** `backend` | **Build:** messaging-service | **Start:** `node messaging-service/dist/main.js`
-```
-NODE_ENV=production
-DATABASE_URL=postgresql://postgres:xxx@xxx:5432/dinanwuye
-JWT_SECRET=<same-as-auth-service>
-JWT_REFRESH_SECRET=<same-as-auth-service>
-REDIS_URL=redis://default:xxx@xxx:6379
-CORS_ORIGIN=https://dinanwuye.onrender.com,https://dinanwuye-admin.onrender.com
-PORT=3003
-WS_PORT=3004
-```
-
-### 4. Dinanwuye-admin-api (admin-service) — **CREATE OR REDEPLOY REQUIRED**
-**Root:** `backend` | **Build:** admin-service | **Start:** `node admin-service/dist/main.js`
-```
-NODE_ENV=production
-DATABASE_URL=postgresql://postgres:xxx@xxx:5432/dinanwuye
-JWT_SECRET=<same-as-auth-service>
-JWT_REFRESH_SECRET=<same-as-auth-service>
-CORS_ORIGIN=https://dinanwuye.onrender.com,https://dinanwuye-admin.onrender.com
-PORT=3007
-```
-
-### 5. dinanwuye-matching — srv-da51q2vqj5pc73bhvl70
-**Root:** `backend/matching-service` | **Python/FastAPI** | **Start:** `python -m uvicorn main:app --host 0.0.0.0 --port $PORT`
-```
-ENVIRONMENT=production
-DATABASE_URL=postgresql+asyncpg://postgres:xxx@xxx:5432/dinanwuye
-REDIS_URL=redis://default:xxx@xxx:6379
-JWT_SECRET_KEY=<same-as-auth-service>
-PROFILE_SERVICE_URL=https://dinanwuye-profile.onrender.com
-MESSAGING_SERVICE_URL=https://dinanwuye-messaging.onrender.com
-PORT=8000
-```
-
-### 6. Main Frontend (Dinanwuye) — srv-da4pp9k9v7es738tua40
-**Root:** `frontend/` | **Static Site** | **Publish:** `dist`
-```
-NODE_ENV=production
-VITE_API_URL=https://dinanwuye-back.onrender.com
-VITE_AUTH_URL=https://dinanwuye-back.onrender.com/api/v1
-VITE_PROFILE_URL=https://dinanwuye-profile.onrender.com/api/v1
-VITE_MESSAGING_URL=https://dinanwuye-messaging.onrender.com/api/v1
-VITE_MATCHING_URL=https://dinanwuye-matching.onrender.com/api/v1
-VITE_SUPABASE_URL=https://ysvqvrskwyyjbeepbyuc.supabase.co
-VITE_SUPABASE_ANON_KEY=<from supabase dashboard>
-```
-
-### 7. Admin Frontend (Dinanwuye-admin) — srv-da6h5eajnfac73amn64g
-**Root:** `admin-frontend` | **Static Site** | **Publish:** `dist`
-```
-NODE_ENV=production
-VITE_ADMIN_API_URL=https://dinanwuye-admin-api.onrender.com/api/v1/admin
-```
-
-https://ysvqvrskwyyjbeepbyuc.supabase.co
-sb_publishable_DBbHW-Oy1p1kb2v_EKGYKQ_h6xwgCGY
-CCM3BAFTK7X2HWOJFCBJHNH23E4MO56ONT6BFA3KIN3LOIKZDVZA
-
-
-
-## 🗄️ SHARED INFRASTRUCTURE
-
-### Render Postgres Database
-
-### Render Redis
-
-### Supabase
-
-### Cloudflare R2 (S3-compatible)
-
-
-## 🚀 DEPLOYMENT STEPS
-
-### Current diagnosis (2026-08-26)
-The admin frontend is live, but `https://dinanwuye-admin-api.onrender.com` returns HTTP 404. This means the API service is not deployed at that hostname; the browser's CORS error is a consequence of that missing service. Deploy the Admin API first, then redeploy the admin frontend.
-
-### Step 1: Create Missing Admin API Service
-```bash
-# Option A: Via Render Dashboard (recommended)
-# 1. New → Web Service
-# 2. Connect GitHub: AmPhilDanny/Dinanwuye
-# 3. Root Directory: backend
-# 4. Build Command: pnpm install --frozen-lockfile --prod=false && pnpm --filter @dinanwuye/admin-service exec prisma generate --schema prisma/schema.prisma && pnpm --filter @dinanwuye/admin-service run build
-# 5. Start Command: node admin-service/dist/main.js
-# 6. Add all env vars from section above
-# 7. Deploy and wait for `/api/v1/admin/docs` to return HTTP 200
-
-# Option B: Via Blueprint (render.yaml already has definition)
-render blueprints create --file render.yaml
-```
-
-### Step 2: Verify All Services Deployed
-```bash
-render services --output json | jq '.[] | {name: .service.name, url: .service.serviceDetails.url, type: .service.type}'
-```
-
-### Step 3: Test Admin Dashboard Flow
-1. Open https://dinanwuye-admin.onrender.com
-2. Click "Fill demo credentials"
-3. Login with: demo@dinanwuye.com / demo123456
-4. Verify no CORS errors in browser console
-
-### Step 4: Test Main App Flow
-1. Open https://dinanwuye.onrender.com
-2. Sign up / login
-3. Verify profile creation, matching, messaging work
-
-
-## 🔑 SECRET GENERATION COMMANDS
-
-```bash
-# JWT Secrets (run once, use same across all services)
-openssl rand -hex 32
-# Output example: a1b2c3d4e5f6... (64 chars)
-
-# OTP Secret
-openssl rand -hex 16
-
-# VAPID Keys (for web push)
-npx web-push generate-vapid-keys
-
-# Database passwords
-openssl rand -base64 24
-```
-
-
-## ⚠️ CRITICAL NOTES
-
-1. **JWT_SECRET must be IDENTICAL** across auth-service, profile-service, messaging-service, admin-service, matching-service
-2. **DATABASE_URL** — use Render Postgres **internal** URL for service-to-service, **external** for local dev
-3. **CORS_ORIGIN** — comma-separated, no trailing spaces
-4. **Auto-deploy** is ON for all services (trigger: commit to master)
-5. **Health checks** configured: /api/v1/health (Node), /health (Python)
-6. **Free tier** — services spin down after 15min inactivity, cold start ~30s
-
-
-## 🔄 REDEPLOY COMMANDS
-
-```bash
-# Trigger manual deploy for specific service
-render deploys create --service srv-da4pso8n74is73eb4fug  # auth-service
-
-# View logs
-render logs --service srv-da4pso8n74is73eb4fug --tail 100
-
-# SSH into service (debugging)
-render ssh --service srv-da4pso8n74is73eb4fug
-```
-
-
-## 📝 MISSING SERVICES TO CREATE
-
-| Service | Root Dir | Priority | Notes |
-|---------|----------|----------|-------|
-| dinanwuye-admin-api | backend (admin-service) | **HIGH** | Blocking admin dashboard |
-| dinanwuye-trust-safety | backend (trust-safety-service) | MEDIUM | Not in render.yaml yet |
-| dinanwuye-notification | backend (notification-service) | MEDIUM | Not in render.yaml yet |
-| dinanwuye-payment | backend (payment-service) | LOW | Not in render.yaml yet |
-| api-gateway | backend (api-gateway) | LOW | Not in render.yaml yet |
-
-
-## 📞 SUPPORT LINKS
+
+
+# ============================================================
+# 🔴 URGENT — FIX FAILED DEPLOY (do this NOW)
+# ============================================================
+# The API deploy failed because DATABASE_URL had the wrong password.
+# Render auto-generated a new password when you created the DB.
+#
+# CORRECT DB CREDENTIALS:
+#   Host:     dpg-daa3pmuk1f9s73fd8le0-a
+#   Port:     5432
+#   Database: dinanwuye_2ee3
+#   User:     dinanwuye_user
+#   Password: dMjzJv77xUJOcrLonuwy1mulKfB4dgmF
+#
+# STEP-BY-STEP FIX:
+#
+# 1. Go to: https://dashboard.render.com/web/srv-daa44c942hec739fuuog/env
+#    (dinanwuye-api → Environment tab)
+#
+# 2. Find the row with key "DATABASE_URL"
+#    Click "Show secret" to see current value — it has the WRONG password
+#
+# 3. Click the "Edit" button at the top of the env vars section
+#
+# 4. Change DATABASE_URL value to EXACTLY this:
+#    postgresql+asyncpg://dinanwuye_user:dMjzJv77xUJOcrLonuwy1mulKfB4dgmF@dpg-daa3pmuk1f9s73fd8le0-a/dinanwuye_2ee3
+#
+# 5. Click "Save"
+#
+# 6. After saving, click "Manual Deploy" → "Deploy latest commit"
+#
+# 7. WAIT for deploy to succeed (should show green "Live" badge)
+#
+# 8. Repeat steps 1-6 for dinanwuye-matching service:
+#    https://dashboard.render.com/web/srv-daa61j9srm7s73e2khkg/env
+#    Same DATABASE_URL value as above
+#
+# 9. After both deploys are Live, test the health endpoint:
+#    https://dinanwuye-api.onrender.com/health
+#    (First request takes ~50s on free tier — be patient)
+#
+# 10. Then ask me to continue from here.
+#
+# ============================================================
+
+
+# ============================================================
+# DEPLOYMENT PLAN — Consolidated Backend (Post-Merge)
+# ============================================================
+# Branch: feat/consolidate-backend
+# Architecture: 1 NestJS monolith + 1 Python matching service + 2 static frontends
+
+## ARCHITECTURE OVERVIEW
+
+  ┌─────────────────────┐     ┌──────────────────────┐
+  │  Main Frontend      │     │  Admin Frontend       │
+  │  (Static Site)      │     │  (Static Site)        │
+  │  dinanwuye.onrender │     │  dinanwuye-admin      │
+  └─────────┬───────────┘     └──────────┬────────────┘
+            │                            │
+            ▼                            ▼
+  ┌─────────────────────────────────────────────────────┐
+  │          Consolidated NestJS API                    │
+  │          dinanwuye-api.onrender.com                 │
+  │                                                     │
+  │  Auth | Profile | Messaging | Admin | Safety        │
+  │  Notification | Payment | OTP                       │
+  └─────────┬──────────────────────┬────────────────────┘
+            │                      │
+            ▼                      ▼
+  ┌──────────────────┐   ┌──────────────────────────┐
+  │  Render Postgres │   │  Python Matching Service  │
+  │  (dinanwuye-db)  │   │  dinanwuye-matching       │
+  └──────────────────┘   └──────────────────────────┘
+
+
+## SERVICE INVENTORY
+
+| # | Service | Type | Render Name | URL | Root Dir | Plan |
+|---|---------|------|-------------|-----|----------|------|
+| 1 | Main Frontend | Static Site | dinanwuye | https://dinanwuye.onrender.com | frontend/ | Free |
+| 2 | Admin Frontend | Static Site | dinanwuye-admin | https://dinanwuye-admin.onrender.com | admin-frontend/ | Free |
+| 3 | Consolidated API | Web Service | dinanwuye-api | https://dinanwuye-api.onrender.com | backend/consolidated-app/ | Starter |
+| 4 | Matching Service | Web Service | dinanwuye-matching | https://dinanwuye-matching.onrender.com | backend/matching-service/ | Starter |
+| 5 | PostgreSQL | Database | dinanwuye-db | (internal) | — | Starter |
+| 6 | Redis | Key-Value | dinanwuye-redis | (internal) | — | Free |
+
+
+## DATABASE SETUP (Render PostgreSQL)
+
+### Step 1: Create Database
+  Render Dashboard → New + → PostgreSQL
+  Name: dinanwuye-db
+  Database: dinanwuye
+  User: dinanwuye_user
+  Region: Oregon (US West)
+  Plan: Starter
+  PostgreSQL Version: 16
+
+### Step 2: Save Connection Strings
+  Internal URL (for Render services):
+    postgresql://dinanwuye_user:dMjzJv77xUJOcrLonuwy1mulKfB4dgmF@dpg-daa3pmuk1f9s73fd8le0-a/dinanwuye_2ee3
+
+  External URL (for local dev / Prisma asyncpg):
+    postgresql+asyncpg://dinanwuye_user:dMjzJv77xUJOcrLonuwy1mulKfB4dgmF@dpg-daa3pmuk1f9s73fd8le0-a/dinanwuye_2ee3
+
+  Full External URL (with SSL, for direct connections):
+    postgresql://dinanwuye_user:dMjzJv77xUJOcrLonuwy1mulKfB4dgmF@dpg-daa3pmuk1f9s73fd8le0-a.oregon-postgres.render.com/dinanwuye_2ee3
+
+  Render Dashboard:
+    https://dashboard.render.com/d/dpg-daa3pmuk1f9s73fd8le0-a
+
+### Step 3: Enable pgvector Extension
+  After first deploy, connect to DB and run:
+    CREATE EXTENSION IF NOT EXISTS vector;
+
+  (The migration SQL does this automatically)
+
+
+## ENVIRONMENT VARIABLES
+
+### Consolidated API (dinanwuye-api)
+
+  NODE_ENV=production
+  PORT=3000
+  DATABASE_URL=postgresql+asyncpg://dinanwuye_user:dMjzJv77xUJOcrLonuwy1mulKfB4dgmF@dpg-daa3pmuk1f9s73fd8le0-a/dinanwuye_2ee3
+  REDIS_URL=<Render Redis internal URL>
+
+  # JWT — use the pre-generated values above
+  JWT_SECRET=a2a62831ae8b3651feac2d74801673cbd06feeec9bb583c333d5e44442e15b54
+  JWT_REFRESH_SECRET=34e56b9749b411a2691311881b911c023b920de168e420f04ea155b073ba7200
+  OTP_SECRET=fad482221b139ba86efa118dbea3321d
+
+  # CORS — your frontend URLs
+  CORS_ORIGIN=https://dinanwuye.onrender.com,https://dinanwuye-admin.onrender.com
+
+  # Supabase (only if you still use Supabase Storage)
+  SUPABASE_URL=https://ysvqvrskwyyjbeepbyuc.supabase.co
+  SUPABASE_SERVICE_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+  SUPABASE_ANON_KEY=sb_publishable_DBbHW-Oy1p1kb2v_EKGYKQ_h6xwgCGY
+
+  # SMTP (for OTP emails)
+  SMTP_HOST=smtp.example.com
+  SMTP_PORT=587
+  SMTP_USER=your@email.com
+  SMTP_PASS=xxx
+
+  # Web Push
+  VAPID_PUBLIC_KEY=xxx
+  VAPID_PRIVATE_KEY=xxx
+  VAPID_SUBJECT=mailto:admin@dinanwuye.com
+
+  # Payments
+  STRIPE_SECRET_KEY=sk_test_xxx
+  STRIPE_WEBHOOK_SECRET=whsec_xxx
+  PAYSTACK_SECRET_KEY=sk_xxx
+  PAYSTACK_WEBHOOK_SECRET=xxx
+
+### Matching Service (dinanwuye-matching)
+
+  ENVIRONMENT=production
+  DATABASE_URL=postgresql+asyncpg://dinanwuye_user:dMjzJv77xUJOcrLonuwy1mulKfB4dgmF@dpg-daa3pmuk1f9s73fd8le0-a/dinanwuye_2ee3
+  REDIS_URL=<same Render Redis URL>
+  JWT_SECRET_KEY=a2a62831ae8b3651feac2d74801673cbd06feeec9bb583c333d5e44442e15b54
+  PROFILE_SERVICE_URL=https://dinanwuye-api.onrender.com
+  MESSAGING_SERVICE_URL=https://dinanwuye-api.onrender.com
+
+### Main Frontend (dinanwuye)
+
+  VITE_API_URL=https://dinanwuye-api.onrender.com
+  VITE_MATCHING_URL=https://dinanwuye-matching.onrender.com
+
+### Admin Frontend (dinanwuye-admin)
+
+  VITE_ADMIN_API_URL=https://dinanwuye-api.onrender.com/api/v1/admin
+
+
+## BUILD & START COMMANDS
+
+### Consolidated API (dinanwuye-api)
+  Build:
+    cd backend/consolidated-app && npm install && npx prisma generate
+
+  Start:
+    cd backend/consolidated-app && node dist/main.js
+
+  Health Check:
+    /api/v1/health
+
+### Matching Service (dinanwuye-matching)
+  Build:
+    cd backend/matching-service && pip install -r requirements.txt
+
+  Start:
+    cd backend/matching-service && python -m uvicorn main:app --host 0.0.0.0 --port $PORT
+
+  Health Check:
+    /health
+
+
+## DEPLOYMENT STEPS
+
+### Phase 1: Create Render Services (Manual — Free Tier)
+
+  1. Go to https://dashboard.render.com
+
+  2. Create PostgreSQL:
+     New + → PostgreSQL
+     Name: dinanwuye-db
+     Plan: Starter
+     Save the Internal Database URL
+
+  3. Create Web Service (Consolidated API):
+     New + → Web Service
+     Connect GitHub: AmPhilDanny/Dinanwuye
+     Branch: feat/consolidate-backend
+     Root Directory: backend/consolidated-app
+     Runtime: Node
+     Build Command: cd backend/consolidated-app && npm install && npx prisma generate
+     Start Command: cd backend/consolidated-app && node dist/main.js
+     Plan: Starter
+     Health Check Path: /api/v1/health
+     Add all env vars from table above
+     Click Create
+
+  4. Create Web Service (Matching):
+     New + → Web Service
+     Connect GitHub: AmPhilDanny/Dinanwuye
+     Branch: feat/consolidate-backend
+     Root Directory: backend/matching-service
+     Runtime: Python
+     Build Command: cd backend/matching-service && pip install -r requirements.txt
+     Start Command: cd backend/matching-service && python -m uvicorn main:app --host 0.0.0.0 --port $PORT
+     Plan: Starter
+     Health Check Path: /health
+     Add all env vars from table above
+     Click Create
+
+  5. Create Static Site (Main Frontend):
+     New + → Static Site
+     Connect GitHub: AmPhilDanny/Dinanwuye
+     Branch: feat/consolidate-backend
+     Root Directory: frontend
+     Build Command: npm install && npm run build
+     Publish Directory: dist
+     Add rewrite: /* → /index.html
+     Add env vars from table above
+     Click Create
+
+  6. Create Static Site (Admin Frontend):
+     New + → Static Site
+     Connect GitHub: AmPhilDanny/Dinanwuye
+     Branch: feat/consolidate-backend
+     Root Directory: admin-frontend
+     Build Command: npm install && npm run build
+     Publish Directory: dist
+     Add rewrite: /* → /index.html
+     Add env vars from table above
+     Click Create
+
+### Phase 2: Database Migration & Seed
+
+  After the consolidated API deploys successfully:
+
+  1. Go to dinanwuye-api → Shell tab
+
+  2. Run migrations:
+     cd backend/consolidated-app
+     npx prisma migrate deploy
+
+  3. Seed database:
+     cd backend/consolidated-app
+     npx prisma db seed
+
+  4. Verify tables exist:
+     npx prisma db pull --print | head -20
+
+### Phase 3: Verify Deployment
+
+  1. Health check:
+     curl https://dinanwuye-api.onrender.com/api/v1/health
+
+  2. Swagger docs (if enabled):
+     https://dinanwuye-api.onrender.com/docs
+
+  3. Test signup:
+     curl -X POST https://dinanwuye-api.onrender.com/api/v1/auth/signup \
+       -H "Content-Type: application/json" \
+       -d '{"email":"test@example.com","password":"Test1234!"}'
+
+  4. Test login:
+     curl -X POST https://dinanwuye-api.onrender.com/api/v1/auth/login \
+       -H "Content-Type: application/json" \
+       -d '{"identifier":"test@example.com","password":"Test1234!"}'
+
+  5. Open main frontend:
+     https://dinanwuye.onrender.com/auth
+
+  6. Open admin frontend:
+     https://dinanwuye-admin.onrender.com
+
+
+## SEED DATA
+
+  After running `npx prisma db seed`, the following accounts exist:
+
+  Admin Account:
+    Email: admin@dinanwuye.com
+    Password: Admin123!
+    Role: super_admin
+
+  Demo User Accounts (all password: Password123!):
+    - demo@dinanwuye.com (Amara, Female, Lagos)
+    - chidi@dinanwuye.com (Chidi, Male, Enugu)
+    - nneka@dinanwuye.com (Nneka, Female, Abuja)
+    - emeka@dinanwuye.com (Emeka, Male, Port Harcourt)
+    - fatima@dinanwuye.com (Fatima, Female, Accra)
+    - tunde@dinanwuye.com (Tunde, Male, Lagos)
+    - adaeze@dinanwuye.com (Adaeze, Female, Kano)
+
+  All demo accounts are verified and have complete profiles.
+
+
+## ROLLBACK PLAN
+
+  If the consolidated backend fails:
+
+  1. Old services were deleted — cannot rollback to them
+  2. Git tag `pre-consolidation` exists for code reference
+  3. If critical: redeploy from pre-consolidation tag
+     git checkout pre-consolidation
+     (requires recreating old service dirs)
+
+  Best approach: fix forward. The consolidated backend is the single source of truth.
+
+
+## TROUBLESHOOTING
+
+  Port scan timeout:
+    Free tier sleeps after 15 min inactivity.
+    First request takes 30-60 seconds to wake up.
+    Set NODE_ENV=production for faster cold starts.
+
+  Module not found:
+    Build command might be wrong.
+    Check that prisma generate runs during build.
+
+  Database connection failed:
+    Verify DATABASE_URL is correct.
+    Check PostgreSQL is running in Render dashboard.
+    Use Internal URL for Render services, External for local.
+
+  WebSocket not connecting:
+    Free tier doesn't support WebSocket upgrades.
+    Consider using Socket.io with polling fallback.
+
+  500 on /api/v1/health:
+    Check Render logs for build errors.
+    Verify prisma generate completed.
+    Check DATABASE_URL is reachable.
+
+  CORS errors:
+    Verify CORS_ORIGIN matches your frontend URLs exactly.
+    No trailing spaces, comma-separated.
+
+
+## SUPPORT LINKS
+
+  Render Dashboard: https://dashboard.render.com
+  Render Docs: https://render.com/docs
+  Prisma Docs: https://www.prisma.io/docs
+  NestJS Docs: https://docs.nestjs.com
