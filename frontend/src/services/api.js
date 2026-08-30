@@ -1,27 +1,25 @@
 /**
- * Dinanwuye API client — one axios instance per microservice
- * (auth 3001, profile 3002, messaging 3003, safety 3005, matching 8000)
- * Cordova-ready: plain fetch/axios, no SSR.
+ * Dinanwuye API client — single consolidated NestJS API + separate Python matching service.
  */
 
 import axios from 'axios';
 
-const configuredAuthUrl = import.meta.env.VITE_AUTH_URL || import.meta.env.VITE_API_URL;
-const authUrl = (configuredAuthUrl || 'https://dinanwuye-back.onrender.com/api/v1')
-  .replace('dinanwuye-backend.onrender.com', 'dinanwuye-back.onrender.com')
-  .replace(/\/?$/, '/api/v1')
-  .replace(/\/api\/v1\/api\/v1$/, '/api/v1');
+const API_BASE = (
+  import.meta.env.VITE_API_URL || 'https://dinanwuye-api.onrender.com'
+).replace(/\/+$/, '');
 
 export const SERVICES = {
-  auth: authUrl,
-  profile: import.meta.env.VITE_PROFILE_URL || 'https://dinanwuye-profile.onrender.com/api/v1',
-  messaging: import.meta.env.VITE_MESSAGING_URL || 'https://dinanwuye-messaging.onrender.com/api/v1',
-  safety: import.meta.env.VITE_SAFETY_URL || 'http://localhost:3005/api/v1',
-  matching: import.meta.env.VITE_MATCHING_URL || 'https://dinanwuye-matching.onrender.com/api/v1',
+  auth:      `${API_BASE}/api/v1`,
+  profile:   `${API_BASE}/api/v1`,
+  messaging: `${API_BASE}/api/v1`,
+  safety:    `${API_BASE}/api/v1`,
+  matching:  (
+    import.meta.env.VITE_MATCHING_URL || 'https://dinanwuye-matching.onrender.com'
+  ).replace(/\/+$/, '') + '/api/v1',
 };
 
 // Socket.IO gateway lives at the server root (not under /api/v1)
-export const MESSAGING_SOCKET_URL = (SERVICES.messaging || 'http://localhost:3003').replace(/\/api\/v1\/?$/, '');
+export const MESSAGING_SOCKET_URL = API_BASE;
 
 const TOKEN_KEYS = {
   access: 'dnw_access_token',
