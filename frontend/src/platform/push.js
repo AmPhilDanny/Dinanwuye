@@ -74,9 +74,15 @@ const initWebPush = async (options) => {
     throw new Error('Web Push not supported');
   }
 
-  // Register service worker
-  swRegistration = await navigator.serviceWorker.register('/sw.js');
-  await navigator.serviceWorker.ready;
+  // Register service worker — fail gracefully so a missing/broken sw.js
+  // does not block login or any other app feature.
+  try {
+    swRegistration = await navigator.serviceWorker.register('/sw.js');
+    await navigator.serviceWorker.ready;
+  } catch (swErr) {
+    console.warn('[push] Service worker registration failed — push notifications unavailable:', swErr);
+    throw new Error('Service worker unavailable — push notifications disabled');
+  }
 
   // Request permission
   const permission = await Notification.requestPermission();

@@ -8,6 +8,7 @@ export default defineConfig({
     react(),
     VitePWA({
       registerType: 'autoUpdate',
+      strategies: 'generateSW',
       includeAssets: ['favicon.svg'],
       manifest: {
         name: 'Dinanwuye',
@@ -19,13 +20,20 @@ export default defineConfig({
         orientation: 'portrait-primary',
         scope: '/',
         start_url: '/',
-        icons: [],
+        icons: [
+          {
+            src: '/favicon.svg',
+            sizes: 'any',
+            type: 'image/svg+xml',
+            purpose: 'any maskable'
+          }
+        ],
         categories: ['lifestyle', 'social'],
         screenshots: [],
         shortcuts: []
       },
       workbox: {
-        globPatterns: ['**/*.{js,css,html,ico,png,svg,woff2}'],
+        globPatterns: ['**/*.{js,css,html,ico,png,svg,woff2,woff,ttf,eot,json,webmanifest,xml}'],
         runtimeCaching: [
           {
             urlPattern: /^https:\/\/api\./i,
@@ -50,7 +58,9 @@ export default defineConfig({
               }
             }
           }
-        ]
+        ],
+        cleanupOutdatedCaches: true,
+        navigateFallback: 'index.html'
       }
     })
   ],

@@ -28,10 +28,10 @@ import useAppStore from '@store/useAppStore';
 const isEmail = (value) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
 
 const DEMO_ACCOUNTS = [
-  { label: 'Male 1', email: 'chidi@example.com', pass: 'Password123!', gender: '👨' },
-  { label: 'Male 2', email: 'emeka@example.com', pass: 'Password123!', gender: '👨' },
-  { label: 'Female 1', email: 'amaka@example.com', pass: 'Password123!', gender: '👩' },
-  { label: 'Female 2', email: 'ngozi@example.com', pass: 'Password123!', gender: '👩' },
+  { label: 'Male 1', email: 'chidi@dinanwuye.com', pass: 'Password123!', gender: '👨' },
+  { label: 'Male 2', email: 'emeka@dinanwuye.com', pass: 'Password123!', gender: '👨' },
+  { label: 'Female 1', email: 'demo@dinanwuye.com', pass: 'Password123!', gender: '👩' },
+  { label: 'Female 2', email: 'nneka@dinanwuye.com', pass: 'Password123!', gender: '👩' },
 ];
 
 const Auth = () => {
@@ -95,12 +95,27 @@ const Auth = () => {
       return;
     }
     setLoading(true);
+
+    // On Render free tier the API sleeps after 15 min — warn user after 5s
+    const coldStartTimer = setTimeout(() => {
+      sonnerToast.loading('Server is waking up… this takes ~30s on first request', { id: 'cold-start', duration: 40000 });
+    }, 5000);
+
     try {
       const { data } = await authApi.login(identifier.trim(), password);
+      sonnerToast.dismiss('cold-start');
       finishAuth(data);
     } catch (err) {
-      sonnerToast.error(extractError(err));
+      sonnerToast.dismiss('cold-start');
+      const msg = extractError(err);
+      // Network error = server still sleeping or CORS issue
+      if (!err?.response) {
+        sonnerToast.error('Cannot reach server. It may still be waking up — please wait 30s and try again.');
+      } else {
+        sonnerToast.error(msg);
+      }
     } finally {
+      clearTimeout(coldStartTimer);
       setLoading(false);
     }
   };

@@ -1,0 +1,28 @@
+# Render Static Site header rules
+
+# Service worker: must not be cached so updates propagate immediately
+/sw.js
+  Cache-Control: no-cache, no-store, must-revalidate
+  Content-Type: application/javascript; charset=utf-8
+
+/registerSW.js
+  Cache-Control: no-cache, no-store, must-revalidate
+  Content-Type: application/javascript; charset=utf-8
+
+# Workbox runtime file
+/workbox-*.js
+  Cache-Control: no-cache, no-store, must-revalidate
+  Content-Type: application/javascript; charset=utf-8
+
+# Manifest: short cache
+/manifest.webmanifest
+  Cache-Control: max-age=3600
+  Content-Type: application/manifest+json
+
+# index.html: always revalidate
+/index.html
+  Cache-Control: no-cache, no-store, must-revalidate
+
+# Hashed assets: long cache (Vite content-hashes filenames)
+/assets/*
+  Cache-Control: public, max-age=31536000, immutable
