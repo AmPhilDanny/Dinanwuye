@@ -1,9 +1,10 @@
 import { Body, Controller, Get, Post, Put, Delete, Param, Query, UseGuards, Req, HttpCode, HttpStatus } from '@nestjs/common';
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
-import { JwtAuthGuard, getUserFromRequest } from '../shared';
+import { getUserFromRequest } from '../shared';
 import type { JwtRequest } from '../shared';
 import { AdminService } from './admin.service';
 import { AdminLoginDto, AdminResponseDto, UpdateUserStatusDto, UserManagementDto } from './dto/admin.dto';
+import { AdminAuthGuard } from './admin-jwt.strategy';
 
 @ApiTags('admin')
 @Controller('admin')
@@ -18,7 +19,7 @@ export class AdminController {
   }
 
   @Get('auth/me')
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(AdminAuthGuard)
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Get current admin' })
   getMe(@Req() request: JwtRequest): Promise<AdminResponseDto> {
@@ -27,7 +28,7 @@ export class AdminController {
   }
 
   @Get('dashboard/stats')
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(AdminAuthGuard)
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Get dashboard statistics' })
   getDashboardStats(): Promise<{
@@ -41,7 +42,7 @@ export class AdminController {
   }
 
   @Get('users')
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(AdminAuthGuard)
   @ApiBearerAuth()
   @ApiOperation({ summary: 'List all users' })
   getUsers(
@@ -52,7 +53,7 @@ export class AdminController {
   }
 
   @Get('users/:id')
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(AdminAuthGuard)
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Get user details' })
   getUser(@Param('id') id: string): Promise<UserManagementDto> {
@@ -60,7 +61,7 @@ export class AdminController {
   }
 
   @Put('users/:id/status')
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(AdminAuthGuard)
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Update user status (ban/unban)' })
   updateUserStatus(
@@ -71,7 +72,7 @@ export class AdminController {
   }
 
   @Get('reports')
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(AdminAuthGuard)
   @ApiBearerAuth()
   @ApiOperation({ summary: 'List all reports' })
   getReports(
@@ -79,5 +80,33 @@ export class AdminController {
     @Query('limit') limit: number = 50,
   ): Promise<{ reports: any[]; total: number }> {
     return this.admin.getReports(page, limit);
+  }
+
+  @Get('profiles')
+  @UseGuards(AdminAuthGuard)
+  @ApiBearerAuth()
+  getProfiles(@Query('page') page: number = 1, @Query('limit') limit: number = 50) {
+    return this.admin.getProfiles(page, limit);
+  }
+
+  @Get('photos')
+  @UseGuards(AdminAuthGuard)
+  @ApiBearerAuth()
+  getPhotos(@Query('page') page: number = 1, @Query('limit') limit: number = 50) {
+    return this.admin.getPhotos(page, limit);
+  }
+
+  @Get('matches')
+  @UseGuards(AdminAuthGuard)
+  @ApiBearerAuth()
+  getMatches(@Query('page') page: number = 1, @Query('limit') limit: number = 50) {
+    return this.admin.getMatches(page, limit);
+  }
+
+  @Get('audit')
+  @UseGuards(AdminAuthGuard)
+  @ApiBearerAuth()
+  getAudit(@Query('page') page: number = 1, @Query('limit') limit: number = 50) {
+    return this.admin.getAudit(page, limit);
   }
 }

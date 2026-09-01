@@ -3,6 +3,7 @@ import { ConfigService } from '@nestjs/config';
 import { PassportStrategy } from '@nestjs/passport';
 import { ExtractJwt, Strategy } from 'passport-jwt';
 import { PrismaService } from '../prisma/prisma.module';
+import { AuthGuard } from '@nestjs/passport';
 
 interface AdminJwtPayload {
   sub: string;
@@ -42,3 +43,6 @@ export class AdminJwtStrategy extends PassportStrategy(Strategy, 'admin-jwt') {
     };
   }
 }
+
+@Injectable()
+export class AdminAuthGuard extends AuthGuard('admin-jwt') {}

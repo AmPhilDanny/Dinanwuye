@@ -168,4 +168,40 @@ export class AdminService {
 
     return { reports, total };
   }
+
+  async getProfiles(page: number = 1, limit: number = 50): Promise<{ profiles: any[]; total: number }> {
+    const skip = (page - 1) * limit;
+    const [profiles, total] = await Promise.all([
+      this.prisma.profile.findMany({ skip, take: limit, orderBy: { createdAt: 'desc' }, include: { user: true } }),
+      this.prisma.profile.count(),
+    ]);
+    return { profiles, total };
+  }
+
+  async getPhotos(page: number = 1, limit: number = 50): Promise<{ photos: any[]; total: number }> {
+    const skip = (page - 1) * limit;
+    const [photos, total] = await Promise.all([
+      this.prisma.photo.findMany({ skip, take: limit, orderBy: { createdAt: 'desc' }, include: { profile: { include: { user: true } } } }),
+      this.prisma.photo.count(),
+    ]);
+    return { photos, total };
+  }
+
+  async getMatches(page: number = 1, limit: number = 50): Promise<{ matches: any[]; total: number }> {
+    const skip = (page - 1) * limit;
+    const [matches, total] = await Promise.all([
+      this.prisma.match.findMany({ skip, take: limit, orderBy: { createdAt: 'desc' }, include: { userA: true, userB: true } }),
+      this.prisma.match.count(),
+    ]);
+    return { matches, total };
+  }
+
+  async getAudit(page: number = 1, limit: number = 50): Promise<{ entries: any[]; total: number }> {
+    const skip = (page - 1) * limit;
+    const [entries, total] = await Promise.all([
+      this.prisma.auditLog.findMany({ skip, take: limit, orderBy: { createdAt: 'desc' }, include: { admin: true } }),
+      this.prisma.auditLog.count(),
+    ]);
+    return { entries, total };
+  }
 }
