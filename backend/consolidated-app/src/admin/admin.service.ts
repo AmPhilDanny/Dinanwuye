@@ -62,13 +62,17 @@ export class AdminService {
   async getDashboardStats(): Promise<{
     totalUsers: number;
     activeUsers: number;
+    totalProfiles: number;
+    pendingPhotos: number;
     totalMatches: number;
     totalReports: number;
     pendingReports: number;
   }> {
-    const [totalUsers, activeUsers, totalMatches, totalReports, pendingReports] = await Promise.all([
+    const [totalUsers, activeUsers, totalProfiles, pendingPhotos, totalMatches, totalReports, pendingReports] = await Promise.all([
       this.prisma.user.count(),
       this.prisma.user.count({ where: { status: 'active' } }),
+      this.prisma.profile.count(),
+      this.prisma.photo.count({ where: { moderationStatus: 'pending' } }),
       this.prisma.match.count(),
       this.prisma.report.count(),
       this.prisma.report.count({ where: { status: 'pending' } }),
@@ -77,6 +81,8 @@ export class AdminService {
     return {
       totalUsers,
       activeUsers,
+      totalProfiles,
+      pendingPhotos,
       totalMatches,
       totalReports,
       pendingReports,

@@ -34,6 +34,8 @@ export class AdminController {
   getDashboardStats(): Promise<{
     totalUsers: number;
     activeUsers: number;
+    totalProfiles: number;
+    pendingPhotos: number;
     totalMatches: number;
     totalReports: number;
     pendingReports: number;
