@@ -12,7 +12,7 @@ services:
       - key: PORT
         value: 3000
       - key: DATABASE_URL
-        value: postgresql://postgres:dinanwuye@2026@db.ysvqvrskwyyjbeepbyuc.supabase.co:5432/postgres
+        value: postgresql://postgres:dinanwuye%402026@db.ysvqvrskwyyjbeepbyuc.supabase.co:5432/postgres
       - key: REDIS_URL
         fromService:
           name: dinanwuye-redis
