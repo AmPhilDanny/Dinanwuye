@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 
-const API_URL = import.meta.env.VITE_ADMIN_API_URL || 'http://localhost:3007/api/v1/admin';
+const API_URL = import.meta.env.VITE_ADMIN_API_URL || 'https://dinanwuye-api.onrender.com/api/v1/admin';
 
 const nav = [
   ['Overview', 'overview'],
@@ -12,8 +12,8 @@ const nav = [
 ];
 
 const DEMO_CREDENTIALS = {
-  email: 'demo@dinanwuye.com',
-  password: 'demo123456',
+  email: 'admin@dinanwuye.com',
+  password: 'Admin123!',
 };
 
 function Login({ onLogin }) {
