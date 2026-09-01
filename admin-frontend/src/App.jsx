@@ -34,9 +34,20 @@ function Login({ onLogin }) {
         method: 'POST', headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, password }),
       });
-      if (!response.ok) throw new Error('Unable to sign in with those credentials.');
-      const data = await response.json();
-      onLogin(data.accessToken || data.token);
+      const responseText = await response.text();
+      let data = {};
+      try {
+        data = responseText ? JSON.parse(responseText) : {};
+      } catch {
+        data = {};
+      }
+      if (!response.ok) {
+        const message = Array.isArray(data.message) ? data.message[0] : data.message;
+        throw new Error(message || `Admin API returned HTTP ${response.status}.`);
+      }
+      const token = data.accessToken || data.token;
+      if (!token) throw new Error('Admin API returned no access token.');
+      onLogin(token);
     } catch (exception) { setError(exception.message); }
   };
 
