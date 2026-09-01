@@ -123,6 +123,8 @@ export const authApi = {
   verifyOtp: (identifier, code, purpose) => authClient.post('/auth/verify-otp', { identifier, code, purpose }),
   refresh: (refreshToken) => authClient.post('/auth/refresh', { refreshToken }),
   logout: (refreshToken) => authClient.post('/auth/logout', { refreshToken }),
+  livenessChallenge: () => authClient.post('/auth/liveness/challenge'),
+  verifyLiveness: (payload) => authClient.post('/auth/liveness/verify', payload),
 };
 
 // ============================================================

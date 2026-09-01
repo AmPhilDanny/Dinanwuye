@@ -78,7 +78,7 @@ export class ProfileService {
   async getPublicProfile(profileId: string): Promise<PublicProfileDto> {
     const profile = await this.prisma.profile.findFirst({
       where: { OR: [{ id: profileId }, { userId: profileId }] },
-      include: { photos: { orderBy: { order: 'asc' } } },
+      include: { photos: { where: { moderationStatus: 'approved' }, orderBy: { order: 'asc' } } },
     });
     if (!profile) {
       throw new NotFoundException('Profile not found');

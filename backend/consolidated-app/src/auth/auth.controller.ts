@@ -5,7 +5,9 @@ import type { JwtRequest } from '../shared';
 import { Throttle } from '@nestjs/throttler';
 import { AuthService } from './auth.service';
 import { AuthResponseDto, LoginDto, LogoutDto, OtpSendResponseDto, RefreshDto, SignupDto, VerifyOtpDto } from './dto/auth.dto';
+import { LivenessResultDto } from './dto/liveness.dto';
 import { OtpService } from '../otp/otp.service';
+import { LivenessService } from './liveness.service';
 
 @ApiTags('auth')
 @Controller('auth')
@@ -13,6 +15,7 @@ export class AuthController {
   constructor(
     private readonly auth: AuthService,
     private readonly otp: OtpService,
+    private readonly liveness: LivenessService,
   ) {}
 
   @Post('signup')
@@ -45,6 +48,23 @@ export class AuthController {
   @ApiOperation({ summary: 'Verify an OTP code' })
   verifyOtp(@Body() dto: VerifyOtpDto): Promise<AuthResponseDto> {
     return this.auth.verifyOtp(dto);
+  }
+
+  @Post('liveness/challenge')
+  @HttpCode(HttpStatus.OK)
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
+  getLivenessChallenge(): { challenges: string[] } {
+    return { challenges: this.liveness.createChallenge() };
+  }
+
+  @Post('liveness/verify')
+  @HttpCode(HttpStatus.OK)
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
+  verifyLiveness(@Req() request: JwtRequest, @Body() dto: LivenessResultDto) {
+    const { sub } = getUserFromRequest(request);
+    return this.liveness.recordResult(sub, dto.challenges, dto.completed, dto.confidence, dto.deviceRef);
   }
 
   @Post('refresh')

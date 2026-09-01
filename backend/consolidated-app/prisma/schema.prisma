@@ -34,6 +34,7 @@ model User {
   // Relations
   refreshTokens     RefreshToken[]
   otpCodes          OtpCode[]
+  livenessAttempts  LivenessAttempt[]
   profile           Profile?
   conversationsA    Conversation[] @relation("ConversationUserA")
   conversationsB    Conversation[] @relation("ConversationUserB")
@@ -82,6 +83,23 @@ model OtpCode {
 
   @@index([userId, purpose])
   @@index([identifier])
+  @@schema("dinanwuye_auth")
+}
+
+model LivenessAttempt {
+  id             String   @id @default(uuid())
+  userId         String
+  user           User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  challenges     String[]
+  completed      String[]
+  passed         Boolean
+  confidence     Float?
+  deviceRef      String?
+  failureReason  String?
+  createdAt      DateTime @default(now())
+
+  @@index([userId, createdAt])
+  @@index([passed, createdAt])
   @@schema("dinanwuye_auth")
 }
 

@@ -2,7 +2,7 @@ import { BadRequestException, Injectable, NotFoundException } from '@nestjs/comm
 import { PrismaService } from '../prisma/prisma.module';
 import { CreatePhotoDto, PhotoDto } from './dto/profile.dto';
 
-const MAX_PHOTOS = 6;
+const MAX_PHOTOS = 1;
 
 @Injectable()
 export class PhotosService {
@@ -15,22 +15,21 @@ export class PhotosService {
     }
 
     const count = await this.prisma.photo.count({ where: { profileId: profile.id } });
-    if (count >= MAX_PHOTOS) {
-      throw new BadRequestException(`Maximum of ${MAX_PHOTOS} photos allowed`);
-    }
 
     const match = dto.dataUrl.match(/^data:image\/(jpeg|png|webp);base64,([A-Za-z0-9+/=]+)$/);
     if (!match) {
       throw new BadRequestException('Photo must be a jpeg, png, or webp data URL');
     }
 
-    const photo = await this.prisma.photo.create({
-      data: {
-        profileId: profile.id,
-        // Temporary storage: keep the data URL in PostgreSQL until object storage is available.
-        s3Key: dto.dataUrl,
-        order: dto.order ?? count,
-      },
+    const photo = await this.prisma.$transaction(async (tx: any) => {
+      await tx.photo.deleteMany({ where: { profileId: profile.id } });
+      return tx.photo.create({
+        data: {
+          profileId: profile.id,
+          s3Key: dto.dataUrl,
+          order: 0,
+        },
+      });
     });
 
     return {

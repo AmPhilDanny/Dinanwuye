@@ -38,12 +38,17 @@ const Auth = () => {
   const navigate = useNavigate();
   const setAuthUser = useAppStore((s) => s.setAuthUser);
 
-  const [mode, setMode] = useState('login'); // 'login' | 'signup' | 'otp'
+  const [mode, setMode] = useState('login'); // 'login' | 'signup' | 'otp' | 'liveness'
   const [identifier, setIdentifier] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [otp, setOtp] = useState('');
   const [loading, setLoading] = useState(false);
+  const [livenessData, setLivenessData] = useState(null);
+  const [livenessChallenges, setLivenessChallenges] = useState([]);
+  const [completedChallenges, setCompletedChallenges] = useState([]);
+  const videoRef = useRef(null);
+  const cameraStreamRef = useRef(null);
 
   // OTP resend countdown
   const [retryAfter, setRetryAfter] = useState(0);
@@ -54,6 +59,26 @@ const Auth = () => {
       if (countdownRef.current) clearInterval(countdownRef.current);
     };
   }, []);
+
+  useEffect(() => {
+    if (mode !== 'liveness' || !navigator.mediaDevices?.getUserMedia) return undefined;
+    let active = true;
+    navigator.mediaDevices.getUserMedia({ video: { facingMode: 'user' }, audio: false })
+      .then((stream) => {
+        if (!active) {
+          stream.getTracks().forEach((track) => track.stop());
+          return;
+        }
+        cameraStreamRef.current = stream;
+        if (videoRef.current) videoRef.current.srcObject = stream;
+      })
+      .catch(() => sonnerToast.error('Camera access is required for liveness verification'));
+    return () => {
+      active = false;
+      cameraStreamRef.current?.getTracks().forEach((track) => track.stop());
+      cameraStreamRef.current = null;
+    };
+  }, [mode]);
 
   const startCountdown = (seconds) => {
     if (countdownRef.current) clearInterval(countdownRef.current);
@@ -76,6 +101,44 @@ const Auth = () => {
       navigate('/profile-wizard', { replace: true });
     } else {
       navigate('/discover', { replace: true });
+    }
+  };
+
+  const beginLiveness = async (data) => {
+    tokenStorage.set(data.accessToken, data.refreshToken);
+    setLivenessData(data);
+    setLoading(true);
+    try {
+      const { data: challenge } = await authApi.livenessChallenge();
+      setLivenessChallenges(challenge.challenges);
+      setCompletedChallenges([]);
+      setMode('liveness');
+    } catch (err) {
+      tokenStorage.clear();
+      sonnerToast.error(extractError(err));
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleLiveness = async () => {
+    if (!livenessData || completedChallenges.length < livenessChallenges.length) {
+      sonnerToast.error('Complete every liveness action first');
+      return;
+    }
+    setLoading(true);
+    try {
+      await authApi.verifyLiveness({
+        challenges: livenessChallenges,
+        completed: completedChallenges,
+        confidence: 0.5,
+        deviceRef: typeof navigator !== 'undefined' ? navigator.userAgent.slice(0, 200) : undefined,
+      });
+      finishAuth(livenessData);
+    } catch (err) {
+      sonnerToast.error(extractError(err));
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -139,7 +202,7 @@ const Auth = () => {
         sonnerToast.success('Verification code sent');
         startCountdown(30);
       } else {
-        finishAuth(data);
+        await beginLiveness(data);
       }
     } catch (err) {
       sonnerToast.error(extractError(err));
@@ -179,7 +242,7 @@ const Auth = () => {
     setLoading(true);
     try {
       const { data } = await authApi.verifyOtp(trimmed, otp, 'signup');
-      finishAuth(data);
+      await beginLiveness(data);
     } catch (err) {
       sonnerToast.error(extractError(err));
     } finally {
@@ -191,7 +254,8 @@ const Auth = () => {
     e.preventDefault();
     if (mode === 'login') handleLogin();
     else if (mode === 'signup') handleSignup();
-    else handleVerifyOtp();
+    else if (mode === 'otp') handleVerifyOtp();
+    else handleLiveness();
   };
 
   const handleSocialLogin = (provider) => {
@@ -219,6 +283,7 @@ const Auth = () => {
     login: 'Welcome Back',
     signup: 'Create Account',
     otp: 'Verify Your Number',
+    liveness: 'Quick Liveness Check',
   };
 
   return (
@@ -232,7 +297,9 @@ const Auth = () => {
             </div>
             <h1 className="text-2xl font-black text-foreground">{titles[mode]}</h1>
             <p className="mt-1.5 text-sm text-gray-500 dark:text-gray-400">
-              {mode === 'otp'
+              {mode === 'liveness'
+                ? 'Complete the two actions selected for you'
+                : mode === 'otp'
                 ? 'Enter the 6-digit code sent to your phone'
                 : mode === 'login'
                 ? 'Sign in to continue to Dinanwuye'
@@ -316,6 +383,25 @@ const Auth = () => {
               </div>
             )}
 
+            {mode === 'liveness' && (
+              <div className="space-y-4 rounded-2xl border border-gray-200 bg-background p-4 dark:border-gray-700">
+                <p className="text-sm text-gray-600 dark:text-gray-300">Allow camera access, then perform each action below. No video is uploaded.</p>
+                <video ref={videoRef} autoPlay muted playsInline className="mx-auto aspect-square w-48 rounded-2xl object-cover" />
+                <div className="space-y-2">
+                  {livenessChallenges.map((challenge) => (
+                    <button
+                      key={challenge}
+                      type="button"
+                      className={`w-full rounded-xl border px-4 py-3 text-left font-semibold ${completedChallenges.includes(challenge) ? 'border-green-500 bg-green-50 text-green-700' : 'border-gray-200 dark:border-gray-700'}`}
+                      onClick={() => setCompletedChallenges((prev) => prev.includes(challenge) ? prev : [...prev, challenge])}
+                    >
+                      {completedChallenges.includes(challenge) ? 'Completed: ' : 'Perform: '}{challenge.replace('_', ' ')}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
+
             <button
               type="submit"
               disabled={loading}
@@ -327,6 +413,8 @@ const Auth = () => {
                 'Verify'
               ) : mode === 'login' ? (
                 'Sign In'
+              ) : mode === 'liveness' ? (
+                'Complete Verification'
               ) : (
                 'Create Account'
               )}

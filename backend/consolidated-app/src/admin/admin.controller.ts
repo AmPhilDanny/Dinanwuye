@@ -98,6 +98,13 @@ export class AdminController {
     return this.admin.getPhotos(page, limit);
   }
 
+  @Put('photos/:id/moderation')
+  @UseGuards(AdminAuthGuard)
+  @ApiBearerAuth()
+  updatePhotoModeration(@Param('id') id: string, @Body() body: { status: 'approved' | 'rejected' | 'flagged' | 'pending' }) {
+    return this.admin.updatePhotoModeration(id, body.status);
+  }
+
   @Get('matches')
   @UseGuards(AdminAuthGuard)
   @ApiBearerAuth()

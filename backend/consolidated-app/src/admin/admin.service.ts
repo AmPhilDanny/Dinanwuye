@@ -193,6 +193,14 @@ export class AdminService {
     return { photos, total };
   }
 
+  async updatePhotoModeration(id: string, status: 'approved' | 'rejected' | 'flagged' | 'pending') {
+    if (!['approved', 'rejected', 'flagged', 'pending'].includes(status)) {
+      throw new NotFoundException('Invalid moderation status');
+    }
+    const photo = await this.prisma.photo.update({ where: { id }, data: { moderationStatus: status } });
+    return { id: photo.id, moderationStatus: photo.moderationStatus };
+  }
+
   async getMatches(page: number = 1, limit: number = 50): Promise<{ matches: any[]; total: number }> {
     const skip = (page - 1) * limit;
     const [matches, total] = await Promise.all([
