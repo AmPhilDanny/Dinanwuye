@@ -18,8 +18,8 @@ class Settings(BaseSettings):
     # CORS
     CORS_ORIGINS: str = "https://dinanwuye.com,https://www.dinanwuye.com"
 
-    # Database
-    DATABASE_URL: str = os.getenv("DATABASE_URL", "postgresql+asyncpg://postgres:postgres@localhost:5432/dinanwuye")
+    # Database - Supabase
+    DATABASE_URL: str = os.getenv("DATABASE_URL", "postgresql+asyncpg://postgres:dinanwuye%402026@db.ysvqvrskwyyjbeepbyuc.supabase.co:5432/postgres")
 
     # Redis
     REDIS_URL: str = os.getenv("REDIS_URL", "redis://localhost:6379")
