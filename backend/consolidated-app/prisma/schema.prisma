@@ -4,11 +4,13 @@
 
 generator client {
   provider = "prisma-client-js"
+  previewFeatures = ["multiSchema"]
 }
 
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
+  schemas  = ["dinanwuye_auth", "dinanwuye_profile", "dinanwuye_messaging", "dinanwuye_matching", "dinanwuye_trust_safety", "dinanwuye_admin", "dinanwuye_notification", "dinanwuye_payment"]
 }
 
 // ============================================================
@@ -49,6 +51,7 @@ model User {
   @@index([email])
   @@index([phone])
   @@index([status])
+  @@schema("dinanwuye_auth")
 }
 
 model RefreshToken {
@@ -62,6 +65,7 @@ model RefreshToken {
   createdAt  DateTime  @default(now())
 
   @@index([userId])
+  @@schema("dinanwuye_auth")
 }
 
 model OtpCode {
@@ -78,6 +82,7 @@ model OtpCode {
 
   @@index([userId, purpose])
   @@index([identifier])
+  @@schema("dinanwuye_auth")
 }
 
 // ============================================================
@@ -118,6 +123,7 @@ model Profile {
 
   @@index([gender, seeking])
   @@index([isVerified])
+  @@schema("dinanwuye_profile")
 }
 
 model Photo {
@@ -130,6 +136,7 @@ model Photo {
   createdAt        DateTime @default(now())
 
   @@index([profileId])
+  @@schema("dinanwuye_profile")
 }
 
 model Preference {
@@ -145,6 +152,8 @@ model Preference {
   incognitoMode    Boolean  @default(false)
   createdAt        DateTime @default(now())
   updatedAt        DateTime @updatedAt
+
+  @@schema("dinanwuye_profile")
 }
 
 // ============================================================
@@ -167,6 +176,7 @@ model Conversation {
   @@index([userAId])
   @@index([userBId])
   @@unique([userAId, userBId])
+  @@schema("dinanwuye_messaging")
 }
 
 model Message {
@@ -183,6 +193,7 @@ model Message {
 
   @@index([conversationId, createdAt])
   @@index([senderId])
+  @@schema("dinanwuye_messaging")
 }
 
 // ============================================================
@@ -200,6 +211,7 @@ model Match {
 
   @@unique([userAId, userBId])
   @@map("matches")
+  @@schema("dinanwuye_matching")
 }
 
 model Swipe {
@@ -213,6 +225,7 @@ model Swipe {
 
   @@unique([actorId, targetId])
   @@map("swipes")
+  @@schema("dinanwuye_matching")
 }
 
 // ============================================================
@@ -231,6 +244,7 @@ model Block {
   @@unique([blockerId, blockedId])
   @@index([blockerId])
   @@index([blockedId])
+  @@schema("dinanwuye_trust_safety")
 }
 
 model Report {
@@ -250,6 +264,7 @@ model Report {
 
   @@index([targetId, status])
   @@index([reporterId])
+  @@schema("dinanwuye_trust_safety")
 }
 
 model Ban {
@@ -263,6 +278,7 @@ model Ban {
   liftedAt  DateTime?
 
   @@index([userId])
+  @@schema("dinanwuye_trust_safety")
 }
 
 // ============================================================
@@ -286,6 +302,7 @@ model AdminUser {
 
   @@index([email])
   @@index([role])
+  @@schema("dinanwuye_admin")
 }
 
 model AuditLog {
@@ -305,6 +322,7 @@ model AuditLog {
   @@index([entity])
   @@index([entityId])
   @@index([createdAt])
+  @@schema("dinanwuye_admin")
 }
 
 model AdminSession {
@@ -320,6 +338,7 @@ model AdminSession {
 
   @@index([adminId])
   @@index([token])
+  @@schema("dinanwuye_admin")
 }
 
 model AdminActivity {
@@ -331,6 +350,7 @@ model AdminActivity {
 
   @@unique([adminId, date])
   @@index([date])
+  @@schema("dinanwuye_admin")
 }
 
 // ============================================================
@@ -350,6 +370,7 @@ model Notification {
 
   @@index([userId])
   @@index([sentAt])
+  @@schema("dinanwuye_notification")
 }
 
 model PushSubscription {
@@ -364,6 +385,7 @@ model PushSubscription {
 
   @@index([userId])
   @@unique([endpoint])
+  @@schema("dinanwuye_notification")
 }
 
 // ============================================================
@@ -386,6 +408,7 @@ model Subscription {
 
   @@index([userId])
   @@index([providerId])
+  @@schema("dinanwuye_payment")
 }
 
 model Payment {
@@ -404,4 +427,5 @@ model Payment {
   @@index([userId])
   @@index([providerId])
   @@index([status])
+  @@schema("dinanwuye_payment")
 }

@@ -5,14 +5,14 @@ services:
     runtime: node
     plan: starter
     buildCommand: NODE_ENV=development pnpm install --no-frozen-lockfile && npx prisma generate && npx nest build
-    startCommand: npx prisma migrate deploy && node prisma/seed.js && pnpm run start:prod
+    startCommand: npx prisma db push --accept-data-loss && node prisma/seed.js && pnpm run start:prod
     envVars:
       - key: NODE_ENV
         value: production
       - key: PORT
         value: 3000
       - key: DATABASE_URL
-        value: postgresql://postgres:dinanwuye%402026@db.ysvqvrskwyyjbeepbyuc.supabase.co:5432/postgres
+        sync: false
       - key: REDIS_URL
         fromService:
           name: dinanwuye-redis
