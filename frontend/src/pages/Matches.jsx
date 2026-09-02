@@ -47,6 +47,8 @@ const Matches = () => {
   const [loading, setLoading] = useState(true);
   const [toast, setToast] = useState({ open: false, message: '', color: 'danger' });
 
+  const [streak, setStreak] = useState(0);
+
   const loadMatches = useCallback(async () => {
     setLoading(true);
     try {
@@ -118,7 +120,7 @@ const Matches = () => {
   return (
     <IonPage>
       <IonContent className="ion-padding">
-        <HeaderNav activeTab="chats" unread={rows.filter((r) => r.unreadCount > 0).length} streak={1} />
+        <HeaderNav activeTab="chats" unread={rows.filter((r) => r.unreadCount > 0).length} streak={streak} />
 
         {loading ? (
           <div className="flex items-center justify-center min-h-[50vh]">
@@ -148,7 +150,7 @@ const Matches = () => {
               id: r.otherUserId,
               name: r.profile?.name || 'Match',
               photo: r.profile?.photos?.[0]?.s3Key || null,
-              intention: 'Serious Dating'
+              intention: r.profile?.intention || 'Serious Dating'
             }))}
             onSend={async (matchId, text) => {
               // Open chat if not sending inline, but since we are inline:
@@ -178,7 +180,7 @@ const Matches = () => {
           color={toast.color}
         />
       </IonContent>
-      <BottomNav />
+      <BottomNav unread={rows.filter((r) => r.unreadCount > 0).length} />
     </IonPage>
   );
 };
