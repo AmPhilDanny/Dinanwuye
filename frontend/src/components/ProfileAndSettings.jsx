@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import { ShieldCheck, ShieldStar, Moon, Camera, Check, X, MapPin, PencilSimple } from '@phosphor-icons/react';
 import { IonToast, IonSpinner } from '@ionic/react';
 import { profileApi } from '@services/api';
+import { photoUrl } from '@utils/photoUrl';
 
 const VALUE_OPTIONS = ["Family", "Ambition", "Faith", "Creativity", "Growth", "Community", "Freedom", "Service"];
 const INTENTIONS = ["Marriage / Life Partner", "Serious Dating", "Meaningful Connection"];
@@ -40,21 +41,13 @@ export default function ProfileAndSettings({ user, onChange, toast, onToastDismi
 
     setUploading(true);
     try {
-      const reader = new FileReader();
-      reader.onload = async (e) => {
-        const dataUrl = e.target.result;
-        try {
-          await profileApi.addPhoto(dataUrl, 0);
-          if (onChange) onChange({ ...user, photo: dataUrl });
-          setPhotoToast({ open: true, message: 'Photo updated', color: 'success' });
-        } catch {
-          setPhotoToast({ open: true, message: 'Failed to upload photo', color: 'danger' });
-        } finally {
-          setUploading(false);
-        }
-      };
-      reader.readAsDataURL(file);
+      await profileApi.addPhoto(file);
+      const localUrl = URL.createObjectURL(file);
+      if (onChange) onChange({ ...user, photo: localUrl });
+      setPhotoToast({ open: true, message: 'Photo updated', color: 'success' });
     } catch {
+      setPhotoToast({ open: true, message: 'Failed to upload photo', color: 'danger' });
+    } finally {
       setUploading(false);
     }
     event.target.value = '';
@@ -86,7 +79,7 @@ export default function ProfileAndSettings({ user, onChange, toast, onToastDismi
         className="mt-4 overflow-hidden rounded-3xl bg-foreground/5 shadow-sm"
       >
         <div className="relative h-44">
-          <img src={user.photo || user.photo_url || `https://ui-avatars.com/api/?name=${encodeURIComponent(user.name)}&size=600`} alt={user.name} className="h-full w-full object-cover" />
+          <img src={photoUrl(user.photo) || `https://ui-avatars.com/api/?name=${encodeURIComponent(user.name)}&size=600`} alt={user.name} className="h-full w-full object-cover" />
           <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-onyx/90 to-transparent p-4 text-white">
             {editing ? (
               <input

@@ -4,6 +4,7 @@ import HeaderNav from '@components/HeaderNav';
 import BottomNav from '@components/BottomNav';
 import ProfileAndSettings from '@components/ProfileAndSettings';
 import { profileApi, messagingApi } from '@services/api';
+import { photoUrl } from '@utils/photoUrl';
 import useAppStore from '@store/useAppStore';
 
 const Profile = () => {

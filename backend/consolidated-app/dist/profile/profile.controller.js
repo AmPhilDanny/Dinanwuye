@@ -14,6 +14,7 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ProfileController = void 0;
 const common_1 = require("@nestjs/common");
+const platform_express_1 = require("@nestjs/platform-express");
 const swagger_1 = require("@nestjs/swagger");
 const shared_1 = require("../shared");
 const profile_service_1 = require("./profile.service");
@@ -45,9 +46,9 @@ let ProfileController = class ProfileController {
         const { sub } = (0, shared_1.getUserFromRequest)(request);
         return this.photos.listPhotos(sub);
     }
-    addPhoto(request, dto) {
+    addPhoto(request, file) {
         const { sub } = (0, shared_1.getUserFromRequest)(request);
-        return this.photos.addPhoto(sub, dto);
+        return this.photos.addPhoto(sub, file);
     }
     removePhoto(request, photoId) {
         const { sub } = (0, shared_1.getUserFromRequest)(request);
@@ -111,11 +112,13 @@ __decorate([
     (0, common_1.Post)('me/photos'),
     (0, common_1.UseGuards)(shared_1.JwtAuthGuard),
     (0, swagger_1.ApiBearerAuth)(),
-    (0, swagger_1.ApiOperation)({ summary: 'Add a photo (V0: JSON s3Key + order, no multipart)' }),
+    (0, common_1.UseInterceptors)((0, platform_express_1.FileInterceptor)('photo')),
+    (0, swagger_1.ApiConsumes)('multipart/form-data'),
+    (0, swagger_1.ApiOperation)({ summary: 'Upload a profile photo (jpeg/png/webp, max 10 MB)' }),
     __param(0, (0, common_1.Req)()),
-    __param(1, (0, common_1.Body)()),
+    __param(1, (0, common_1.UploadedFile)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object, profile_dto_1.CreatePhotoDto]),
+    __metadata("design:paramtypes", [Object, Object]),
     __metadata("design:returntype", Promise)
 ], ProfileController.prototype, "addPhoto", null);
 __decorate([

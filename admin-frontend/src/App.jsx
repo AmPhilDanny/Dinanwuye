@@ -1,6 +1,13 @@
 import { useEffect, useState } from 'react';
 
 const API_URL = import.meta.env.VITE_ADMIN_API_URL || 'https://dinanwuye-api.onrender.com/api/v1/admin';
+const API_BASE = API_URL.replace(/\/api\/v1\/admin$/, '');
+
+function photoUrl(s3Key) {
+  if (!s3Key) return null;
+  if (s3Key.startsWith('data:') || s3Key.startsWith('http')) return s3Key;
+  return `${API_BASE}/uploads/photos/${encodeURIComponent(s3Key)}`;
+}
 
 async function apiFetch(path, options = {}) {
   const token = localStorage.getItem('admin_token');
@@ -284,7 +291,7 @@ function Users({ users, loading, token, onRefresh }) {
             <p style={{ margin: 0, fontSize: 11, fontWeight: 600, color: '#6a7d75', textTransform: 'uppercase' }}>Account</p>
             <div style={{ marginTop: 12, display: 'flex', gap: 12, alignItems: 'flex-start' }}>
               {selectedUser.photo ? (
-                <img src={selectedUser.photo} alt="" style={{ width: 56, height: 56, borderRadius: 8, objectFit: 'cover', flexShrink: 0 }} />
+                <img src={photoUrl(selectedUser.photo)} alt="" style={{ width: 56, height: 56, borderRadius: 8, objectFit: 'cover', flexShrink: 0 }} />
               ) : (
                 <div style={{ width: 56, height: 56, borderRadius: 8, background: '#ddd', display: 'grid', placeItems: 'center', color: '#999', fontSize: 18, fontWeight: 700, flexShrink: 0 }}>
                   {(selectedUser.profile?.name || '?')[0].toUpperCase()}
@@ -448,7 +455,7 @@ function Users({ users, loading, token, onRefresh }) {
                 <td>
                   <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
                     {user.photo ? (
-                      <img src={user.photo} alt="" style={{ width: 32, height: 32, borderRadius: 6, objectFit: 'cover', flexShrink: 0 }} />
+                      <img src={photoUrl(user.photo)} alt="" style={{ width: 32, height: 32, borderRadius: 6, objectFit: 'cover', flexShrink: 0 }} />
                     ) : (
                       <div style={{ width: 32, height: 32, borderRadius: 6, background: '#ddd', display: 'grid', placeItems: 'center', color: '#999', fontSize: 12, fontWeight: 700, flexShrink: 0 }}>
                         {(user.profile?.name || '?')[0].toUpperCase()}
@@ -554,7 +561,7 @@ function Photos({ records, loading, token, onRefresh }) {
               <div style={{ position: 'relative', background: '#f5f5f5' }}>
                 {photo.s3Key ? (
                   <img
-                    src={photo.s3Key}
+                    src={photoUrl(photo.s3Key)}
                     alt="Review"
                     style={{ width: '100%', height: 280, objectFit: 'cover', display: 'block' }}
                   />

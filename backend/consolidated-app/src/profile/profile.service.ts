@@ -120,6 +120,7 @@ export class ProfileService {
         onboardingComplete: true,
         ...(requester?.gender ? { seeking: { has: requester.gender } } : {}),
       },
+      include: { photos: { where: { moderationStatus: 'approved' }, orderBy: { order: 'asc' }, take: 1 } },
       take: 200,
     });
 
@@ -133,6 +134,8 @@ export class ProfileService {
       .map((c: any) => ({
         id: c.id,
         userId: c.userId,
+        name: c.name,
+        photo: c.photos?.[0]?.s3Key || null,
         age: computeAge(c.dob),
         gender: c.gender,
         seeking: c.seeking,

@@ -16,6 +16,7 @@ import { heartOutline, personAddOutline, chatbubblesOutline } from 'ionicons/ico
 import { useNavigate } from 'react-router-dom';
 import { matchingApi, messagingApi, profileApi } from '@services/api';
 import { MatchSchema, ConversationSummarySchema } from '@utils/schemas';
+import { photoUrl } from '@utils/photoUrl';
 import HeaderNav from '@components/HeaderNav';
 import BottomNav from '@components/BottomNav';
 import ChatAndDates from '@components/ChatAndDates';
@@ -149,7 +150,7 @@ const Matches = () => {
             profiles={rows.map(r => ({
               id: r.otherUserId,
               name: r.profile?.name || 'Match',
-              photo: r.profile?.photos?.[0]?.s3Key || null,
+              photo: photoUrl(r.profile?.photos?.[0]?.s3Key) || null,
               intention: r.profile?.intention || 'Serious Dating'
             }))}
             onSend={async (matchId, text) => {

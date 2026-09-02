@@ -136,7 +136,13 @@ export const profileApi = {
   getCandidates: () => profileClient.get('/profiles/candidates'),
   getPublic: (id) => profileClient.get(`/profiles/${id}`),
   getPhotos: () => profileClient.get('/profiles/me/photos'),
-  addPhoto: (dataUrl, order = 0) => profileClient.post('/profiles/me/photos', { dataUrl, order }),
+  addPhoto: (file) => {
+    const formData = new FormData();
+    formData.append('photo', file);
+    return profileClient.post('/profiles/me/photos', formData, {
+      headers: { 'Content-Type': 'multipart/form-data' },
+    });
+  },
   removePhoto: (photoId) => profileClient.delete(`/profiles/me/photos/${photoId}`),
   getPreferences: () => profileClient.get('/profiles/me/preferences'),
   updatePreferences: (data) => profileClient.patch('/profiles/me/preferences', data),

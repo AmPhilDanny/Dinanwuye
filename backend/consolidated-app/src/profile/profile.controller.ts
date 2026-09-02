@@ -1,5 +1,6 @@
-import { Body, Controller, Delete, Get, HttpCode, HttpStatus, Param, Patch, Post, Req, UseGuards } from '@nestjs/common';
-import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
+import { Body, Controller, Delete, Get, HttpCode, HttpStatus, Param, Patch, Post, Req, UploadedFile, UseGuards, UseInterceptors } from '@nestjs/common';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { ApiBearerAuth, ApiConsumes, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { JwtAuthGuard, getUserFromRequest } from '../shared';
 import type { JwtRequest } from '../shared';
 import { ProfileService } from './profile.service';
@@ -7,7 +8,6 @@ import { PhotosService } from './photos.service';
 import { PreferencesService } from './preferences.service';
 import {
   CandidateDto,
-  CreatePhotoDto,
   PhotoDto,
   PreferencesDto,
   ProfileResponseDto,
@@ -64,10 +64,12 @@ export class ProfileController {
   @Post('me/photos')
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
-  @ApiOperation({ summary: 'Add a photo (V0: JSON s3Key + order, no multipart)' })
-  addPhoto(@Req() request: JwtRequest, @Body() dto: CreatePhotoDto): Promise<PhotoDto> {
+  @UseInterceptors(FileInterceptor('photo'))
+  @ApiConsumes('multipart/form-data')
+  @ApiOperation({ summary: 'Upload a profile photo (jpeg/png/webp, max 10 MB)' })
+  addPhoto(@Req() request: JwtRequest, @UploadedFile() file: any): Promise<PhotoDto> {
     const { sub } = getUserFromRequest(request);
-    return this.photos.addPhoto(sub, dto);
+    return this.photos.addPhoto(sub, file);
   }
 
   @Delete('me/photos/:photoId')

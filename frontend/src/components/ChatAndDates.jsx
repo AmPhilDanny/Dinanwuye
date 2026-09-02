@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { PaperPlaneRight, Sparkle, ArrowsClockwise, Flame, CheckCircle, MapPin } from '@phosphor-icons/react';
 import { DATE_VENUES } from '@utils/constants';
+import { photoUrl } from '@utils/photoUrl';
 
 const DEFAULT_ICEBREAKERS = [
   "Hey! I noticed we both swiped right — what caught your eye?",
@@ -76,7 +77,7 @@ export default function ChatAndDates({ matches, profiles, onSend }) {
         {(matches || []).map((m) => {
           const p = profileOf(m);
           if (!p) return null;
-          const photoUrl = p.photo || p.photo_url || `https://ui-avatars.com/api/?name=${encodeURIComponent(p.name)}&size=600&background=random`;
+          const imgSrc = photoUrl(p.photo || p.photo_url) || `https://ui-avatars.com/api/?name=${encodeURIComponent(p.name)}&size=600&background=random`;
           return (
             <button
               key={m.id}
@@ -88,7 +89,7 @@ export default function ChatAndDates({ matches, profiles, onSend }) {
               }`}
             >
               <span className="relative">
-                <img src={photoUrl} alt={p.name} className={"h-10 w-10 rounded-full object-cover ring-2 ring-offset-1 ring-offset-background " + (selectedId === m.id ? "ring-primary" : "ring-transparent")} />
+                <img src={imgSrc} alt={p.name} className={"h-10 w-10 rounded-full object-cover ring-2 ring-offset-1 ring-offset-background " + (selectedId === m.id ? "ring-primary" : "ring-transparent")} />
                 <span className="absolute -right-0.5 -bottom-0.5 grid h-4 w-4 place-items-center rounded-full bg-secondary text-[9px] font-black text-white shadow-sm">
                   {m.streak}
                 </span>

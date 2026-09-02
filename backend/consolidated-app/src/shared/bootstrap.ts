@@ -6,6 +6,9 @@
 import { INestApplication, ValidationPipe, Logger } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import { existsSync, mkdirSync } from 'fs';
+import { join } from 'path';
+import express from 'express';
 import { API_PREFIX } from './constants';
 
 export interface BootstrapOptions {
@@ -53,6 +56,13 @@ export async function bootstrapService<T>(appModule: T, options: BootstrapOption
     const document = SwaggerModule.createDocument(app, config);
     SwaggerModule.setup('docs', app, document);
   }
+
+  const uploadsDir = join(process.cwd(), 'uploads', 'photos');
+  if (!existsSync(uploadsDir)) {
+    mkdirSync(uploadsDir, { recursive: true });
+  }
+  const expressApp = app.getHttpAdapter().getInstance();
+  expressApp.use('/uploads/photos', express.static(uploadsDir));
 
   await app.listen(options.port);
   logger.log(`🚀 ${options.serviceName} v${options.version} listening on :${options.port}`);

@@ -1,6 +1,7 @@
 import React, { useMemo, useState } from 'react';
 import { motion } from 'framer-motion';
 import { MapPin, ShieldCheck, Sparkle, Flame, Heart, Compass } from '@phosphor-icons/react';
+import { photoUrl } from '@utils/photoUrl';
 
 const CURATED_COLLECTIONS = [
   { label: "Value Aligned 90%+", icon: "💎", filter: (p) => (p.compatibility_score || 0) >= 90 },
@@ -72,7 +73,7 @@ export default function ExploreGrid({ profiles, onLike }) {
       <div className="grid grid-cols-2 gap-3">
         {shown.map((p, i) => {
           const id = p.id || p.user_id;
-          const photoUrl = p.photo || p.photo_url || `https://ui-avatars.com/api/?name=${encodeURIComponent(p.name)}&size=600&background=random`;
+          const imgSrc = photoUrl(p.photo || p.photo_url) || `https://ui-avatars.com/api/?name=${encodeURIComponent(p.name)}&size=600&background=random`;
           const distance = p.distanceKm || p.distance_km || 0;
           const matchScore = p.match || p.compatibility_score || 0;
           const isVerified = p.verified || p.is_verified || false;
@@ -88,7 +89,7 @@ export default function ExploreGrid({ profiles, onLike }) {
               className="group relative overflow-hidden rounded-3xl bg-foreground/5 text-left shadow-sm"
             >
               <div className="relative aspect-[4/5] overflow-hidden">
-                <img src={photoUrl} alt={p.name} className="h-full w-full object-cover transition duration-500 group-hover:scale-105" draggable={false} />
+                <img src={imgSrc} alt={p.name} className="h-full w-full object-cover transition duration-500 group-hover:scale-105" draggable={false} />
                 <button
                   onClick={(e) => { e.stopPropagation(); toggleLike(p); }}
                   aria-label="Like"

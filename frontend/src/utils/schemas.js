@@ -130,6 +130,7 @@ export const PreferencesSchema = z.object({
 export const DeckItemSchema = z.object({
   user_id: z.string(),
   name: z.string().nullable().optional(),
+  photo: z.string().nullable().optional(),
   age: z.number().int(),
   gender: z.string(),
   location: z.string().nullable().optional(),

@@ -15,6 +15,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigate, useParams } from 'react-router-dom';
 import { messagingApi, profileApi } from '@services/api';
 import { ConversationDetailSchema, MessagesPageSchema, MessageSchema } from '@utils/schemas';
+import { photoUrl } from '@utils/photoUrl';
 import useAppStore from '@store/useAppStore';
 import {
   getChatSocket,
@@ -243,7 +244,7 @@ const Chat = () => {
     }
   };
 
-  const photoUrl = otherUser?.photos?.[0]?.s3Key || null;
+  const avatarUrl = photoUrl(otherUser?.photos?.[0]?.s3Key);
 
   return (
     <IonPage>
@@ -257,8 +258,8 @@ const Chat = () => {
           <ArrowLeft size={20} weight="bold" />
         </button>
         <div className="flex flex-1 items-center gap-2.5">
-          {photoUrl ? (
-            <img src={photoUrl} alt={otherUser?.name} className="h-9 w-9 rounded-full object-cover ring-2 ring-primary/20" />
+          {avatarUrl ? (
+            <img src={avatarUrl} alt={otherUser?.name} className="h-9 w-9 rounded-full object-cover ring-2 ring-primary/20" />
           ) : (
             <div className="grid h-9 w-9 place-items-center rounded-full bg-gradient-to-br from-primary to-secondary text-sm font-bold text-white">
               {(otherUser?.name || '?')[0]}

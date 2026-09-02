@@ -67,6 +67,8 @@ async def build_deck(
         items=[
             DeckItem(
                 user_id=cand.userId,
+                name=cand.name,
+                photo=cand.photo,
                 age=cand.age,
                 gender=cand.gender,
                 location=cand.locationName,

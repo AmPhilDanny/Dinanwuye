@@ -1,4 +1,7 @@
 "use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.bootstrapService = bootstrapService;
 /**
@@ -9,6 +12,9 @@ exports.bootstrapService = bootstrapService;
 const common_1 = require("@nestjs/common");
 const core_1 = require("@nestjs/core");
 const swagger_1 = require("@nestjs/swagger");
+const fs_1 = require("fs");
+const path_1 = require("path");
+const express_1 = __importDefault(require("express"));
 const constants_1 = require("./constants");
 async function bootstrapService(appModule, options) {
     const logger = new common_1.Logger(options.serviceName);
@@ -39,6 +45,12 @@ async function bootstrapService(appModule, options) {
         const document = swagger_1.SwaggerModule.createDocument(app, config);
         swagger_1.SwaggerModule.setup('docs', app, document);
     }
+    const uploadsDir = (0, path_1.join)(process.cwd(), 'uploads', 'photos');
+    if (!(0, fs_1.existsSync)(uploadsDir)) {
+        (0, fs_1.mkdirSync)(uploadsDir, { recursive: true });
+    }
+    const expressApp = app.getHttpAdapter().getInstance();
+    expressApp.use('/uploads/photos', express_1.default.static(uploadsDir));
     await app.listen(options.port);
     logger.log(`🚀 ${options.serviceName} v${options.version} listening on :${options.port}`);
     return app;

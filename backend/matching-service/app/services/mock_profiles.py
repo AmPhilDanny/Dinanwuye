@@ -17,6 +17,9 @@ def _iso(ago: timedelta) -> str:
 MOCK_CANDIDATES = [
     {
         "id": "mock-0001",
+        "userId": "mock-0001",
+        "name": "Adaeze",
+        "photo": None,
         "age": 29,
         "gender": "female",
         "seeking": ["male", "25-29"],
@@ -29,6 +32,9 @@ MOCK_CANDIDATES = [
     },
     {
         "id": "mock-0002",
+        "userId": "mock-0002",
+        "name": "Amara",
+        "photo": None,
         "age": 33,
         "gender": "female",
         "seeking": ["male", "30-34"],
@@ -41,6 +47,9 @@ MOCK_CANDIDATES = [
     },
     {
         "id": "mock-0003",
+        "userId": "mock-0003",
+        "name": "Chidi",
+        "photo": None,
         "age": 26,
         "gender": "female",
         "seeking": ["male", "25-29"],
@@ -53,6 +62,9 @@ MOCK_CANDIDATES = [
     },
     {
         "id": "mock-0004",
+        "userId": "mock-0004",
+        "name": "Ebele",
+        "photo": None,
         "age": 38,
         "gender": "female",
         "seeking": ["male", "35-39"],
@@ -65,6 +77,9 @@ MOCK_CANDIDATES = [
     },
     {
         "id": "mock-0005",
+        "userId": "mock-0005",
+        "name": "Folake",
+        "photo": None,
         "age": 24,
         "gender": "female",
         "seeking": ["male", "18-24"],

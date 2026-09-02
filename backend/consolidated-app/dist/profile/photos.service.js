@@ -12,29 +12,52 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.PhotosService = void 0;
 const common_1 = require("@nestjs/common");
 const prisma_module_1 = require("../prisma/prisma.module");
+const fs_1 = require("fs");
+const path_1 = require("path");
+const crypto_1 = require("crypto");
 const MAX_PHOTOS = 1;
+const UPLOADS_DIR = (0, path_1.join)(process.cwd(), 'uploads', 'photos');
+const ALLOWED_MIME = ['image/jpeg', 'image/png', 'image/webp'];
+const MAX_BYTES = 10 * 1024 * 1024;
 let PhotosService = class PhotosService {
     prisma;
     constructor(prisma) {
         this.prisma = prisma;
     }
-    async addPhoto(userId, dto) {
+    async addPhoto(userId, file, order = 0) {
+        if (!file) {
+            throw new common_1.BadRequestException('No file uploaded');
+        }
+        if (!ALLOWED_MIME.includes(file.mimetype)) {
+            throw new common_1.BadRequestException('Photo must be jpeg, png, or webp');
+        }
+        if (file.size > MAX_BYTES) {
+            throw new common_1.BadRequestException('Photo must be under 10 MB');
+        }
         const profile = await this.prisma.profile.findUnique({ where: { userId } });
         if (!profile) {
             throw new common_1.NotFoundException('Profile not found — GET /profiles/me first');
         }
-        const count = await this.prisma.photo.count({ where: { profileId: profile.id } });
-        const match = dto.dataUrl.match(/^data:image\/(jpeg|png|webp);base64,([A-Za-z0-9+/=]+)$/);
-        if (!match) {
-            throw new common_1.BadRequestException('Photo must be a jpeg, png, or webp data URL');
+        if (!(0, fs_1.existsSync)(UPLOADS_DIR)) {
+            (0, fs_1.mkdirSync)(UPLOADS_DIR, { recursive: true });
         }
+        const ext = file.mimetype === 'image/png' ? 'png' : file.mimetype === 'image/webp' ? 'webp' : 'jpg';
+        const filename = `${(0, crypto_1.randomUUID)()}.${ext}`;
+        const filePath = (0, path_1.join)(UPLOADS_DIR, filename);
+        (0, fs_1.writeFileSync)(filePath, file.buffer);
         const photo = await this.prisma.$transaction(async (tx) => {
+            const existing = await tx.photo.findMany({ where: { profileId: profile.id } });
+            for (const p of existing) {
+                const oldFile = (0, path_1.join)(UPLOADS_DIR, p.s3Key);
+                if ((0, fs_1.existsSync)(oldFile))
+                    (0, fs_1.unlinkSync)(oldFile);
+            }
             await tx.photo.deleteMany({ where: { profileId: profile.id } });
             return tx.photo.create({
                 data: {
                     profileId: profile.id,
-                    s3Key: dto.dataUrl,
-                    order: 0,
+                    s3Key: filename,
+                    order,
                 },
             });
         });
@@ -54,6 +77,9 @@ let PhotosService = class PhotosService {
         if (!photo) {
             throw new common_1.NotFoundException('Photo not found');
         }
+        const filePath = (0, path_1.join)(UPLOADS_DIR, photo.s3Key);
+        if ((0, fs_1.existsSync)(filePath))
+            (0, fs_1.unlinkSync)(filePath);
         await this.prisma.photo.delete({ where: { id: photoId } });
         return { success: true };
     }

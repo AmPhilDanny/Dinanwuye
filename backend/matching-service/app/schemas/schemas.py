@@ -20,6 +20,8 @@ class CandidateProfile(BaseModel):
 
     id: str
     userId: str
+    name: str | None = None
+    photo: str | None = None
     age: int
     gender: str
     seeking: list[str] = []
@@ -34,6 +36,7 @@ class CandidateProfile(BaseModel):
 class DeckItem(BaseModel):
     user_id: str
     name: str | None = None
+    photo: str | None = None
     age: int
     gender: str
     location: str | None = None
