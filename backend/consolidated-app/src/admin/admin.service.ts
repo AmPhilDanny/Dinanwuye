@@ -276,7 +276,7 @@ export class AdminService {
           entity: 'Profile',
           entityId: id,
           oldData: {},
-          newData: dto,
+          newData: { ...dto },
         },
       });
     }
