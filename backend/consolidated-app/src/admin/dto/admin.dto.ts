@@ -1,5 +1,5 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import { IsEmail, IsEnum, IsOptional, IsString, MaxLength, MinLength } from 'class-validator';
+import { IsDateString, IsEmail, IsEnum, IsOptional, IsString, MaxLength, MinLength } from 'class-validator';
 
 export class AdminLoginDto {
   @ApiProperty({ example: 'admin@dinanwuye.com' })
@@ -50,7 +50,69 @@ export class UpdateUserStatusDto {
   @ApiPropertyOptional({ example: 'Violated terms of service' })
   @IsOptional()
   @IsString()
+  @MaxLength(500)
   reason?: string;
+
+  @ApiPropertyOptional({ example: '2026-12-31T00:00:00.000Z', description: 'Optional expiry for suspension/ban' })
+  @IsOptional()
+  @IsDateString()
+  expiresAt?: string;
+}
+
+export class AdminUpdateUserProfileDto {
+  @ApiPropertyOptional({ example: 'Chinelo' })
+  @IsOptional()
+  @IsString()
+  @MinLength(2)
+  @MaxLength(60)
+  name?: string;
+
+  @ApiPropertyOptional({ example: 'female', enum: ['male', 'female', 'non_binary'] })
+  @IsOptional()
+  @IsString()
+  gender?: string;
+
+  @ApiPropertyOptional({ example: 'Love good food and long walks...' })
+  @IsOptional()
+  @IsString()
+  @MaxLength(500)
+  bio?: string;
+
+  @ApiPropertyOptional({ example: 'Igbo' })
+  @IsOptional()
+  @IsString()
+  @MaxLength(40)
+  ethnicity?: string;
+
+  @ApiPropertyOptional({ example: 'Christian' })
+  @IsOptional()
+  @IsString()
+  @MaxLength(40)
+  religion?: string;
+
+  @ApiPropertyOptional({ example: 'Engineer' })
+  @IsOptional()
+  @IsString()
+  @MaxLength(60)
+  occupation?: string;
+
+  @ApiPropertyOptional({ example: 'Lagos, Nigeria' })
+  @IsOptional()
+  @IsString()
+  @MaxLength(120)
+  locationName?: string;
+
+  @ApiPropertyOptional({ example: true })
+  @IsOptional()
+  isVerified?: boolean;
+
+  @ApiPropertyOptional({ example: true })
+  @IsOptional()
+  isActive?: boolean;
+
+  @ApiPropertyOptional({ example: true })
+  @IsOptional()
+  isPremium?: boolean;
 }
 
 export class UserManagementDto {
@@ -82,6 +144,17 @@ export class UserManagementDto {
   profile?: {
     name: string;
     gender: string;
+    bio?: string | null;
+    ethnicity?: string | null;
+    religion?: string | null;
+    occupation?: string | null;
     locationName?: string | null;
+    isVerified: boolean;
+    isActive: boolean;
+    isPremium: boolean;
+    interests?: string[];
+    languages?: string[];
+    relationshipIntent?: string | null;
+    heightCm?: number | null;
   } | null;
 }

@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { ShieldCheck, ShieldStar, Moon, Camera, Check, X, MapPin, PencilSimple } from '@phosphor-icons/react';
+import { IonToast } from '@ionic/react';
 
 const VALUE_OPTIONS = ["Family", "Ambition", "Faith", "Creativity", "Growth", "Community", "Freedom", "Service"];
 const INTENTIONS = ["Marriage / Life Partner", "Serious Dating", "Meaningful Connection"];
 
-export default function ProfileAndSettings({ user, onChange }) {
+export default function ProfileAndSettings({ user, onChange, toast, onToastDismiss }) {
   const [editing, setEditing] = useState(false);
   const [name, setName] = useState(user.name);
   const [bio, setBio] = useState(user.bio);
@@ -154,6 +155,15 @@ export default function ProfileAndSettings({ user, onChange }) {
           <p className="text-xs font-semibold">You&apos;ve pledged the community safety guidelines. Report anything that feels off, we take it seriously.</p>
         </div>
       </div>
+
+      <IonToast
+        isOpen={toast?.open || false}
+        onDidDismiss={onToastDismiss}
+        message={toast?.message || ''}
+        duration={2500}
+        position="bottom"
+        color={toast?.color || 'success'}
+      />
     </div>
   );
 }

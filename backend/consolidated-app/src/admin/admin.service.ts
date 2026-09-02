@@ -2,7 +2,7 @@ import { Injectable, UnauthorizedException, NotFoundException } from '@nestjs/co
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import { PrismaService } from '../prisma/prisma.module';
-import { AdminLoginDto, AdminResponseDto, UpdateUserStatusDto, UserManagementDto } from './dto/admin.dto';
+import { AdminLoginDto, AdminResponseDto, AdminUpdateUserProfileDto, UpdateUserStatusDto, UserManagementDto } from './dto/admin.dto';
 import * as bcrypt from 'bcrypt';
 
 @Injectable()
@@ -89,16 +89,26 @@ export class AdminService {
     };
   }
 
-  async getUsers(page: number = 1, limit: number = 50): Promise<{ users: UserManagementDto[]; total: number }> {
+  async getUsers(page: number = 1, limit: number = 50, search?: string): Promise<{ users: UserManagementDto[]; total: number }> {
     const skip = (page - 1) * limit;
+    const where = search
+      ? {
+          OR: [
+            { email: { contains: search, mode: 'insensitive' as const } },
+            { phone: { contains: search, mode: 'insensitive' as const } },
+            { profile: { name: { contains: search, mode: 'insensitive' as const } } },
+          ],
+        }
+      : {};
     const [users, total] = await Promise.all([
       this.prisma.user.findMany({
         skip,
         take: limit,
         orderBy: { createdAt: 'desc' },
+        where,
         include: { profile: true },
       }),
-      this.prisma.user.count(),
+      this.prisma.user.count({ where }),
     ]);
 
     return {
@@ -114,7 +124,18 @@ export class AdminService {
         profile: u.profile ? {
           name: u.profile.name,
           gender: u.profile.gender,
+          bio: u.profile.bio,
+          ethnicity: u.profile.ethnicity,
+          religion: u.profile.religion,
+          occupation: u.profile.occupation,
           locationName: u.profile.locationName,
+          isVerified: u.profile.isVerified,
+          isActive: u.profile.isActive,
+          isPremium: u.profile.isPremium,
+          interests: u.profile.interests,
+          languages: u.profile.languages,
+          relationshipIntent: u.profile.relationshipIntent,
+          heightCm: u.profile.heightCm,
         } : null,
       })),
       total,
@@ -143,16 +164,122 @@ export class AdminService {
       profile: user.profile ? {
         name: user.profile.name,
         gender: user.profile.gender,
+        bio: user.profile.bio,
+        ethnicity: user.profile.ethnicity,
+        religion: user.profile.religion,
+        occupation: user.profile.occupation,
         locationName: user.profile.locationName,
+        isVerified: user.profile.isVerified,
+        isActive: user.profile.isActive,
+        isPremium: user.profile.isPremium,
+        interests: user.profile.interests,
+        languages: user.profile.languages,
+        relationshipIntent: user.profile.relationshipIntent,
+        heightCm: user.profile.heightCm,
       } : null,
     };
   }
 
-  async updateUserStatus(id: string, dto: UpdateUserStatusDto): Promise<{ success: true }> {
+  async updateUserStatus(id: string, dto: UpdateUserStatusDto, adminId?: string): Promise<{ success: true }> {
+    const user = await this.prisma.user.findUnique({ where: { id } });
+    if (!user) throw new NotFoundException('User not found');
+
+    const oldStatus = user.status;
     await this.prisma.user.update({
       where: { id },
       data: { status: dto.status },
     });
+
+    if (dto.status === 'banned' || dto.status === 'suspended') {
+      await this.prisma.ban.upsert({
+        where: { userId: id },
+        create: {
+          userId: id,
+          reason: dto.reason || `Status changed to ${dto.status}`,
+          bannedBy: adminId || 'system',
+          expiresAt: dto.expiresAt ? new Date(dto.expiresAt) : null,
+        },
+        update: {
+          reason: dto.reason || `Status changed to ${dto.status}`,
+          bannedBy: adminId || 'system',
+          expiresAt: dto.expiresAt ? new Date(dto.expiresAt) : null,
+          liftedAt: null,
+        },
+      });
+    } else if (dto.status === 'active') {
+      const ban = await this.prisma.ban.findUnique({ where: { userId: id } });
+      if (ban) {
+        await this.prisma.ban.update({
+          where: { userId: id },
+          data: { liftedAt: new Date() },
+        });
+      }
+    }
+
+    if (adminId) {
+      await this.prisma.auditLog.create({
+        data: {
+          adminId,
+          action: 'update',
+          entity: 'User',
+          entityId: id,
+          oldData: { status: oldStatus },
+          newData: { status: dto.status, reason: dto.reason },
+        },
+      });
+    }
+
+    return { success: true };
+  }
+
+  async updateUserProfile(id: string, dto: AdminUpdateUserProfileDto, adminId?: string): Promise<{ success: true }> {
+    const user = await this.prisma.user.findUnique({
+      where: { id },
+      include: { profile: true },
+    });
+    if (!user) throw new NotFoundException('User not found');
+
+    // Update user-level fields
+    if (dto.isVerified !== undefined) {
+      await this.prisma.user.update({
+        where: { id },
+        data: { isVerified: dto.isVerified },
+      });
+    }
+
+    // Update profile fields
+    if (user.profile) {
+      const profileData: Record<string, any> = {};
+      if (dto.name !== undefined) profileData.name = dto.name;
+      if (dto.gender !== undefined) profileData.gender = dto.gender;
+      if (dto.bio !== undefined) profileData.bio = dto.bio;
+      if (dto.ethnicity !== undefined) profileData.ethnicity = dto.ethnicity;
+      if (dto.religion !== undefined) profileData.religion = dto.religion;
+      if (dto.occupation !== undefined) profileData.occupation = dto.occupation;
+      if (dto.locationName !== undefined) profileData.locationName = dto.locationName;
+      if (dto.isActive !== undefined) profileData.isActive = dto.isActive;
+      if (dto.isPremium !== undefined) profileData.isPremium = dto.isPremium;
+
+      if (Object.keys(profileData).length > 0) {
+        await this.prisma.profile.update({
+          where: { userId: id },
+          data: profileData,
+        });
+      }
+    }
+
+    if (adminId) {
+      await this.prisma.auditLog.create({
+        data: {
+          adminId,
+          action: 'update',
+          entity: 'Profile',
+          entityId: id,
+          oldData: {},
+          newData: dto,
+        },
+      });
+    }
 
     return { success: true };
   }

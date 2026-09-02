@@ -3,7 +3,7 @@ import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { getUserFromRequest } from '../shared';
 import type { JwtRequest } from '../shared';
 import { AdminService } from './admin.service';
-import { AdminLoginDto, AdminResponseDto, ModeratePhotoDto, UpdateUserStatusDto, UserManagementDto } from './dto/admin.dto';
+import { AdminLoginDto, AdminResponseDto, AdminUpdateUserProfileDto, ModeratePhotoDto, UpdateUserStatusDto, UserManagementDto } from './dto/admin.dto';
 import { AdminAuthGuard } from './admin-jwt.strategy';
 
 @ApiTags('admin')
@@ -46,12 +46,13 @@ export class AdminController {
   @Get('users')
   @UseGuards(AdminAuthGuard)
   @ApiBearerAuth()
-  @ApiOperation({ summary: 'List all users' })
+  @ApiOperation({ summary: 'List all users with optional search' })
   getUsers(
     @Query('page') page: number = 1,
     @Query('limit') limit: number = 50,
+    @Query('search') search?: string,
   ): Promise<{ users: UserManagementDto[]; total: number }> {
-    return this.admin.getUsers(page, limit);
+    return this.admin.getUsers(page, limit, search);
   }
 
   @Get('users/:id')
@@ -65,12 +66,27 @@ export class AdminController {
   @Put('users/:id/status')
   @UseGuards(AdminAuthGuard)
   @ApiBearerAuth()
-  @ApiOperation({ summary: 'Update user status (ban/unban)' })
+  @ApiOperation({ summary: 'Update user status (ban/unban/suspend)' })
   updateUserStatus(
     @Param('id') id: string,
     @Body() dto: UpdateUserStatusDto,
+    @Req() request: JwtRequest,
   ): Promise<{ success: true }> {
-    return this.admin.updateUserStatus(id, dto);
+    const { sub } = getUserFromRequest(request);
+    return this.admin.updateUserStatus(id, dto, sub);
+  }
+
+  @Put('users/:id/profile')
+  @UseGuards(AdminAuthGuard)
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Admin update user profile fields' })
+  updateUserProfile(
+    @Param('id') id: string,
+    @Body() dto: AdminUpdateUserProfileDto,
+    @Req() request: JwtRequest,
+  ): Promise<{ success: true }> {
+    const { sub } = getUserFromRequest(request);
+    return this.admin.updateUserProfile(id, dto, sub);
   }
 
   @Get('reports')
