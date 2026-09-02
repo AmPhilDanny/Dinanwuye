@@ -3,12 +3,47 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { PaperPlaneRight, Sparkle, ArrowsClockwise, Flame, CheckCircle, MapPin } from '@phosphor-icons/react';
 import { DATE_VENUES } from '@utils/constants';
 
-const ICEBREAKERS = [
-  "Your prompt about pepper sauce made me crave jollof immediately.",
-  "I think we'd out-suw the whole neighbourhood together.",
-  "That voice intro is so warm, what's the song though?",
-  "Star, our value alignment is off the charts. Let's fix a date.",
+const DEFAULT_ICEBREAKERS = [
+  "Hey! I noticed we both swiped right — what caught your eye?",
+  "Your profile really stands out. What are you looking for here?",
+  "I love your energy! What's been the highlight of your week?",
+  "We seem to have a lot in common. What's your story?",
 ];
+
+const generateIcebreakers = (profile) => {
+  if (!profile) return DEFAULT_ICEBREAKERS;
+
+  const icebreakers = [];
+  const name = profile.name?.split(' ')[0] || 'there';
+
+  if (profile.interests?.length > 0) {
+    const interest = profile.interests[Math.floor(Math.random() * profile.interests.length)];
+    icebreakers.push(`${name}, I see you're into ${interest}! What got you started with that?`);
+  }
+
+  if (profile.intention) {
+    icebreakers.push(`I see you're here for ${profile.intention.toLowerCase()} — me too! What's your ideal first date?`);
+  }
+
+  if (profile.bio) {
+    icebreakers.push(`Your bio caught my attention! Tell me more about yourself.`);
+  }
+
+  if (profile.locationName) {
+    icebreakers.push(`Fellow ${profile.locationName} local here! What's your favorite spot in the city?`);
+  }
+
+  while (icebreakers.length < 4) {
+    const fallback = DEFAULT_ICEBREAKERS[icebreakers.length % DEFAULT_ICEBREAKERS.length];
+    if (!icebreakers.includes(fallback)) {
+      icebreakers.push(fallback);
+    } else {
+      icebreakers.push(`Hey ${name}! What's something you're passionate about?`);
+    }
+  }
+
+  return icebreakers.slice(0, 4);
+};
 
 export default function ChatAndDates({ matches, profiles, onSend }) {
   const [selectedId, setSelectedId] = useState(matches && matches[0] ? matches[0].id : null);
@@ -17,6 +52,8 @@ export default function ChatAndDates({ matches, profiles, onSend }) {
   const active = matches?.find((m) => m.id === selectedId);
 
   const profileOf = (m) => profiles?.find((p) => (p.id || p.user_id) === m.profileId);
+  const activeProfile = active ? profileOf(active) : null;
+  const icebreakers = generateIcebreakers(activeProfile);
 
   const handleSend = () => {
     if (!active || !draft.trim()) return;
@@ -114,7 +151,7 @@ export default function ChatAndDates({ matches, profiles, onSend }) {
       </AnimatePresence>
 
       <div className="flex flex-wrap gap-1.5">
-        {ICEBREAKERS.map((ib) => (
+        {icebreakers.map((ib) => (
           <button
             key={ib}
             onClick={() => active && onSend && onSend(active.id, ib)}

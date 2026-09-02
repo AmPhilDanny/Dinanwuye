@@ -63,7 +63,8 @@ const ProfileWizard = () => {
   const [locating, setLocating] = useState(false);
 
   // Step 2 — Photos (V0: data URL stored in the database; object storage later)
-  const [photos, setPhotos] = useState([]); // [{ dataUrl, order }]
+  // One photo per profile — adding a new photo replaces the existing one
+  const [photo, setPhoto] = useState(null); // { dataUrl }
 
   // Step 3 — About You
   const [bio, setBio] = useState('');

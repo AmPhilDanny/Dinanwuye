@@ -23,22 +23,6 @@ export const DEFAULT_FILTERS = {
   zodiac: "Any",
 };
 
-export const DEFAULT_USER = {
-  name: "Dipo",
-  age: 29,
-  photo: PHOTOS[4],
-  city: "Lagos",
-  country: "Nigeria",
-  job: "Marketing Lead",
-  intention: "Marriage / Life Partner",
-  verified: true,
-  bio: "Sunday jollof purist, gym regular, and looking for someone who values family and wants a real future.",
-  values: ["Family", "Ambition", "Faith"],
-  likes: ["Design", "Food", "Afrobeats", "Travel"],
-  incognito: false,
-  trustScore: 96,
-};
-
 export const DATE_VENUES = [
   { id: "v1", name: "Nok by Alara", emoji: "🍽️", area: "Lagos Island", rating: 4.8, category: "Fine Dining", vibe: "upscale" },
   { id: "v2", name: "The Wheatbaker", emoji: "🌿", area: "Ikoyi", rating: 4.7, category: "Rooftop Bar", vibe: "relaxed" },
