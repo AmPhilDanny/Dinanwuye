@@ -16,7 +16,7 @@ class Settings(BaseSettings):
     PROJECT_NAME: str = "Dinanwuye Matching Service"
 
     # CORS
-    CORS_ORIGINS: str = "https://dinanwuye.com,https://www.dinanwuye.com"
+    CORS_ORIGINS: str = "https://dinanwuye.com,https://www.dinanwuye.com,https://dinanwuye.onrender.com"
 
     # Database - Supabase
     DATABASE_URL: str = os.getenv("DATABASE_URL", "postgresql+asyncpg://postgres:dinanwuye%402026@db.ysvqvrskwyyjbeepbyuc.supabase.co:5432/postgres")
