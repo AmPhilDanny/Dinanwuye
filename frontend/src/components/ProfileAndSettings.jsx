@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { motion } from 'framer-motion';
 import { ShieldCheck, ShieldStar, Moon, Camera, Check, X, MapPin, PencilSimple } from '@phosphor-icons/react';
-import { IonToast } from '@ionic/react';
+import { IonToast, IonSpinner } from '@ionic/react';
+import { profileApi } from '@services/api';
 
 const VALUE_OPTIONS = ["Family", "Ambition", "Faith", "Creativity", "Growth", "Community", "Freedom", "Service"];
 const INTENTIONS = ["Marriage / Life Partner", "Serious Dating", "Meaningful Connection"];
@@ -10,6 +11,9 @@ export default function ProfileAndSettings({ user, onChange, toast, onToastDismi
   const [editing, setEditing] = useState(false);
   const [name, setName] = useState(user.name);
   const [bio, setBio] = useState(user.bio);
+  const [uploading, setUploading] = useState(false);
+  const [photoToast, setPhotoToast] = useState({ open: false, message: '', color: 'success' });
+  const fileInputRef = useRef(null);
 
   const toggleValue = (v) => {
     const has = (user.values || []).includes(v);
@@ -23,6 +27,41 @@ export default function ProfileAndSettings({ user, onChange, toast, onToastDismi
   const save = () => {
     if (onChange) onChange({ ...user, name, bio });
     setEditing(false);
+  };
+
+  const handlePhotoUpload = async (event) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    if (!file.type.startsWith('image/')) {
+      setPhotoToast({ open: true, message: 'Please select an image file', color: 'danger' });
+      return;
+    }
+
+    setUploading(true);
+    try {
+      const reader = new FileReader();
+      reader.onload = async (e) => {
+        const dataUrl = e.target.result;
+        try {
+          await profileApi.addPhoto(dataUrl, 0);
+          if (onChange) onChange({ ...user, photo: dataUrl });
+          setPhotoToast({ open: true, message: 'Photo updated', color: 'success' });
+        } catch {
+          setPhotoToast({ open: true, message: 'Failed to upload photo', color: 'danger' });
+        } finally {
+          setUploading(false);
+        }
+      };
+      reader.readAsDataURL(file);
+    } catch {
+      setUploading(false);
+    }
+    event.target.value = '';
+  };
+
+  const triggerPhotoUpload = () => {
+    fileInputRef.current?.click();
   };
 
   return (
@@ -62,9 +101,21 @@ export default function ProfileAndSettings({ user, onChange, toast, onToastDismi
               <MapPin size={13} weight="fill" />{user.city || user.location}, {user.country || 'Nigeria'} · {user.job || 'Professional'}
             </p>
           </div>
-          <button className="absolute right-3 top-3 grid h-10 w-10 place-items-center rounded-full bg-white/25 text-white backdrop-blur-sm transition active:scale-90" aria-label="Change photo">
-            <Camera size={16} weight="bold" />
+          <button
+            onClick={triggerPhotoUpload}
+            disabled={uploading}
+            className="absolute right-3 top-3 grid h-10 w-10 place-items-center rounded-full bg-white/25 text-white backdrop-blur-sm transition active:scale-90"
+            aria-label="Change photo"
+          >
+            {uploading ? <IonSpinner name="crescent" color="light" /> : <Camera size={16} weight="bold" />}
           </button>
+          <input
+            ref={fileInputRef}
+            type="file"
+            accept="image/*"
+            onChange={handlePhotoUpload}
+            className="hidden"
+          />
         </div>
 
         <div className="flex items-center justify-between px-4 py-3">
@@ -163,6 +214,14 @@ export default function ProfileAndSettings({ user, onChange, toast, onToastDismi
         duration={2500}
         position="bottom"
         color={toast?.color || 'success'}
+      />
+      <IonToast
+        isOpen={photoToast.open}
+        onDidDismiss={() => setPhotoToast({ ...photoToast, open: false })}
+        message={photoToast.message}
+        duration={2500}
+        position="bottom"
+        color={photoToast.color}
       />
     </div>
   );
