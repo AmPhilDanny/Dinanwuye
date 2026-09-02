@@ -77,7 +77,7 @@ export default function ChatAndDates({ matches, profiles, onSend }) {
         {(matches || []).map((m) => {
           const p = profileOf(m);
           if (!p) return null;
-          const imgSrc = photoUrl(p.photo || p.photo_url) || `https://ui-avatars.com/api/?name=${encodeURIComponent(p.name)}&size=600&background=random`;
+          const imgSrc = photoUrl(p.photo || p.photo_url);
           return (
             <button
               key={m.id}
@@ -89,7 +89,13 @@ export default function ChatAndDates({ matches, profiles, onSend }) {
               }`}
             >
               <span className="relative">
-                <img src={imgSrc} alt={p.name} className={"h-10 w-10 rounded-full object-cover ring-2 ring-offset-1 ring-offset-background " + (selectedId === m.id ? "ring-primary" : "ring-transparent")} />
+                {imgSrc ? (
+                  <img src={imgSrc} alt={p.name} className={"h-10 w-10 rounded-full object-cover ring-2 ring-offset-1 ring-offset-background " + (selectedId === m.id ? "ring-primary" : "ring-transparent")} />
+                ) : (
+                  <div className={"flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-br from-primary to-secondary text-xs font-bold text-white ring-2 ring-offset-1 ring-offset-background " + (selectedId === m.id ? "ring-primary" : "ring-transparent")}>
+                    {(p.name || '?').split(' ').map(w => w[0]).slice(0, 2).join('').toUpperCase()}
+                  </div>
+                )}
                 <span className="absolute -right-0.5 -bottom-0.5 grid h-4 w-4 place-items-center rounded-full bg-secondary text-[9px] font-black text-white shadow-sm">
                   {m.streak}
                 </span>

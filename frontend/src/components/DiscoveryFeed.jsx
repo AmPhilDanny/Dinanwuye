@@ -60,7 +60,7 @@ export default function DiscoveryFeed({ profiles, onLike, onPass, onSuperSpark, 
       <div className="relative mx-auto aspect-[3/4] w-full max-w-sm min-h-[480px]">
         {profiles.slice(index, index + 2).map((p, i) => {
           const isFront = i === 0;
-          const photoSrc = photoUrl(p.photo || p.photo_url) || `https://ui-avatars.com/api/?name=${encodeURIComponent(p.name)}&size=600&background=random`;
+          const photoSrc = photoUrl(p.photo || p.photo_url);
           const distance = p.distanceKm || p.distance_km || 0;
           const matchScore = p.match || p.compatibility_score || 0;
           const isVerified = p.verified || p.is_verified || false;
@@ -81,7 +81,13 @@ export default function DiscoveryFeed({ profiles, onLike, onPass, onSuperSpark, 
               className="absolute inset-0 overflow-hidden rounded-[2rem] bg-foreground/5 shadow-2xl shadow-foreground/10"
               style={{ zIndex: isFront ? 2 : 1, transform: isFront ? 'none' : `scale(${0.94 + 0.02 * i}) translateY(${8 * i}px)` }}
             >
-              <img src={photoSrc} alt={p.name} className="absolute inset-0 h-full w-full object-cover" draggable={false} />
+              {photoSrc ? (
+                <img src={photoSrc} alt={p.name} className="absolute inset-0 h-full w-full object-cover" draggable={false} />
+              ) : (
+                <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-primary to-secondary">
+                  <span className="text-6xl font-extrabold text-white/90 select-none">{(p.name || '?').split(' ').map(w => w[0]).slice(0, 2).join('').toUpperCase()}</span>
+                </div>
+              )}
               <div className="absolute inset-0 bg-gradient-to-t from-onyx/95 via-onyx/30 to-transparent" />
               {isFront && exitX !== null && exitX > 0 && (
                 <motion.div initial={{ opacity: 0, scale: 0.6 }} animate={{ opacity: 1, scale: 1 }} className="absolute left-5 top-8 rotate-[-12deg] rounded-xl border-2 border-emerald-400 px-3 py-1 text-lg font-black text-emerald-400">

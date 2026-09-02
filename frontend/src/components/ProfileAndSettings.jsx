@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useCallback } from 'react';
 import { motion } from 'framer-motion';
 import { ShieldCheck, ShieldStar, Moon, Camera, Check, X, MapPin, PencilSimple } from '@phosphor-icons/react';
 import { IonToast, IonSpinner } from '@ionic/react';
@@ -8,7 +8,14 @@ import { photoUrl } from '@utils/photoUrl';
 const VALUE_OPTIONS = ["Family", "Ambition", "Faith", "Creativity", "Growth", "Community", "Freedom", "Service"];
 const INTENTIONS = ["Marriage / Life Partner", "Serious Dating", "Meaningful Connection"];
 
-export default function ProfileAndSettings({ user, onChange, toast, onToastDismiss }) {
+function getInitials(name) {
+  if (!name) return '?';
+  const words = name.trim().split(/\s+/);
+  if (words.length === 1) return words[0][0].toUpperCase();
+  return (words[0][0] + words[words.length - 1][0]).toUpperCase();
+}
+
+export default function ProfileAndSettings({ user, onChange, onPhotoUploaded, toast, onToastDismiss }) {
   const [editing, setEditing] = useState(false);
   const [name, setName] = useState(user.name);
   const [bio, setBio] = useState(user.bio);
@@ -42,8 +49,9 @@ export default function ProfileAndSettings({ user, onChange, toast, onToastDismi
     setUploading(true);
     try {
       await profileApi.addPhoto(file);
-      const localUrl = URL.createObjectURL(file);
-      if (onChange) onChange({ ...user, photo: localUrl });
+      if (onPhotoUploaded) {
+        await onPhotoUploaded();
+      }
       setPhotoToast({ open: true, message: 'Photo updated', color: 'success' });
     } catch {
       setPhotoToast({ open: true, message: 'Failed to upload photo', color: 'danger' });
@@ -56,6 +64,9 @@ export default function ProfileAndSettings({ user, onChange, toast, onToastDismi
   const triggerPhotoUpload = () => {
     fileInputRef.current?.click();
   };
+
+  const resolvedPhoto = photoUrl(user.photo);
+  const hasPhoto = !!resolvedPhoto;
 
   return (
     <div className="mx-auto w-full max-w-md px-4 pb-4">
@@ -79,8 +90,15 @@ export default function ProfileAndSettings({ user, onChange, toast, onToastDismi
         className="mt-4 overflow-hidden rounded-3xl bg-foreground/5 shadow-sm"
       >
         <div className="relative h-44">
-          <img src={photoUrl(user.photo) || `https://ui-avatars.com/api/?name=${encodeURIComponent(user.name)}&size=600`} alt={user.name} className="h-full w-full object-cover" />
-          <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-onyx/90 to-transparent p-4 text-white">
+          {hasPhoto ? (
+            <img src={resolvedPhoto} alt={user.name} className="h-full w-full object-cover" />
+          ) : (
+            <div className="flex h-full w-full items-center justify-center bg-gradient-to-br from-primary to-secondary">
+              <span className="text-5xl font-extrabold text-white/90 select-none">{getInitials(user.name)}</span>
+            </div>
+          )}
+
+          <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent p-4">
             {editing ? (
               <input
                 value={name}
@@ -88,16 +106,17 @@ export default function ProfileAndSettings({ user, onChange, toast, onToastDismi
                 className="w-full rounded-lg bg-white/20 px-2 py-1 text-lg font-extrabold text-white outline-none backdrop-blur focus:bg-white/30"
               />
             ) : (
-              <h3 className="text-xl font-extrabold tracking-tight drop-shadow-sm">{user.name}, {user.age}</h3>
+              <h3 className="text-xl font-extrabold tracking-tight text-white drop-shadow-md">{user.name}, {user.age}</h3>
             )}
-            <p className="flex items-center gap-1 text-sm text-white/90">
+            <p className="flex items-center gap-1 text-sm text-white/90 drop-shadow-sm">
               <MapPin size={13} weight="fill" />{user.city || user.location}, {user.country || 'Nigeria'} · {user.job || 'Professional'}
             </p>
           </div>
+
           <button
             onClick={triggerPhotoUpload}
             disabled={uploading}
-            className="absolute right-3 top-3 grid h-10 w-10 place-items-center rounded-full bg-white/25 text-white backdrop-blur-sm transition active:scale-90"
+            className="absolute right-3 top-3 grid h-10 w-10 place-items-center rounded-full bg-black/30 text-white backdrop-blur-sm transition active:scale-90"
             aria-label="Change photo"
           >
             {uploading ? <IonSpinner name="crescent" color="light" /> : <Camera size={16} weight="bold" />}

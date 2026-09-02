@@ -262,7 +262,7 @@ const Chat = () => {
             <img src={avatarUrl} alt={otherUser?.name} className="h-9 w-9 rounded-full object-cover ring-2 ring-primary/20" />
           ) : (
             <div className="grid h-9 w-9 place-items-center rounded-full bg-gradient-to-br from-primary to-secondary text-sm font-bold text-white">
-              {(otherUser?.name || '?')[0]}
+              {(otherUser?.name || '?').split(' ').map(w => w[0]).slice(0, 2).join('').toUpperCase()}
             </div>
           )}
           <div className="leading-tight">

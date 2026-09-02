@@ -73,7 +73,7 @@ export default function ExploreGrid({ profiles, onLike }) {
       <div className="grid grid-cols-2 gap-3">
         {shown.map((p, i) => {
           const id = p.id || p.user_id;
-          const imgSrc = photoUrl(p.photo || p.photo_url) || `https://ui-avatars.com/api/?name=${encodeURIComponent(p.name)}&size=600&background=random`;
+          const imgSrc = photoUrl(p.photo || p.photo_url);
           const distance = p.distanceKm || p.distance_km || 0;
           const matchScore = p.match || p.compatibility_score || 0;
           const isVerified = p.verified || p.is_verified || false;
@@ -89,7 +89,13 @@ export default function ExploreGrid({ profiles, onLike }) {
               className="group relative overflow-hidden rounded-3xl bg-foreground/5 text-left shadow-sm"
             >
               <div className="relative aspect-[4/5] overflow-hidden">
-                <img src={imgSrc} alt={p.name} className="h-full w-full object-cover transition duration-500 group-hover:scale-105" draggable={false} />
+                {imgSrc ? (
+                  <img src={imgSrc} alt={p.name} className="h-full w-full object-cover transition duration-500 group-hover:scale-105" draggable={false} />
+                ) : (
+                  <div className="flex h-full w-full items-center justify-center bg-gradient-to-br from-primary to-secondary">
+                    <span className="text-3xl font-extrabold text-white/90 select-none">{(p.name || '?').split(' ').map(w => w[0]).slice(0, 2).join('').toUpperCase()}</span>
+                  </div>
+                )}
                 <button
                   onClick={(e) => { e.stopPropagation(); toggleLike(p); }}
                   aria-label="Like"
