@@ -13,6 +13,8 @@ const Explore = () => {
   const setDiscoverDeck = useAppStore((s) => s.setDiscoverDeck);
   const setDiscoverLoading = useAppStore((s) => s.setDiscoverLoading);
   const [error, setError] = useState('');
+  const [unreadCount, setUnreadCount] = useState(0);
+  const [streak, setStreak] = useState(0);
 
   useEffect(() => {
     if (deck.length > 0) return;
@@ -34,6 +36,20 @@ const Explore = () => {
     };
   }, [deck.length, setDiscoverDeck, setDiscoverLoading]);
 
+  useEffect(() => {
+    let active = true;
+    import('@services/api').then(({ messagingApi }) =>
+      messagingApi.listConversations().then(({ data }) => {
+        if (!active) return;
+        const total = Array.isArray(data)
+          ? data.reduce((sum, c) => sum + (c.unreadCount || 0), 0)
+          : 0;
+        setUnreadCount(total);
+      })
+    ).catch(() => {});
+    return () => { active = false; };
+  }, []);
+
   const handleLike = (p) => {
     // We would hook this up to the matching API. For now, it visually handles it.
   };
@@ -41,7 +57,7 @@ const Explore = () => {
   return (
     <IonPage>
       <IonContent className="ion-padding">
-        <HeaderNav activeTab="explore" unread={0} streak={1} />
+        <HeaderNav activeTab="explore" unread={unreadCount} streak={streak} />
         
         {loading && deck.length === 0 ? (
           <div className="flex items-center justify-center min-h-[60vh]">
@@ -55,7 +71,7 @@ const Explore = () => {
           <ExploreGrid profiles={deck} onLike={handleLike} />
         )}
       </IonContent>
-      <BottomNav />
+      <BottomNav unread={unreadCount} />
     </IonPage>
   );
 };

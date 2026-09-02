@@ -3,13 +3,15 @@ import { IonPage, IonContent } from '@ionic/react';
 import HeaderNav from '@components/HeaderNav';
 import BottomNav from '@components/BottomNav';
 import ProfileAndSettings from '@components/ProfileAndSettings';
-import { profileApi } from '@services/api';
+import { profileApi, messagingApi } from '@services/api';
 import useAppStore from '@store/useAppStore';
 
 const Profile = () => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const [toast, setToast] = useState({ open: false, message: '', color: 'success' });
+  const [unreadCount, setUnreadCount] = useState(0);
+  const [streak, setStreak] = useState(0);
   const setProfile = useAppStore((s) => s.setProfile);
 
   useEffect(() => {
@@ -50,6 +52,18 @@ const Profile = () => {
     return () => { active = false; };
   }, []);
 
+  useEffect(() => {
+    let active = true;
+    messagingApi.listConversations().then(({ data }) => {
+      if (!active) return;
+      const total = Array.isArray(data)
+        ? data.reduce((sum, c) => sum + (c.unreadCount || 0), 0)
+        : 0;
+      setUnreadCount(total);
+    }).catch(() => {});
+    return () => { active = false; };
+  }, []);
+
   const handleSave = async (updatedUser) => {
     setUser(updatedUser);
     try {
@@ -73,7 +87,7 @@ const Profile = () => {
   return (
     <IonPage>
       <IonContent className="ion-padding">
-        <HeaderNav activeTab="profile" unread={0} streak={1} />
+        <HeaderNav activeTab="profile" unread={unreadCount} streak={streak} />
         <div className="pt-2">
           {loading ? (
             <div className="flex justify-center py-10 text-gray-400 text-sm">Loading profile...</div>
@@ -84,7 +98,7 @@ const Profile = () => {
           )}
         </div>
       </IonContent>
-      <BottomNav />
+      <BottomNav unread={unreadCount} />
     </IonPage>
   );
 };

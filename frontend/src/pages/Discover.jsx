@@ -57,6 +57,8 @@ const Discover = () => {
   const [showMatchModal, setShowMatchModal] = useState(false);
   const [toast, setToast] = useState({ open: false, message: '', color: 'danger' });
   const [likesRemaining, setLikesRemaining] = useState(null);
+  const [unreadCount, setUnreadCount] = useState(0);
+  const [streak, setStreak] = useState(0);
   const fetchingRef = useRef(false);
 
   const loadDeck = useCallback(
@@ -90,6 +92,20 @@ const Discover = () => {
   useEffect(() => {
     loadDeck(null);
     // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  useEffect(() => {
+    let active = true;
+    import('@services/api').then(({ messagingApi }) =>
+      messagingApi.listConversations().then(({ data }) => {
+        if (!active) return;
+        const total = Array.isArray(data)
+          ? data.reduce((sum, c) => sum + (c.unreadCount || 0), 0)
+          : 0;
+        setUnreadCount(total);
+      })
+    ).catch(() => {});
+    return () => { active = false; };
   }, []);
 
   const handleAction = async (action) => {
@@ -136,7 +152,7 @@ const Discover = () => {
   return (
     <IonPage>
       <IonContent className="ion-padding">
-        <HeaderNav activeTab="discover" unread={2} streak={4} />
+        <HeaderNav activeTab="discover" unread={unreadCount} streak={streak} />
 
         {loading && deck.length === 0 ? (
           <div className="flex items-center justify-center min-h-[60vh]">
@@ -221,7 +237,7 @@ const Discover = () => {
           color={toast.color}
         />
       </IonContent>
-      <BottomNav />
+      <BottomNav unread={unreadCount} />
     </IonPage>
   );
 };
