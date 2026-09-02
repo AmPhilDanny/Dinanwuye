@@ -106,7 +106,7 @@ export class AdminService {
         take: limit,
         orderBy: { createdAt: 'desc' },
         where,
-        include: { profile: true },
+        include: { profile: { include: { photos: { orderBy: { order: 'asc' }, take: 1 } } } },
       }),
       this.prisma.user.count({ where }),
     ]);
@@ -137,6 +137,7 @@ export class AdminService {
           relationshipIntent: u.profile.relationshipIntent,
           heightCm: u.profile.heightCm,
         } : null,
+        photo: u.profile?.photos?.[0]?.s3Key || null,
       })),
       total,
     };
@@ -145,7 +146,7 @@ export class AdminService {
   async getUser(id: string): Promise<UserManagementDto> {
     const user = await this.prisma.user.findUnique({
       where: { id },
-      include: { profile: true },
+      include: { profile: { include: { photos: { orderBy: { order: 'asc' } } } } },
     });
 
     if (!user) {
@@ -177,6 +178,7 @@ export class AdminService {
         relationshipIntent: user.profile.relationshipIntent,
         heightCm: user.profile.heightCm,
       } : null,
+      photo: user.profile?.photos?.[0]?.s3Key || null,
     };
   }
 

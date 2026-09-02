@@ -141,6 +141,9 @@ export class UserManagementDto {
   updatedAt!: Date;
 
   @ApiPropertyOptional()
+  photo?: string | null;
+
+  @ApiPropertyOptional()
   profile?: {
     name: string;
     gender: string;

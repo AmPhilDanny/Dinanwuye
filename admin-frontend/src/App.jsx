@@ -282,11 +282,22 @@ function Users({ users, loading, token, onRefresh }) {
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16 }}>
           <div style={{ background: '#f9fafa', borderRadius: 8, padding: 16 }}>
             <p style={{ margin: 0, fontSize: 11, fontWeight: 600, color: '#6a7d75', textTransform: 'uppercase' }}>Account</p>
-            <div style={{ marginTop: 12 }}>
-              <label style={labelStyle}>Email</label>
-              <p style={valueStyle}>{selectedUser.email || '—'}</p>
-              <label style={labelStyle}>Phone</label>
-              <p style={valueStyle}>{selectedUser.phone || '—'}</p>
+            <div style={{ marginTop: 12, display: 'flex', gap: 12, alignItems: 'flex-start' }}>
+              {selectedUser.photo ? (
+                <img src={selectedUser.photo} alt="" style={{ width: 56, height: 56, borderRadius: 8, objectFit: 'cover', flexShrink: 0 }} />
+              ) : (
+                <div style={{ width: 56, height: 56, borderRadius: 8, background: '#ddd', display: 'grid', placeItems: 'center', color: '#999', fontSize: 18, fontWeight: 700, flexShrink: 0 }}>
+                  {(selectedUser.profile?.name || '?')[0].toUpperCase()}
+                </div>
+              )}
+              <div>
+                <label style={labelStyle}>Email</label>
+                <p style={valueStyle}>{selectedUser.email || '—'}</p>
+                <label style={labelStyle}>Phone</label>
+                <p style={valueStyle}>{selectedUser.phone || '—'}</p>
+              </div>
+            </div>
+            <div style={{ marginTop: 8 }}>
               <label style={labelStyle}>Status</label>
               <span style={{ ...pillStyle, ...statusColor(selectedUser.status) }}>{selectedUser.status}</span>
               <label style={labelStyle}>Joined</label>
@@ -435,8 +446,19 @@ function Users({ users, loading, token, onRefresh }) {
             filteredUsers.map((user) => (
               <tr key={user.id}>
                 <td>
-                  <strong>{user.email || user.phone || user.id}</strong>
-                  {user.phone && user.email && <span style={{ display: 'block', fontSize: 11, color: '#999' }}>{user.phone}</span>}
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                    {user.photo ? (
+                      <img src={user.photo} alt="" style={{ width: 32, height: 32, borderRadius: 6, objectFit: 'cover', flexShrink: 0 }} />
+                    ) : (
+                      <div style={{ width: 32, height: 32, borderRadius: 6, background: '#ddd', display: 'grid', placeItems: 'center', color: '#999', fontSize: 12, fontWeight: 700, flexShrink: 0 }}>
+                        {(user.profile?.name || '?')[0].toUpperCase()}
+                      </div>
+                    )}
+                    <div>
+                      <strong>{user.email || user.phone || user.id}</strong>
+                      {user.phone && user.email && <span style={{ display: 'block', fontSize: 11, color: '#999' }}>{user.phone}</span>}
+                    </div>
+                  </div>
                 </td>
                 <td><span className="pill" style={statusColor(user.status)}>{user.status}</span></td>
                 <td>{user.profile?.name || 'Incomplete'}</td>
