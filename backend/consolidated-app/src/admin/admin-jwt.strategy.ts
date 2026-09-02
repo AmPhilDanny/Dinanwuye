@@ -1,4 +1,4 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { Injectable, UnauthorizedException, ForbiddenException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { PassportStrategy } from '@nestjs/passport';
 import { ExtractJwt, Strategy } from 'passport-jwt';
@@ -32,8 +32,11 @@ export class AdminJwtStrategy extends PassportStrategy(Strategy, 'admin-jwt') {
       select: { id: true, role: true, isActive: true },
     });
 
-    if (!admin || !admin.isActive) {
-      throw new UnauthorizedException('Admin account is not active');
+    if (!admin) {
+      throw new UnauthorizedException('Admin not found');
+    }
+    if (!admin.isActive) {
+      throw new ForbiddenException('Admin account is not active');
     }
 
     return {
