@@ -1,0 +1,1 @@
+{"version":3,"file":"liveness.dto.d.ts","sourceRoot":"","sources":["../../../src/auth/dto/liveness.dto.ts"],"names":[],"mappings":"AAEA,qBAAa,iBAAiB;IAG5B,UAAU,EAAG,MAAM,EAAE,CAAC;IAItB,SAAS,EAAG,MAAM,EAAE,CAAC;IAMrB,UAAU,CAAC,EAAE,MAAM,CAAC;IAIpB,SAAS,CAAC,EAAE,MAAM,CAAC;CACpB"}

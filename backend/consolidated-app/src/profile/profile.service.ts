@@ -27,16 +27,20 @@ export class ProfileService {
 
   /** Get-or-create the authenticated user's profile (lazy creation for onboarding). */
   async getOrCreateProfile(userId: string): Promise<ProfileResponseDto> {
-    let profile = await this.prisma.profile.findUnique({ where: { userId } });
+    let profile = await this.prisma.profile.findUnique({
+      where: { userId },
+      include: { photos: { orderBy: { order: 'asc' } } },
+    });
     if (!profile) {
       profile = await this.prisma.profile.create({
         data: {
           userId,
           name: '',
-          dob: new Date('1990-01-01'), // placeholder — user must set their real DOB in onboarding
-          gender: 'non_binary', // placeholder — overwritten during onboarding
+          dob: new Date('1990-01-01'),
+          gender: 'non_binary',
           seeking: [],
         },
+        include: { photos: { orderBy: { order: 'asc' } } },
       });
     }
     return toProfileResponse(profile);
