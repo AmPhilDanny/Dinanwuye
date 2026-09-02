@@ -1,11 +1,19 @@
 # Render Static Site redirect rules
-# IMPORTANT: Specific file rules must come BEFORE the SPA catch-all
+# IMPORTANT: In Render, 200 rewrite rules override even existing files.
+# ALL static asset paths must be explicitly excluded before the SPA catch-all.
 
-# Do NOT rewrite service worker or workbox files — they must be served as-is
+# Static assets with content hashes (Vite output) — serve as-is
+/assets/*             /assets/:splat        200
+
+# Service worker & PWA files — must be served as JS, not rewritten to HTML
 /sw.js                /sw.js                200
 /registerSW.js        /registerSW.js        200
-/workbox-*.js         /workbox-:splat.js    200
+/workbox-*.js         /workbox-:splat        200
 /manifest.webmanifest /manifest.webmanifest 200
 
-# SPA catch-all — everything else routes to index.html
+# Other root-level static files
+/favicon.svg          /favicon.svg          200
+/apple-touch-icon.png /apple-touch-icon.png 200
+
+# SPA catch-all — all remaining paths serve the React app shell
 /*                    /index.html           200
