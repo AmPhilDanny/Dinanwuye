@@ -39,3 +39,6 @@ scripts/
 # OS files
 Thumbs.db
 .DS_Store
+
+# Docs (local only, not deployed)
+docs/

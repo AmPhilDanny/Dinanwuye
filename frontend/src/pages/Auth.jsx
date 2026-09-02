@@ -23,6 +23,7 @@ import {
   OtpSendRequestSchema,
   VerifyOtpRequestSchema,
 } from '@utils/schemas';
+import { initializeFaceDetection, detectLivenessFeatures, resetFaceDetection } from '@utils/faceDetection';
 import useAppStore from '@store/useAppStore';
 
 const isEmail = (value) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
@@ -49,6 +50,11 @@ const Auth = () => {
   const [completedChallenges, setCompletedChallenges] = useState([]);
   const videoRef = useRef(null);
   const cameraStreamRef = useRef(null);
+  const faceDetectionReady = useRef(false);
+  const detectionLoopRef = useRef(null);
+  const lastConfidenceRef = useRef(0);
+  const [detectionResults, setDetectionResults] = useState({});
+  const [faceModelError, setFaceModelError] = useState(false);
 
   // OTP resend countdown
   const [retryAfter, setRetryAfter] = useState(0);
@@ -64,21 +70,60 @@ const Auth = () => {
     if (mode !== 'liveness' || !navigator.mediaDevices?.getUserMedia) return undefined;
     let active = true;
     navigator.mediaDevices.getUserMedia({ video: { facingMode: 'user' }, audio: false })
-      .then((stream) => {
+      .then(async (stream) => {
         if (!active) {
           stream.getTracks().forEach((track) => track.stop());
           return;
         }
         cameraStreamRef.current = stream;
         if (videoRef.current) videoRef.current.srcObject = stream;
+        try {
+          await initializeFaceDetection();
+          if (active) faceDetectionReady.current = true;
+        } catch {
+          if (active) setFaceModelError(true);
+        }
       })
       .catch(() => sonnerToast.error('Camera access is required for liveness verification'));
     return () => {
       active = false;
+      faceDetectionReady.current = false;
       cameraStreamRef.current?.getTracks().forEach((track) => track.stop());
       cameraStreamRef.current = null;
+      if (detectionLoopRef.current) cancelAnimationFrame(detectionLoopRef.current);
+      resetFaceDetection();
     };
   }, [mode]);
+
+  useEffect(() => {
+    if (mode !== 'liveness' || faceModelError) return;
+    const tick = () => {
+      if (!faceDetectionReady.current || !videoRef.current) {
+        detectionLoopRef.current = requestAnimationFrame(tick);
+        return;
+      }
+      const { allPassed, results, confidence } = detectLivenessFeatures(videoRef.current, livenessChallenges);
+      lastConfidenceRef.current = confidence;
+      setDetectionResults((prev) => {
+        const next = { ...prev };
+        let changed = false;
+        for (const [key, val] of Object.entries(results)) {
+          if (!next[key] || next[key].detected !== val.detected) {
+            next[key] = val;
+            changed = true;
+          }
+        }
+        return changed ? next : prev;
+      });
+      if (allPassed) {
+        setCompletedChallenges(livenessChallenges.filter((c) => results[c]?.detected));
+        return;
+      }
+      detectionLoopRef.current = requestAnimationFrame(tick);
+    };
+    detectionLoopRef.current = requestAnimationFrame(tick);
+    return () => { if (detectionLoopRef.current) cancelAnimationFrame(detectionLoopRef.current); };
+  }, [mode, livenessChallenges, faceModelError]);
 
   const startCountdown = (seconds) => {
     if (countdownRef.current) clearInterval(countdownRef.current);
@@ -131,7 +176,7 @@ const Auth = () => {
       await authApi.verifyLiveness({
         challenges: livenessChallenges,
         completed: completedChallenges,
-        confidence: 0.5,
+        confidence: lastConfidenceRef.current,
         deviceRef: typeof navigator !== 'undefined' ? navigator.userAgent.slice(0, 200) : undefined,
       });
       finishAuth(livenessData);
@@ -167,7 +212,11 @@ const Auth = () => {
     try {
       const { data } = await authApi.login(identifier.trim(), password);
       sonnerToast.dismiss('cold-start');
-      finishAuth(data);
+      if (data.requiresLiveness) {
+        await beginLiveness(data);
+      } else {
+        finishAuth(data);
+      }
     } catch (err) {
       sonnerToast.dismiss('cold-start');
       const msg = extractError(err);
@@ -385,20 +434,38 @@ const Auth = () => {
 
             {mode === 'liveness' && (
               <div className="space-y-4 rounded-2xl border border-gray-200 bg-background p-4 dark:border-gray-700">
-                <p className="text-sm text-gray-600 dark:text-gray-300">Allow camera access, then perform each action below. No video is uploaded.</p>
+                <p className="text-sm text-gray-600 dark:text-gray-300">
+                  {faceModelError
+                    ? 'Camera access required. Completing verification...'
+                    : 'Position your face in the camera. Detection is automatic.'}
+                </p>
                 <video ref={videoRef} autoPlay muted playsInline className="mx-auto aspect-square w-48 rounded-2xl object-cover" />
                 <div className="space-y-2">
-                  {livenessChallenges.map((challenge) => (
-                    <button
-                      key={challenge}
-                      type="button"
-                      className={`w-full rounded-xl border px-4 py-3 text-left font-semibold ${completedChallenges.includes(challenge) ? 'border-green-500 bg-green-50 text-green-700' : 'border-gray-200 dark:border-gray-700'}`}
-                      onClick={() => setCompletedChallenges((prev) => prev.includes(challenge) ? prev : [...prev, challenge])}
-                    >
-                      {completedChallenges.includes(challenge) ? 'Completed: ' : 'Perform: '}{challenge.replace('_', ' ')}
-                    </button>
-                  ))}
+                  {livenessChallenges.map((challenge) => {
+                    const result = detectionResults[challenge];
+                    const isDetected = result?.detected || completedChallenges.includes(challenge);
+                    return (
+                      <div
+                        key={challenge}
+                        className={`flex items-center justify-between rounded-xl border px-4 py-3 font-semibold ${
+                          isDetected
+                            ? 'border-green-500 bg-green-50 text-green-700 dark:bg-green-900/30 dark:text-green-400'
+                            : 'border-gray-200 dark:border-gray-700'
+                        }`}
+                      >
+                        <span>{challenge.replace('_', ' ')}</span>
+                        <span className="text-xs">
+                          {isDetected ? '✓ Detected' : result ? 'Detecting...' : 'Waiting...'}
+                        </span>
+                      </div>
+                    );
+                  })}
                 </div>
+                {faceModelError && (
+                  <p className="text-xs text-center text-amber-600">
+                    Face detection unavailable — using manual fallback
+                  </p>
+                )}
               </div>
             )}
 

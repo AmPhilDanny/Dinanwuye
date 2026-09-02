@@ -55,7 +55,7 @@ export class AuthService {
     }
 
     const tokens = await this.issueTokens(user.id, user.email, user.phone, user.role, user.status as UserStatus);
-    return { userId: user.id, email: user.email ?? undefined, phone: user.phone ?? undefined, ...tokens, isNewUser: true };
+    return { userId: user.id, email: user.email ?? undefined, phone: user.phone ?? undefined, ...tokens, isNewUser: true, requiresLiveness: true };
   }
 
   async login(dto: LoginDto): Promise<AuthResponseDto> {
@@ -76,8 +76,14 @@ export class AuthService {
       throw new UnauthorizedException('Account is not active');
     }
 
+    const now = new Date();
+    const fourteenDaysMs = 14 * 24 * 60 * 60 * 1000;
+    const isStale = !user.lastLoginAt || (now.getTime() - user.lastLoginAt.getTime()) > fourteenDaysMs;
+
+    await this.prisma.user.update({ where: { id: user.id }, data: { lastLoginAt: now } });
+
     const tokens = await this.issueTokens(user.id, user.email, user.phone, user.role, user.status as UserStatus);
-    return { userId: user.id, email: user.email ?? undefined, phone: user.phone ?? undefined, ...tokens, isNewUser: false };
+    return { userId: user.id, email: user.email ?? undefined, phone: user.phone ?? undefined, ...tokens, isNewUser: false, requiresLiveness: isStale };
   }
 
   async verifyOtp(dto: VerifyOtpDto): Promise<AuthResponseDto> {
@@ -96,8 +102,14 @@ export class AuthService {
       await this.prisma.user.update({ where: { id: user.id }, data: { isVerified: true } });
     }
 
+    const now = new Date();
+    const fourteenDaysMs = 14 * 24 * 60 * 60 * 1000;
+    const isStale = !user.lastLoginAt || (now.getTime() - user.lastLoginAt.getTime()) > fourteenDaysMs;
+
+    await this.prisma.user.update({ where: { id: user.id }, data: { lastLoginAt: now } });
+
     const tokens = await this.issueTokens(user.id, user.email, user.phone, user.role, user.status as UserStatus);
-    return { userId: user.id, email: user.email ?? undefined, phone: user.phone ?? undefined, ...tokens, isNewUser: false };
+    return { userId: user.id, email: user.email ?? undefined, phone: user.phone ?? undefined, ...tokens, isNewUser: false, requiresLiveness: isStale };
   }
 
   async refresh(dto: RefreshDto): Promise<TokenPair> {

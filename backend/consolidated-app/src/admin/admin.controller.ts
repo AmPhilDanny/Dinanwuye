@@ -3,7 +3,7 @@ import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { getUserFromRequest } from '../shared';
 import type { JwtRequest } from '../shared';
 import { AdminService } from './admin.service';
-import { AdminLoginDto, AdminResponseDto, UpdateUserStatusDto, UserManagementDto } from './dto/admin.dto';
+import { AdminLoginDto, AdminResponseDto, ModeratePhotoDto, UpdateUserStatusDto, UserManagementDto } from './dto/admin.dto';
 import { AdminAuthGuard } from './admin-jwt.strategy';
 
 @ApiTags('admin')
@@ -101,8 +101,14 @@ export class AdminController {
   @Put('photos/:id/moderation')
   @UseGuards(AdminAuthGuard)
   @ApiBearerAuth()
-  updatePhotoModeration(@Param('id') id: string, @Body() body: { status: 'approved' | 'rejected' | 'flagged' | 'pending' }) {
-    return this.admin.updatePhotoModeration(id, body.status);
+  @ApiOperation({ summary: 'Moderate a photo (approve/reject/flag)' })
+  updatePhotoModeration(
+    @Param('id') id: string,
+    @Body() dto: ModeratePhotoDto,
+    @Req() request: JwtRequest,
+  ) {
+    const { sub } = getUserFromRequest(request);
+    return this.admin.updatePhotoModeration(id, dto.status, dto.reason, sub);
   }
 
   @Get('matches')

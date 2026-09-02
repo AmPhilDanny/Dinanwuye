@@ -1,5 +1,5 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import { IsEmail, IsEnum, IsOptional, IsString, MinLength } from 'class-validator';
+import { IsEmail, IsEnum, IsOptional, IsString, MaxLength, MinLength } from 'class-validator';
 
 export class AdminLoginDto {
   @ApiProperty({ example: 'admin@dinanwuye.com' })
@@ -27,6 +27,19 @@ export class AdminResponseDto {
 
   @ApiProperty({ type: [String] })
   permissions!: string[];
+}
+
+export class ModeratePhotoDto {
+  @ApiProperty({ enum: ['approved', 'rejected', 'flagged', 'pending'] })
+  @IsEnum(['approved', 'rejected', 'flagged', 'pending'] as const)
+  status!: 'approved' | 'rejected' | 'flagged' | 'pending';
+
+  @ApiPropertyOptional({ example: 'Photo does not meet community guidelines' })
+  @IsOptional()
+  @IsString()
+  @MinLength(3)
+  @MaxLength(500)
+  reason?: string;
 }
 
 export class UpdateUserStatusDto {

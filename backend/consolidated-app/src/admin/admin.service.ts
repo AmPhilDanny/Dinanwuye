@@ -193,12 +193,39 @@ export class AdminService {
     return { photos, total };
   }
 
-  async updatePhotoModeration(id: string, status: 'approved' | 'rejected' | 'flagged' | 'pending') {
+  async updatePhotoModeration(id: string, status: 'approved' | 'rejected' | 'flagged' | 'pending', reason?: string, adminId?: string) {
     if (!['approved', 'rejected', 'flagged', 'pending'].includes(status)) {
       throw new NotFoundException('Invalid moderation status');
     }
-    const photo = await this.prisma.photo.update({ where: { id }, data: { moderationStatus: status } });
-    return { id: photo.id, moderationStatus: photo.moderationStatus };
+    const photo = await this.prisma.photo.findUnique({ where: { id }, include: { profile: { include: { user: true } } } });
+    if (!photo) {
+      throw new NotFoundException('Photo not found');
+    }
+
+    const oldStatus = photo.moderationStatus;
+    const updated = await this.prisma.photo.update({
+      where: { id },
+      data: {
+        moderationStatus: status,
+        moderationReason: reason ?? null,
+        moderatedAt: new Date(),
+      },
+    });
+
+    if (adminId) {
+      await this.prisma.auditLog.create({
+        data: {
+          adminId,
+          action: 'update',
+          entity: 'Photo',
+          entityId: id,
+          oldData: { moderationStatus: oldStatus },
+          newData: { moderationStatus: status, moderationReason: reason ?? null },
+        },
+      });
+    }
+
+    return { id: updated.id, moderationStatus: updated.moderationStatus, moderationReason: updated.moderationReason };
   }
 
   async getMatches(page: number = 1, limit: number = 50): Promise<{ matches: any[]; total: number }> {

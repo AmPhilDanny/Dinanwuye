@@ -28,6 +28,7 @@ model User {
   role              String   @default("user")
   isVerified        Boolean  @default(false) // selfie/liveness verified
   deviceFingerprint String?
+  lastLoginAt       DateTime?                  // when the user last logged in
   createdAt         DateTime @default(now())
   updatedAt         DateTime @updatedAt
 
@@ -150,7 +151,9 @@ model Photo {
   profile          Profile  @relation(fields: [profileId], references: [id], onDelete: Cascade)
   s3Key            String
   order            Int      @default(0)
-  moderationStatus String   @default("pending") // pending | approved | rejected | in_review
+  moderationStatus String   @default("pending") // pending | approved | rejected | flagged
+  moderationReason String?                      // reason for rejection or flag
+  moderatedAt      DateTime?                    // when moderation action was taken
   createdAt        DateTime @default(now())
 
   @@index([profileId])

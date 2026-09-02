@@ -77,6 +77,9 @@ export class AuthResponseDto {
 
   @ApiProperty({ example: false })
   isNewUser!: boolean;
+
+  @ApiProperty({ example: false })
+  requiresLiveness!: boolean;
 }
 
 export class OtpSendResponseDto {
