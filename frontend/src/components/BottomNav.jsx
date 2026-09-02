@@ -11,14 +11,10 @@ const NAV = [
   { path: '/profile', label: 'Profile', icon: User },
 ];
 
-export default function BottomNav() {
+export default function BottomNav({ unread = 0, streak = 0 }) {
   const location = useLocation();
   const navigate = useNavigate();
-  // We can hook this up to actual unread count later, for now mock it to show the UI
-  const unread = 2; 
 
-  // Hide on certain routes if needed, or if rendered at app level.
-  // Since we are likely placing this in specific pages, we'll check the path
   const currentPath = location.pathname;
 
   return (

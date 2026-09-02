@@ -1,9 +1,11 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Bell, DeviceMobile, Monitor, SlidersHorizontal, Sun, Moon } from '@phosphor-icons/react';
+import { Bell, SlidersHorizontal, Sun, Moon } from '@phosphor-icons/react';
+import { useNavigate } from 'react-router-dom';
 import { BRAND } from '@utils/constants';
 
-export default function HeaderNav({ activeTab, unread, streak, dark, onToggleTheme, frameMode, onToggleFrame, onOpenFilters }) {
+export default function HeaderNav({ activeTab, unread, streak, dark, onToggleTheme, onOpenFilters }) {
+  const navigate = useNavigate();
   const titles = {
     discover: "Discovery",
     explore: "Explore",
@@ -32,21 +34,17 @@ export default function HeaderNav({ activeTab, unread, streak, dark, onToggleThe
           >
             {dark ? <Sun size={18} weight="bold" /> : <Moon size={18} weight="bold" />}
           </button>
+          {activeTab === 'discover' && (
+            <button
+              onClick={onOpenFilters}
+              aria-label="Open filters"
+              className="grid h-9 w-9 place-items-center rounded-full text-gray-500 transition hover:bg-gray-200 active:scale-95 dark:text-gray-400 dark:hover:bg-gray-800"
+            >
+              <SlidersHorizontal size={18} weight="bold" />
+            </button>
+          )}
           <button
-            onClick={onToggleFrame}
-            aria-label="Toggle device frame"
-            className="grid h-9 w-9 place-items-center rounded-full text-gray-500 transition hover:bg-gray-200 active:scale-95 dark:text-gray-400 dark:hover:bg-gray-800"
-          >
-            {frameMode ? <Monitor size={18} weight="bold" /> : <DeviceMobile size={18} weight="bold" />}
-          </button>
-          <button
-            onClick={onOpenFilters}
-            aria-label="Open filters"
-            className="grid h-9 w-9 place-items-center rounded-full text-gray-500 transition hover:bg-gray-200 active:scale-95 dark:text-gray-400 dark:hover:bg-gray-800"
-          >
-            <SlidersHorizontal size={18} weight="bold" />
-          </button>
-          <button
+            onClick={() => navigate('/matches')}
             aria-label="Notifications"
             className="relative grid h-9 w-9 place-items-center rounded-full text-gray-500 transition hover:bg-gray-200 active:scale-95 dark:text-gray-400 dark:hover:bg-gray-800"
           >
