@@ -29,6 +29,9 @@ export declare class AdminService {
     updateUserStatus(id: string, dto: UpdateUserStatusDto, adminId?: string): Promise<{
         success: true;
     }>;
+    deleteUser(id: string, adminId?: string): Promise<{
+        success: true;
+    }>;
     updateUserProfile(id: string, dto: AdminUpdateUserProfileDto, adminId?: string): Promise<{
         success: true;
     }>;

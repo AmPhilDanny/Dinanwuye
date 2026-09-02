@@ -29,6 +29,9 @@ export declare class AdminController {
     updateUserProfile(id: string, dto: AdminUpdateUserProfileDto, request: JwtRequest): Promise<{
         success: true;
     }>;
+    deleteUser(id: string, request: JwtRequest): Promise<{
+        success: true;
+    }>;
     getReports(page?: number, limit?: number): Promise<{
         reports: any[];
         total: number;

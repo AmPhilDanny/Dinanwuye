@@ -245,6 +245,45 @@ let AdminService = class AdminService {
         }
         return { success: true };
     }
+    async deleteUser(id, adminId) {
+        const user = await this.prisma.user.findUnique({
+            where: { id },
+            include: { profile: { include: { photos: true } } },
+        });
+        if (!user)
+            throw new common_1.NotFoundException('User not found');
+        const profileId = user.profile?.id;
+        await this.prisma.$transaction(async (tx) => {
+            if (profileId) {
+                await tx.photo.deleteMany({ where: { profileId } });
+                await tx.preference.deleteMany({ where: { profileId } });
+                await tx.profile.delete({ where: { id: profileId } });
+            }
+            await tx.refreshToken.deleteMany({ where: { userId: id } });
+            await tx.otpCode.deleteMany({ where: { userId: id } });
+            await tx.livenessAttempt.deleteMany({ where: { userId: id } });
+            await tx.swipe.deleteMany({ where: { OR: [{ actorId: id }, { targetId: id }] } });
+            await tx.match.deleteMany({ where: { OR: [{ userAId: id }, { userBId: id }] } });
+            await tx.block.deleteMany({ where: { OR: [{ blockerId: id }, { blockedId: id }] } });
+            await tx.report.deleteMany({ where: { OR: [{ reporterId: id }, { targetId: id }] } });
+            await tx.ban.deleteMany({ where: { userId: id } });
+            await tx.conversation.deleteMany({ where: { OR: [{ userAId: id }, { userBId: id }] } });
+            await tx.message.deleteMany({ where: { senderId: id } });
+            await tx.user.delete({ where: { id } });
+        });
+        if (adminId) {
+            await this.prisma.auditLog.create({
+                data: {
+                    adminId,
+                    action: 'delete',
+                    entity: 'User',
+                    entityId: id,
+                    oldData: { email: user.email, name: user.profile?.name },
+                },
+            });
+        }
+        return { success: true };
+    }
     async updateUserProfile(id, dto, adminId) {
         const user = await this.prisma.user.findUnique({
             where: { id },

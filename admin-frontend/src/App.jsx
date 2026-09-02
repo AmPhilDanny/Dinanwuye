@@ -170,6 +170,7 @@ function Users({ users, loading, token, onRefresh }) {
   const [banReason, setBanReason] = useState('');
   const [showBanModal, setShowBanModal] = useState(null);
   const [statusFilter, setStatusFilter] = useState('all');
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(null);
 
   const filteredUsers = users.filter((u) => {
     const matchesSearch = !search ||
@@ -242,6 +243,24 @@ function Users({ users, loading, token, onRefresh }) {
       setShowBanModal(null);
       setBanReason('');
       if (selectedUser?.id === userId) await viewUser(userId);
+      if (onRefresh) onRefresh();
+    } catch (err) {
+      alert(err.message);
+    } finally {
+      setActionPending(null);
+    }
+  };
+
+  const deleteUser = async (userId) => {
+    setActionPending(userId);
+    try {
+      const response = await fetch(`${API_URL}/users/${userId}`, {
+        method: 'DELETE',
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      if (!response.ok) throw new Error('Failed to delete user');
+      setShowDeleteConfirm(null);
+      setSelectedUser(null);
       if (onRefresh) onRefresh();
     } catch (err) {
       alert(err.message);
@@ -417,6 +436,31 @@ function Users({ users, loading, token, onRefresh }) {
             </div>
           </div>
         )}
+
+        <div style={{ marginTop: 12, display: 'flex', gap: 8 }}>
+          <button onClick={() => setShowDeleteConfirm(selectedUser.id)}
+            style={{ padding: '7px 16px', border: 0, borderRadius: 6, background: '#dc3545', color: '#fff', fontWeight: 600, fontSize: 12, cursor: 'pointer' }}>
+            Delete account
+          </button>
+        </div>
+
+        {showDeleteConfirm === selectedUser.id && (
+          <div style={{ marginTop: 8, padding: 16, border: '1px solid #dc3545', borderRadius: 8, background: '#fff5f5' }}>
+            <p style={{ margin: 0, fontSize: 13, fontWeight: 600, color: '#dc3545' }}>
+              This will permanently delete this user and all their data. This cannot be undone.
+            </p>
+            <div style={{ display: 'flex', gap: 8, marginTop: 10 }}>
+              <button onClick={() => deleteUser(selectedUser.id)} disabled={actionPending === selectedUser.id}
+                style={{ padding: '7px 16px', border: 0, borderRadius: 6, background: '#dc3545', color: '#fff', fontWeight: 600, fontSize: 12, cursor: 'pointer' }}>
+                {actionPending === selectedUser.id ? 'Deleting...' : 'Yes, delete permanently'}
+              </button>
+              <button onClick={() => setShowDeleteConfirm(null)}
+                style={{ padding: '7px 16px', border: '1px solid #ddd', borderRadius: 6, background: 'transparent', color: '#666', fontSize: 12, cursor: 'pointer' }}>
+                Cancel
+              </button>
+            </div>
+          </div>
+        )}
       </section>
     );
   }
@@ -487,6 +531,10 @@ function Users({ users, loading, token, onRefresh }) {
                         Activate
                       </button>
                     ) : null}
+                    <button onClick={() => setShowDeleteConfirm(user.id)} disabled={actionPending === user.id}
+                      style={{ padding: '4px 10px', border: 0, borderRadius: 4, background: '#dc3545', color: '#fff', fontSize: 11, fontWeight: 600, cursor: 'pointer' }}>
+                      Delete
+                    </button>
                   </div>
                 </td>
               </tr>

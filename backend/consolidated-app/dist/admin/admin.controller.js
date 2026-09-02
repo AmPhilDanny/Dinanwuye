@@ -48,6 +48,10 @@ let AdminController = class AdminController {
         const { sub } = (0, shared_1.getUserFromRequest)(request);
         return this.admin.updateUserProfile(id, dto, sub);
     }
+    deleteUser(id, request) {
+        const { sub } = (0, shared_1.getUserFromRequest)(request);
+        return this.admin.deleteUser(id, sub);
+    }
     getReports(page = 1, limit = 50) {
         return this.admin.getReports(page, limit);
     }
@@ -143,6 +147,18 @@ __decorate([
     __metadata("design:paramtypes", [String, admin_dto_1.AdminUpdateUserProfileDto, Object]),
     __metadata("design:returntype", Promise)
 ], AdminController.prototype, "updateUserProfile", null);
+__decorate([
+    (0, common_1.Delete)('users/:id'),
+    (0, common_1.UseGuards)(admin_jwt_strategy_1.AdminAuthGuard),
+    (0, swagger_1.ApiBearerAuth)(),
+    (0, common_1.HttpCode)(common_1.HttpStatus.OK),
+    (0, swagger_1.ApiOperation)({ summary: 'Permanently delete a user and all related data' }),
+    __param(0, (0, common_1.Param)('id')),
+    __param(1, (0, common_1.Req)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, Object]),
+    __metadata("design:returntype", Promise)
+], AdminController.prototype, "deleteUser", null);
 __decorate([
     (0, common_1.Get)('reports'),
     (0, common_1.UseGuards)(admin_jwt_strategy_1.AdminAuthGuard),

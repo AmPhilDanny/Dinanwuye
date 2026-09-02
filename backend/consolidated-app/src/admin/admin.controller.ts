@@ -89,6 +89,19 @@ export class AdminController {
     return this.admin.updateUserProfile(id, dto, sub);
   }
 
+  @Delete('users/:id')
+  @UseGuards(AdminAuthGuard)
+  @ApiBearerAuth()
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({ summary: 'Permanently delete a user and all related data' })
+  deleteUser(
+    @Param('id') id: string,
+    @Req() request: JwtRequest,
+  ): Promise<{ success: true }> {
+    const { sub } = getUserFromRequest(request);
+    return this.admin.deleteUser(id, sub);
+  }
+
   @Get('reports')
   @UseGuards(AdminAuthGuard)
   @ApiBearerAuth()
