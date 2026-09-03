@@ -57,7 +57,7 @@ export class PhotosService {
       if (!res.ok && res.status !== 404) {
         console.warn(`Supabase delete failed for ${path}: ${await res.text()}`);
       }
-    } catch (err) {
+    } catch (err: any) {
       console.warn(`Network error deleting from Supabase: ${err.message}`);
     }
   }
