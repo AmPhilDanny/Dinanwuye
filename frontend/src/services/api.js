@@ -139,9 +139,7 @@ export const profileApi = {
   addPhoto: (file) => {
     const formData = new FormData();
     formData.append('photo', file);
-    return profileClient.post('/profiles/me/photos', formData, {
-      headers: { 'Content-Type': 'multipart/form-data' },
-    });
+    return profileClient.post('/profiles/me/photos', formData);
   },
   removePhoto: (photoId) => profileClient.delete(`/profiles/me/photos/${photoId}`),
   getPreferences: () => profileClient.get('/profiles/me/preferences'),
