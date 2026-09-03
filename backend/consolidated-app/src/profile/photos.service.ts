@@ -13,7 +13,7 @@ interface UploadFile {
 const MAX_PHOTOS = 1;
 const ALLOWED_MIME = ['image/jpeg', 'image/png', 'image/webp'];
 const MAX_BYTES = 10 * 1024 * 1024;
-const BUCKET = 'profile-photos';
+const BUCKET = 'photos%20bucket';
 
 @Injectable()
 export class PhotosService {
