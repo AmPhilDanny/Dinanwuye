@@ -21,7 +21,7 @@ export declare class UpdateProfileDto {
     onboardingComplete?: boolean;
 }
 export declare class CreatePhotoDto {
-    dataUrl: string;
+    photo: any;
     order?: number;
 }
 export declare class PhotoDto {

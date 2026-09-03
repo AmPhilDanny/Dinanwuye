@@ -31,8 +31,11 @@ let AdminJwtStrategy = class AdminJwtStrategy extends (0, passport_1.PassportStr
             where: { id: payload.sub },
             select: { id: true, role: true, isActive: true },
         });
-        if (!admin || !admin.isActive) {
-            throw new common_1.UnauthorizedException('Admin account is not active');
+        if (!admin) {
+            throw new common_1.UnauthorizedException('Admin not found');
+        }
+        if (!admin.isActive) {
+            throw new common_1.ForbiddenException('Admin account is not active');
         }
         return {
             sub: admin.id,

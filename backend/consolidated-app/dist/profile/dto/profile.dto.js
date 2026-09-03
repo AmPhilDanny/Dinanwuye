@@ -170,17 +170,14 @@ __decorate([
     __metadata("design:type", Boolean)
 ], UpdateProfileDto.prototype, "onboardingComplete", void 0);
 class CreatePhotoDto {
-    dataUrl;
+    photo;
     order;
 }
 exports.CreatePhotoDto = CreatePhotoDto;
 __decorate([
-    (0, swagger_1.ApiProperty)({ example: 'data:image/jpeg;base64,/9j/4AAQSkZJRg...' }),
-    (0, class_validator_1.IsString)(),
-    (0, class_validator_1.MinLength)(5),
-    (0, class_validator_1.MaxLength)(12_000_000),
-    __metadata("design:type", String)
-], CreatePhotoDto.prototype, "dataUrl", void 0);
+    (0, swagger_1.ApiProperty)({ type: 'string', format: 'binary' }),
+    __metadata("design:type", Object)
+], CreatePhotoDto.prototype, "photo", void 0);
 __decorate([
     (0, swagger_1.ApiProperty)({ example: 0 }),
     (0, class_validator_1.IsOptional)(),
@@ -200,7 +197,7 @@ __decorate([
     __metadata("design:type", String)
 ], PhotoDto.prototype, "id", void 0);
 __decorate([
-    (0, swagger_1.ApiProperty)({ example: 'data:image/jpeg;base64,/9j/4AAQSkZJRg...' }),
+    (0, swagger_1.ApiProperty)({ example: 'a1b2c3d4-e5f6-7890-abcd-ef1234567890.jpg' }),
     __metadata("design:type", String)
 ], PhotoDto.prototype, "s3Key", void 0);
 __decorate([

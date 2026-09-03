@@ -139,11 +139,8 @@ export class UpdateProfileDto {
 }
 
 export class CreatePhotoDto {
-  @ApiProperty({ example: 'data:image/jpeg;base64,/9j/4AAQSkZJRg...' })
-  @IsString()
-  @MinLength(5)
-  @MaxLength(12_000_000)
-  dataUrl!: string;
+  @ApiProperty({ type: 'string', format: 'binary' })
+  photo!: any;
 
   @ApiProperty({ example: 0 })
   @IsOptional()
@@ -156,7 +153,7 @@ export class PhotoDto {
   @ApiProperty({ example: 'uuid' })
   id!: string;
 
-  @ApiProperty({ example: 'data:image/jpeg;base64,/9j/4AAQSkZJRg...' })
+  @ApiProperty({ example: 'a1b2c3d4-e5f6-7890-abcd-ef1234567890.jpg' })
   s3Key!: string;
 
   @ApiProperty({ example: 0 })

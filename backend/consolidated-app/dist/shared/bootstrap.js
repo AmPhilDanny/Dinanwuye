@@ -29,7 +29,7 @@ async function bootstrapService(appModule, options) {
         transform: true,
         transformOptions: { enableImplicitConversion: true },
     }));
-    const corsOrigins = options.corsOrigins ?? ['http://localhost:8100', 'https://dinanwuye.com', 'https://www.dinanwuye.com'];
+    const corsOrigins = options.corsOrigins ?? ['http://localhost:8100', 'http://localhost:5173', 'https://dinanwuye.onrender.com', 'https://dinanwuye-admin.onrender.com', 'https://dinanwuye.com', 'https://www.dinanwuye.com'];
     app.enableCors({
         origin: corsOrigins,
         credentials: true,
