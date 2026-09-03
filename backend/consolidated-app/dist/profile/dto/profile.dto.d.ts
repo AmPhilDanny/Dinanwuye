@@ -10,6 +10,7 @@ export declare class UpdateProfileDto {
     ethnicity?: string;
     religion?: string;
     relationshipIntent?: string;
+    culturalValues?: string[];
     education?: string;
     occupation?: string;
     languages?: string[];
@@ -74,6 +75,7 @@ export declare class ProfileResponseDto {
     ethnicity?: string | null;
     religion?: string | null;
     relationshipIntent?: string | null;
+    culturalValues: string[];
     education?: string | null;
     occupation?: string | null;
     languages: string[];

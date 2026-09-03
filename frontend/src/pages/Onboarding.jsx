@@ -68,12 +68,12 @@ const Onboarding = () => {
                 <span className="text-2xl">🎯</span>
               </div>
               <h1 className="text-2xl font-black text-foreground">Who are you looking for?</h1>
-              <p className="mt-1.5 text-sm text-gray-500 dark:text-gray-400">Help us find intentional matches for you</p>
+              <p className="mt-1.5 text-sm text-gray-600 dark:text-gray-300">Help us find intentional matches for you</p>
             </div>
 
             {/* My gender */}
             <div className="mb-6">
-              <p className="mb-3 text-xs font-bold uppercase tracking-widest text-gray-400">My gender</p>
+              <p className="mb-3 text-xs font-bold uppercase tracking-widest text-gray-500">My gender</p>
               <div className="flex flex-col gap-2.5">
                 {GENDER_OPTIONS.map((opt) => (
                   <SelectCard key={opt.value} option={opt} selected={gender} onSelect={setOnboardingGender} />
@@ -83,7 +83,7 @@ const Onboarding = () => {
 
             {/* Seeking */}
             <div className="mb-8">
-              <p className="mb-3 text-xs font-bold uppercase tracking-widest text-gray-400">I&apos;m open to</p>
+              <p className="mb-3 text-xs font-bold uppercase tracking-widest text-gray-500">I&apos;m open to</p>
               <div className="flex flex-col gap-2.5">
                 {SEEKING_OPTIONS.map((opt) => (
                   <SelectCard key={opt.value} option={opt} selected={seeking} onSelect={setOnboardingSeeking} />

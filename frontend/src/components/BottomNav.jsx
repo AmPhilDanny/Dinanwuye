@@ -31,7 +31,7 @@ export default function BottomNav({ unread = 0, streak = 0 }) {
               aria-label={n.label}
             >
               <span className="relative">
-                <Icon size={22} weight={active ? "fill" : "regular"} className={active ? "text-primary" : "text-gray-400 dark:text-gray-500"} />
+                <Icon size={22} weight={active ? "fill" : "regular"} className={active ? "text-primary" : "text-gray-500 dark:text-gray-400"} />
                 {n.path === "/matches" && unread > 0 && (
                   <span className="absolute -right-2 -top-1 grid h-4 min-w-4 place-items-center rounded-full bg-primary px-1 text-[9px] font-bold text-white">
                     {unread}
@@ -45,7 +45,7 @@ export default function BottomNav({ unread = 0, streak = 0 }) {
                   className="h-1 w-1 rounded-full bg-primary"
                 />
               )}
-              <span className={`text-[10px] font-semibold ${active ? "text-primary" : "text-gray-400 dark:text-gray-500"}`}>{n.label}</span>
+              <span className={`text-[10px] font-semibold ${active ? "text-primary" : "text-gray-500 dark:text-gray-400"}`}>{n.label}</span>
             </button>
           );
         })}

@@ -345,7 +345,7 @@ const Auth = () => {
               <span className="text-2xl">💑</span>
             </div>
             <h1 className="text-2xl font-black text-foreground">{titles[mode]}</h1>
-            <p className="mt-1.5 text-sm text-gray-500 dark:text-gray-400">
+            <p className="mt-1.5 text-sm text-gray-600 dark:text-gray-300">
               {mode === 'liveness'
                 ? 'Complete the two actions selected for you'
                 : mode === 'otp'
@@ -367,13 +367,13 @@ const Auth = () => {
                   )}
                   <input
                     type="text"
-                    inputMode={isEmail(identifier) ? 'email' : 'tel'}
+                    inputMode="email"
                     placeholder="Email or phone (+234...)"
                     value={identifier}
                     onChange={(e) => setIdentifier(e.target.value)}
                     required
                     autoComplete="username"
-                    className="ml-3 flex-1 bg-transparent text-sm font-medium text-foreground outline-none placeholder:text-gray-400"
+                    className="ml-3 flex-1 bg-transparent text-sm font-medium text-foreground outline-none placeholder:text-gray-500"
                   />
                 </div>
 
@@ -386,7 +386,7 @@ const Auth = () => {
                     onChange={(e) => setPassword(e.target.value)}
                     required
                     autoComplete={mode === 'login' ? 'current-password' : 'new-password'}
-                    className="ml-3 flex-1 bg-transparent text-sm font-medium text-foreground outline-none placeholder:text-gray-400"
+                    className="ml-3 flex-1 bg-transparent text-sm font-medium text-foreground outline-none placeholder:text-gray-500"
                   />
                   <button
                     type="button"
@@ -492,7 +492,7 @@ const Auth = () => {
             <div className="mt-8 rounded-2xl border border-gray-200 bg-background p-4 shadow-sm dark:border-gray-700">
               <div className="mb-3 flex items-center gap-2">
                 <div className="flex-1 border-t border-gray-200 dark:border-gray-700" />
-                <span className="text-[11px] font-bold uppercase tracking-wider text-gray-400">Demo Accounts</span>
+                <span className="text-[11px] font-bold uppercase tracking-wider text-gray-500">Demo Accounts</span>
                 <div className="flex-1 border-t border-gray-200 dark:border-gray-700" />
               </div>
               <div className="grid grid-cols-1 gap-2">
@@ -523,7 +523,7 @@ const Auth = () => {
 
           <div className="mt-8 flex items-center gap-4">
             <div className="flex-1 border-t border-gray-200 dark:border-gray-700" />
-            <span className="text-xs font-semibold text-gray-400">or continue with</span>
+            <span className="text-xs font-semibold text-gray-500">or continue with</span>
             <div className="flex-1 border-t border-gray-200 dark:border-gray-700" />
           </div>
 
@@ -544,7 +544,7 @@ const Auth = () => {
             </button>
           </div>
 
-          <p className="mt-8 text-center text-sm font-medium text-gray-600 dark:text-gray-400">
+          <p className="mt-8 text-center text-sm font-medium text-gray-700 dark:text-gray-300">
             {mode === 'login' ? (
               <>
                 Don&apos;t have an account?{' '}

@@ -19,13 +19,15 @@ export default function ProfileAndSettings({ user, onChange, onPhotoUploaded, to
   const [editing, setEditing] = useState(false);
   const [name, setName] = useState(user.name);
   const [bio, setBio] = useState(user.bio);
+  const [editIntention, setEditIntention] = useState(user.intention || '');
+  const [editValues, setEditValues] = useState(user.values || []);
   const [uploading, setUploading] = useState(false);
   const [photoToast, setPhotoToast] = useState({ open: false, message: '', color: 'success' });
   const fileInputRef = useRef(null);
 
   const toggleValue = (v) => {
-    const has = (user.values || []).includes(v);
-    if (onChange) onChange({ ...user, values: has ? user.values.filter((x) => x !== v) : [...(user.values || []), v] });
+    if (!editing) return;
+    setEditValues((prev) => (prev.includes(v) ? prev.filter((x) => x !== v) : [...prev, v]));
   };
 
   const toggleIncognito = () => {
@@ -33,7 +35,7 @@ export default function ProfileAndSettings({ user, onChange, onPhotoUploaded, to
   };
 
   const save = () => {
-    if (onChange) onChange({ ...user, name, bio });
+    if (onChange) onChange({ ...user, name, bio, intention: editIntention, values: editValues });
     setEditing(false);
   };
 
@@ -73,7 +75,7 @@ export default function ProfileAndSettings({ user, onChange, onPhotoUploaded, to
       <div className="flex items-center justify-between">
         <div>
           <h2 className="text-lg font-extrabold text-foreground">Your Profile</h2>
-          <p className="text-xs font-medium text-gray-500 dark:text-gray-400">Edit how you show up to intentional matches</p>
+          <p className="text-xs font-medium text-gray-600 dark:text-gray-300">Edit how you show up to intentional matches</p>
         </div>
         <button
           onClick={() => (editing ? save() : setEditing(true))}
@@ -155,35 +157,44 @@ export default function ProfileAndSettings({ user, onChange, onPhotoUploaded, to
 
       <div className="mt-4 grid grid-cols-2 gap-3">
         <div className="rounded-3xl border border-gray-200 bg-background p-4 dark:border-gray-700">
-          <p className="mb-2 text-xs font-bold uppercase tracking-wide text-gray-500 dark:text-gray-400">Intention</p>
+          <p className="mb-2 text-xs font-bold uppercase tracking-wide text-gray-600 dark:text-gray-300">Intention</p>
           <motion.div layout className="flex flex-col gap-1">
-            {INTENTIONS.map((int) => (
-              <button
-                key={int}
-                onClick={() => onChange && onChange({ ...user, intention: int })}
-                className={`flex items-center justify-between rounded-xl px-2.5 py-2 text-left text-xs font-semibold transition active:scale-95 ${
-                  user.intention === int ? "bg-primary text-white shadow-sm" : "text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-800"
-                }`}
-              >
-                {int}
-                {user.intention === int && <Check size={12} weight="bold" />}
-              </button>
-            ))}
+            {INTENTIONS.map((int) => {
+              const isSelected = editing ? editIntention === int : user.intention === int;
+              return (
+                <button
+                  key={int}
+                  onClick={() => editing && setEditIntention(int)}
+                  disabled={!editing}
+                  className={`flex items-center justify-between rounded-xl px-2.5 py-2 text-left text-xs font-semibold transition active:scale-95 ${
+                    isSelected
+                      ? "bg-primary text-white shadow-sm"
+                      : editing
+                      ? "text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-800"
+                      : "text-gray-700 dark:text-gray-300 opacity-80"
+                  } ${!editing ? 'cursor-default' : ''}`}
+                >
+                  {int}
+                  {isSelected && <Check size={12} weight="bold" />}
+                </button>
+              );
+            })}
           </motion.div>
         </div>
 
         <div className="rounded-3xl border border-gray-200 bg-background p-4 dark:border-gray-700">
-          <p className="mb-2 text-xs font-bold uppercase tracking-wide text-gray-500 dark:text-gray-400">Cultural values</p>
+          <p className="mb-2 text-xs font-bold uppercase tracking-wide text-gray-600 dark:text-gray-300">Cultural values</p>
           <div className="flex flex-wrap gap-1.5">
             {VALUE_OPTIONS.map((v) => {
-              const has = (user.values || []).includes(v);
+              const has = editing ? editValues.includes(v) : (user.values || []).includes(v);
               return (
                 <button
                   key={v}
                   onClick={() => toggleValue(v)}
+                  disabled={!editing}
                   className={`rounded-full px-2.5 py-1 text-[11px] font-bold transition active:scale-95 ${
                     has ? "bg-secondary text-white shadow-sm" : "border border-gray-200 bg-background text-gray-700 hover:border-secondary/40 dark:border-gray-600 dark:text-gray-300"
-                  }`}
+                  } ${!editing ? 'cursor-default opacity-80' : ''}`}
                 >
                   {v}
                 </button>
@@ -199,7 +210,7 @@ export default function ProfileAndSettings({ user, onChange, onPhotoUploaded, to
             <p className="flex items-center gap-1.5 text-sm font-bold text-foreground">
               <Moon size={16} weight="fill" className="text-violet-500" /> Incognito mode
             </p>
-            <p className="text-[11px] font-medium text-gray-500 dark:text-gray-400">Hide your profile from people you pass</p>
+            <p className="text-[11px] font-medium text-gray-600 dark:text-gray-300">Hide your profile from people you pass</p>
           </div>
           <button
             onClick={toggleIncognito}

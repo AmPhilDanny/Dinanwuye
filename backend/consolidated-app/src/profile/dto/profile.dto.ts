@@ -78,6 +78,13 @@ export class UpdateProfileDto {
   @MaxLength(40)
   relationshipIntent?: string;
 
+  @ApiPropertyOptional({ type: [String], example: ['Family', 'Faith', 'Ambition'] })
+  @IsOptional()
+  @IsArray()
+  @ArrayMaxSize(10)
+  @IsString({ each: true })
+  culturalValues?: string[];
+
   @ApiPropertyOptional({ example: 'BSc' })
   @IsOptional()
   @IsString()
@@ -291,6 +298,9 @@ export class ProfileResponseDto {
 
   @ApiPropertyOptional()
   relationshipIntent?: string | null;
+
+  @ApiProperty({ type: [String] })
+  culturalValues!: string[];
 
   @ApiPropertyOptional()
   education?: string | null;

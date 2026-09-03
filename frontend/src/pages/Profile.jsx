@@ -29,7 +29,7 @@ const Profile = () => {
         verified: data.isVerified,
         bio: data.bio || '',
         interests: data.interests || [],
-        values: [],
+        values: data.culturalValues || [],
         incognito: false,
         trustScore: 100,
         gender: data.gender,
@@ -75,6 +75,7 @@ const Profile = () => {
       if (updatedUser.interests) payload.interests = updatedUser.interests;
       if (updatedUser.ethnicity !== undefined) payload.ethnicity = updatedUser.ethnicity;
       if (updatedUser.religion !== undefined) payload.religion = updatedUser.religion;
+      if (updatedUser.values) payload.culturalValues = updatedUser.values;
 
       const { data } = await profileApi.updateMe(payload);
       setProfile(data);
@@ -90,11 +91,11 @@ const Profile = () => {
         <HeaderNav activeTab="profile" unread={unreadCount} streak={streak} />
         <div className="pt-2">
           {loading ? (
-            <div className="flex justify-center py-10 text-gray-400 text-sm">Loading profile...</div>
+            <div className="flex justify-center py-10 text-gray-500 text-sm">Loading profile...</div>
           ) : user ? (
             <ProfileAndSettings user={user} onChange={handleSave} onPhotoUploaded={loadProfile} toast={toast} onToastDismiss={() => setToast({ ...toast, open: false })} />
           ) : (
-            <div className="flex justify-center py-10 text-gray-400 text-sm">Could not load profile</div>
+            <div className="flex justify-center py-10 text-gray-500 text-sm">Could not load profile</div>
           )}
         </div>
       </IonContent>

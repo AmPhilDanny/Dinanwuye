@@ -64,7 +64,7 @@ const Explore = () => {
             <IonSpinner name="crescent" />
           </div>
         ) : error ? (
-          <div className="flex min-h-[60vh] flex-col items-center justify-center gap-3 text-center text-gray-500">
+          <div className="flex min-h-[60vh] flex-col items-center justify-center gap-3 text-center text-gray-600">
             <p>{error}</p>
           </div>
         ) : (

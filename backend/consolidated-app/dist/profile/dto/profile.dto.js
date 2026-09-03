@@ -25,6 +25,7 @@ class UpdateProfileDto {
     ethnicity;
     religion;
     relationshipIntent;
+    culturalValues;
     education;
     occupation;
     languages;
@@ -101,6 +102,14 @@ __decorate([
     (0, class_validator_1.MaxLength)(40),
     __metadata("design:type", String)
 ], UpdateProfileDto.prototype, "relationshipIntent", void 0);
+__decorate([
+    (0, swagger_1.ApiPropertyOptional)({ type: [String], example: ['Family', 'Faith', 'Ambition'] }),
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsArray)(),
+    (0, class_validator_1.ArrayMaxSize)(10),
+    (0, class_validator_1.IsString)({ each: true }),
+    __metadata("design:type", Array)
+], UpdateProfileDto.prototype, "culturalValues", void 0);
 __decorate([
     (0, swagger_1.ApiPropertyOptional)({ example: 'BSc' }),
     (0, class_validator_1.IsOptional)(),
@@ -364,6 +373,7 @@ class ProfileResponseDto {
     ethnicity;
     religion;
     relationshipIntent;
+    culturalValues;
     education;
     occupation;
     languages;
@@ -423,6 +433,10 @@ __decorate([
     (0, swagger_1.ApiPropertyOptional)(),
     __metadata("design:type", Object)
 ], ProfileResponseDto.prototype, "relationshipIntent", void 0);
+__decorate([
+    (0, swagger_1.ApiProperty)({ type: [String] }),
+    __metadata("design:type", Array)
+], ProfileResponseDto.prototype, "culturalValues", void 0);
 __decorate([
     (0, swagger_1.ApiPropertyOptional)(),
     __metadata("design:type", Object)

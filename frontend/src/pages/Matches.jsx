@@ -128,7 +128,7 @@ const Matches = () => {
             <IonSpinner name="crescent" />
           </div>
         ) : rows.length === 0 ? (
-          <div className="flex flex-col items-center justify-center py-12 text-center text-gray-500">
+          <div className="flex flex-col items-center justify-center py-12 text-center text-gray-600">
             <IonIcon icon={heartOutline} size="large" className="mb-4" />
             <h2 className="text-lg font-medium">No matches yet</h2>
             <p className="text-sm mb-4">Start swiping to find your match!</p>

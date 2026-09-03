@@ -121,6 +121,7 @@ model Profile {
   ethnicity          String?
   religion           String?
   relationshipIntent String?
+  culturalValues     String[]
   education          String?
   occupation         String?
   languages          String[]

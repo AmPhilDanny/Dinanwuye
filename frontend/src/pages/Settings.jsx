@@ -21,14 +21,14 @@ const Settings = () => {
               </IonAvatar>
               <IonLabel>
                 <h3 className="font-semibold">Chinelo</h3>
-                <p className="text-sm text-gray-500">chinelo@example.com</p>
+                <p className="text-sm text-gray-600">chinelo@example.com</p>
               </IonLabel>
               <IonBadge color="primary">Premium</IonBadge>
             </IonItem>
           </IonList>
 
           <div className="space-y-4 mb-6">
-            <h2 className="text-lg font-semibold text-gray-500 uppercase tracking-wide">Account</h2>
+            <h2 className="text-lg font-semibold text-gray-600 uppercase tracking-wide">Account</h2>
             <IonList lines="inset">
               <IonItem lines="none" button>
                 <IonIcon icon={personOutline} slot="start" color="primary" />
@@ -54,7 +54,7 @@ const Settings = () => {
           </div>
 
           <div className="space-y-4 mb-6">
-            <h2 className="text-lg font-semibold text-gray-500 uppercase tracking-wide">Notifications</h2>
+            <h2 className="text-lg font-semibold text-gray-600 uppercase tracking-wide">Notifications</h2>
             <IonList lines="inset">
               <IonItem lines="none">
                 <IonIcon icon={notificationsOutline} slot="start" color="primary" />
@@ -75,7 +75,7 @@ const Settings = () => {
           </div>
 
           <div className="space-y-4 mb-6">
-            <h2 className="text-lg font-semibold text-gray-500 uppercase tracking-wide">Privacy</h2>
+            <h2 className="text-lg font-semibold text-gray-600 uppercase tracking-wide">Privacy</h2>
             <IonList lines="inset">
               <IonItem lines="none">
                 <IonIcon icon={personOutline} slot="start" color="primary" />
@@ -100,7 +100,7 @@ const Settings = () => {
           </div>
 
           <div className="space-y-4 mb-6">
-            <h2 className="text-lg font-semibold text-gray-500 uppercase tracking-wide">Preferences</h2>
+            <h2 className="text-lg font-semibold text-gray-600 uppercase tracking-wide">Preferences</h2>
             <IonList lines="inset">
               <IonItem lines="none">
                 <IonIcon icon={moonOutline} slot="start" color="primary" />
@@ -116,7 +116,7 @@ const Settings = () => {
           </div>
 
           <div className="space-y-4 mb-6">
-            <h2 className="text-lg font-semibold text-gray-500 uppercase tracking-wide">Support</h2>
+            <h2 className="text-lg font-semibold text-gray-600 uppercase tracking-wide">Support</h2>
             <IonList lines="inset">
               <IonItem lines="none" button>
                 <IonIcon icon={helpOutline} slot="start" color="primary" />

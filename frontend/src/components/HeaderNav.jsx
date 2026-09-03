@@ -22,7 +22,7 @@ export default function HeaderNav({ activeTab, unread, streak, dark, onToggleThe
           </span>
           <div className="leading-tight">
             <p className="text-[11px] font-bold tracking-[0.18em] text-foreground">{BRAND}</p>
-            <p className="text-[10px] font-semibold text-gray-500 dark:text-gray-400">{titles[activeTab] || titles.discover}</p>
+            <p className="text-[10px] font-semibold text-gray-600 dark:text-gray-300">{titles[activeTab] || titles.discover}</p>
           </div>
         </div>
 
@@ -30,7 +30,7 @@ export default function HeaderNav({ activeTab, unread, streak, dark, onToggleThe
           <button
             onClick={onToggleTheme}
             aria-label="Toggle theme"
-            className="grid h-9 w-9 place-items-center rounded-full text-gray-500 transition hover:bg-gray-200 active:scale-95 dark:text-gray-400 dark:hover:bg-gray-800"
+            className="grid h-9 w-9 place-items-center rounded-full text-gray-600 transition hover:bg-gray-200 active:scale-95 dark:text-gray-300 dark:hover:bg-gray-800"
           >
             {dark ? <Sun size={18} weight="bold" /> : <Moon size={18} weight="bold" />}
           </button>
@@ -38,7 +38,7 @@ export default function HeaderNav({ activeTab, unread, streak, dark, onToggleThe
             <button
               onClick={onOpenFilters}
               aria-label="Open filters"
-              className="grid h-9 w-9 place-items-center rounded-full text-gray-500 transition hover:bg-gray-200 active:scale-95 dark:text-gray-400 dark:hover:bg-gray-800"
+              className="grid h-9 w-9 place-items-center rounded-full text-gray-600 transition hover:bg-gray-200 active:scale-95 dark:text-gray-300 dark:hover:bg-gray-800"
             >
               <SlidersHorizontal size={18} weight="bold" />
             </button>

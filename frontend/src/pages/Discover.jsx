@@ -170,7 +170,7 @@ const Discover = () => {
             }}
           />
         ) : (
-          <div className="flex flex-col items-center justify-center min-h-[60vh] text-center text-gray-500">
+          <div className="flex flex-col items-center justify-center min-h-[60vh] text-center text-gray-600">
             <IonIcon icon={heartOutline} size="large" className="mb-4" />
             <h2 className="text-lg font-medium">No one new around you</h2>
             <p className="text-sm">Check back later or expand your filters</p>
