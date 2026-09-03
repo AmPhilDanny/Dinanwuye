@@ -136,10 +136,17 @@ export const profileApi = {
   getCandidates: () => profileClient.get('/profiles/candidates'),
   getPublic: (id) => profileClient.get(`/profiles/${id}`),
   getPhotos: () => profileClient.get('/profiles/me/photos'),
-  addPhoto: (file) => {
+  addPhoto: async (file) => {
     const formData = new FormData();
     formData.append('photo', file);
-    return profileClient.post('/profiles/me/photos', formData);
+    try {
+      return await profileClient.post('/profiles/me/photos', formData, {
+        headers: { 'Content-Type': undefined }
+      });
+    } catch (error) {
+      console.error("Photo upload failed:", error.response?.data || error.message);
+      throw error;
+    }
   },
   removePhoto: (photoId) => profileClient.delete(`/profiles/me/photos/${photoId}`),
   getPreferences: () => profileClient.get('/profiles/me/preferences'),

@@ -48,14 +48,17 @@ export class PhotosService {
   }
 
   private async deleteFromSupabase(path: string): Promise<void> {
-    const url = `${this.supabaseUrl}/storage/v1/object/${BUCKET}/${path}`;
-    const res = await fetch(url, {
-      method: 'DELETE',
-      headers: { Authorization: `Bearer ${this.serviceKey}` },
-    });
-    if (!res.ok && res.status !== 404) {
-      const err = await res.text();
-      throw new BadRequestException(`Supabase delete failed: ${err}`);
+    try {
+      const url = `${this.supabaseUrl}/storage/v1/object/${BUCKET}/${path}`;
+      const res = await fetch(url, {
+        method: 'DELETE',
+        headers: { Authorization: `Bearer ${this.serviceKey}` },
+      });
+      if (!res.ok && res.status !== 404) {
+        console.warn(`Supabase delete failed for ${path}: ${await res.text()}`);
+      }
+    } catch (err) {
+      console.warn(`Network error deleting from Supabase: ${err.message}`);
     }
   }
 
