@@ -10,8 +10,8 @@ export declare class NotificationController {
         userId: string;
         createdAt: Date;
         data: import("@prisma/client/runtime/library").JsonValue | null;
-        readAt: Date | null;
         body: string;
+        readAt: Date | null;
         sentAt: Date;
     }[]>;
     subscribe(request: JwtRequest, body: {

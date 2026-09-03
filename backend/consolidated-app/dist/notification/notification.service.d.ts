@@ -10,8 +10,8 @@ export declare class NotificationService {
         userId: string;
         createdAt: Date;
         data: import("@prisma/client/runtime/library").JsonValue | null;
-        readAt: Date | null;
         body: string;
+        readAt: Date | null;
         sentAt: Date;
     }[]>;
     subscribe(userId: string, body: {
@@ -35,8 +35,8 @@ export declare class NotificationService {
         userId: string;
         createdAt: Date;
         data: import("@prisma/client/runtime/library").JsonValue | null;
-        readAt: Date | null;
         body: string;
+        readAt: Date | null;
         sentAt: Date;
     }>;
 }
