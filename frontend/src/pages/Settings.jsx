@@ -1,12 +1,43 @@
 import React from 'react';
-import { IonPage, IonContent, IonButton, IonIcon, IonItem, IonLabel, IonToggle, IonList, IonText, IonAvatar, IonGrid, IonRow, IonCol, IonBadge } from '@ionic/react';
+import { IonPage, IonContent, IonButton, IonIcon, IonItem, IonLabel, IonToggle, IonList, IonText, IonAvatar, IonGrid, IonRow, IonCol, IonBadge, IonSpinner } from '@ionic/react';
 import { personOutline, notificationsOutline, shieldOutline, lockClosedOutline, helpOutline, logOutOutline, moonOutline, languageOutline, cardOutline, heartOutline, cogOutline } from 'ionicons/icons';
+import { useNavigate } from 'react-router-dom';
+import { authApi, tokenStorage } from '@services/api';
+import useAppStore from '@store/useAppStore';
+import { photoUrl } from '@utils/photoUrl';
 
 const Settings = () => {
+  const navigate = useNavigate();
+  const profile = useAppStore((s) => s.auth.profile);
+  const authUser = useAppStore((s) => s.auth.user);
+  const clearAuth = useAppStore((s) => s.clearAuth);
+  const reset = useAppStore((s) => s.reset);
+
   const [notifications, setNotifications] = React.useState(true);
   const [darkMode, setDarkMode] = React.useState(false);
   const [showOnline, setShowOnline] = React.useState(true);
   const [showDistance, setShowDistance] = React.useState(true);
+  const [loggingOut, setLoggingOut] = React.useState(false);
+
+  const handleLogout = async () => {
+    setLoggingOut(true);
+    try {
+      const refreshToken = tokenStorage.getRefresh();
+      if (refreshToken) {
+        await authApi.logout(refreshToken);
+      }
+    } catch {
+      // Even if the server call fails, clear local state
+    } finally {
+      tokenStorage.clear();
+      reset();
+      navigate('/auth', { replace: true });
+    }
+  };
+
+  const displayName = profile?.name || authUser?.email || 'You';
+  const displayEmail = authUser?.email || authUser?.phone || '';
+  const avatarUrl = profile?.photos?.[0]?.s3Key ? photoUrl(profile.photos[0].s3Key) : null;
 
   return (
     <IonPage>
@@ -17,13 +48,15 @@ const Settings = () => {
           <IonList lines="inset" className="mb-6">
             <IonItem lines="none">
               <IonAvatar slot="start">
-                <span className="text-2xl">👤</span>
+                {avatarUrl
+                  ? <img src={avatarUrl} alt={displayName} style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '50%' }} />
+                  : <span className="text-2xl">👤</span>}
               </IonAvatar>
               <IonLabel>
-                <h3 className="font-semibold">Chinelo</h3>
-                <p className="text-sm text-gray-600">chinelo@example.com</p>
+                <h3 className="font-semibold">{displayName}</h3>
+                <p className="text-sm text-gray-600">{displayEmail}</p>
               </IonLabel>
-              <IonBadge color="primary">Premium</IonBadge>
+              {profile?.isPremium && <IonBadge color="primary">Premium</IonBadge>}
             </IonItem>
           </IonList>
 
@@ -146,10 +179,13 @@ const Settings = () => {
             fill="outline"
             color="danger"
             className="touch-target-comfortable"
-            onClick={() => console.log('Logout')}
+            onClick={handleLogout}
+            disabled={loggingOut}
           >
-            <IonIcon icon={logOutOutline} slot="start" />
-            Log Out
+            {loggingOut
+              ? <IonSpinner name="crescent" slot="start" />
+              : <IonIcon icon={logOutOutline} slot="start" />}
+            {loggingOut ? 'Signing Out…' : 'Log Out'}
           </IonButton>
         </div>
       </IonContent>

@@ -60,7 +60,9 @@ export class PhotosService {
   }
 
   private buildPublicUrl(path: string): string {
-    return `${this.publicBase}/${encodeURIComponent(path)}`;
+    // Supabase public storage URLs use the raw path (slashes intact).
+    // Do NOT encodeURIComponent the whole path — it would encode '/' to '%2F'.
+    return `${this.publicBase}/${path}`;
   }
 
   async addPhoto(userId: string, file: UploadFile, order: number = 0): Promise<PhotoDto> {

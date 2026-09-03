@@ -17,10 +17,18 @@ services:
         fromService:
           name: dinanwuye-redis
           property: connectionString
+      # Set once in the Render dashboard — do NOT use generateValue here.
+      # generateValue rotates the secret on every deploy, invalidating all tokens.
       - key: JWT_SECRET
-        generateValue: true
+        sync: false
       - key: JWT_REFRESH_SECRET
-        generateValue: true
+        sync: false
+      # Supabase Storage — photos are stored here, NOT on the server filesystem.
+      # These must be set in the Render dashboard for photos to work after redeploys.
+      - key: SUPABASE_URL
+        value: https://ysvqvrskwyyjbeepbyuc.supabase.co
+      - key: SUPABASE_SERVICE_ROLE_KEY
+        sync: false
       - key: CORS_ORIGIN
         value: https://dinanwuye.onrender.com,https://dinanwuye-admin.onrender.com
     healthCheckPath: /api/v1/health
