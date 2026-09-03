@@ -115,14 +115,16 @@ export default function ProfileAndSettings({ user, onChange, onPhotoUploaded, to
             </p>
           </div>
 
-          <button
-            onClick={triggerPhotoUpload}
-            disabled={uploading}
-            className="absolute right-3 top-3 grid h-10 w-10 place-items-center rounded-full bg-black/30 text-white backdrop-blur-sm transition active:scale-90"
-            aria-label="Change photo"
-          >
-            {uploading ? <IonSpinner name="crescent" color="light" /> : <Camera size={16} weight="bold" />}
-          </button>
+          {editing && (
+            <button
+              onClick={triggerPhotoUpload}
+              disabled={uploading}
+              className="absolute right-3 top-3 grid h-10 w-10 place-items-center rounded-full bg-black/30 text-white backdrop-blur-sm transition active:scale-90"
+              aria-label="Change photo"
+            >
+              {uploading ? <IonSpinner name="crescent" color="light" /> : <Camera size={16} weight="bold" />}
+            </button>
+          )}
           <input
             ref={fileInputRef}
             type="file"
