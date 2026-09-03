@@ -28,7 +28,7 @@ class ProfileClient:
                 )
                 resp.raise_for_status()
             return resp.json()
-        except (httpx.HTTPError, ValueError) as exc:
+        except Exception as exc:
             logger.warning("profile service unreachable (%s); using default self-profile", exc)
             return {
                 "age": 30,
@@ -56,7 +56,7 @@ class ProfileClient:
             payload = resp.json()
             items = payload.get("items", payload if isinstance(payload, list) else [])
             return [CandidateProfile.model_validate(c) for c in items]
-        except (httpx.HTTPError, ValueError) as exc:
+        except Exception as exc:
             logger.warning("profile service unreachable (%s); using mock pool", exc)
             return mock_candidates_for(user_id)
 
