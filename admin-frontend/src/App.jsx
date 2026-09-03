@@ -1,12 +1,14 @@
 import { useEffect, useState } from 'react';
 
+const SUPABASE_URL = (import.meta.env.VITE_SUPABASE_URL || 'https://ysvqvrskwyyjbeepbyuc.supabase.co').replace(/\/+$/, '');
+const SUPABASE_BUCKET = 'photos';
 const API_URL = import.meta.env.VITE_ADMIN_API_URL || 'https://dinanwuye-api.onrender.com/api/v1/admin';
 const API_BASE = API_URL.replace(/\/api\/v1\/admin$/, '');
 
 function photoUrl(s3Key) {
   if (!s3Key) return null;
   if (s3Key.startsWith('data:') || s3Key.startsWith('http')) return s3Key;
-  return `${API_BASE}/uploads/photos/${encodeURIComponent(s3Key)}`;
+  return `${SUPABASE_URL}/storage/v1/object/public/${SUPABASE_BUCKET}/${encodeURIComponent(s3Key)}`;
 }
 
 async function apiFetch(path, options = {}) {

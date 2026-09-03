@@ -1,8 +1,6 @@
-import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
+import { BadRequestException, Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.module';
 import { PhotoDto } from './dto/profile.dto';
-import { existsSync, mkdirSync, writeFileSync, unlinkSync } from 'fs';
-import { join } from 'path';
 import { randomUUID } from 'crypto';
 
 interface UploadFile {
@@ -12,13 +10,35 @@ interface UploadFile {
 }
 
 const MAX_PHOTOS = 1;
-const UPLOADS_DIR = join(process.cwd(), 'uploads', 'photos');
 const ALLOWED_MIME = ['image/jpeg', 'image/png', 'image/webp'];
 const MAX_BYTES = 10 * 1024 * 1024;
+const BUCKET = 'photos';
+
+const logger = new Logger('PhotosService');
 
 @Injectable()
 export class PhotosService {
   constructor(private readonly prisma: PrismaService) {}
+
+  private get supabaseUrl(): string | undefined {
+    return process.env.SUPABASE_URL || process.env.SUPABASE_STORAGE_URL;
+  }
+
+  private get supabaseKey(): string | undefined {
+    return process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABASE_KEY;
+  }
+
+  private get useSupabase(): boolean {
+    return !!(this.supabaseUrl && this.supabaseKey);
+  }
+
+  private storageUrl(filename: string): string {
+    return `${this.supabaseUrl}/storage/v1/object/${BUCKET}/${filename}`;
+  }
+
+  private publicUrl(filename: string): string {
+    return `${this.supabaseUrl}/storage/v1/object/public/${BUCKET}/${filename}`;
+  }
 
   async addPhoto(userId: string, file: UploadFile, order: number = 0): Promise<PhotoDto> {
     if (!file) {
@@ -36,21 +56,21 @@ export class PhotosService {
       throw new NotFoundException('Profile not found — GET /profiles/me first');
     }
 
-    if (!existsSync(UPLOADS_DIR)) {
-      mkdirSync(UPLOADS_DIR, { recursive: true });
-    }
-
     const ext = file.mimetype === 'image/png' ? 'png' : file.mimetype === 'image/webp' ? 'webp' : 'jpg';
     const filename = `${randomUUID()}.${ext}`;
-    const filePath = join(UPLOADS_DIR, filename);
-    writeFileSync(filePath, file.buffer);
 
     const photo = await this.prisma.$transaction(async (tx: any) => {
       const existing = await tx.photo.findMany({ where: { profileId: profile.id } });
-      for (const p of existing) {
-        const oldFile = join(UPLOADS_DIR, p.s3Key);
-        if (existsSync(oldFile)) unlinkSync(oldFile);
+
+      if (this.useSupabase) {
+        for (const p of existing) {
+          await this.supabaseDelete(p.s3Key).catch((err: any) =>
+            logger.warn(`Failed to delete old Supabase photo ${p.s3Key}: ${err?.message}`),
+          );
+        }
+        await this.supabaseUpload(filename, file.buffer, file.mimetype);
       }
+
       await tx.photo.deleteMany({ where: { profileId: profile.id } });
       return tx.photo.create({
         data: {
@@ -80,8 +100,12 @@ export class PhotosService {
       throw new NotFoundException('Photo not found');
     }
 
-    const filePath = join(UPLOADS_DIR, photo.s3Key);
-    if (existsSync(filePath)) unlinkSync(filePath);
+    if (this.useSupabase) {
+      await this.supabaseDelete(photo.s3Key).catch((err: any) =>
+        logger.warn(`Failed to delete Supabase photo ${photo.s3Key}: ${err?.message}`),
+      );
+    }
+
     await this.prisma.photo.delete({ where: { id: photoId } });
     return { success: true };
   }
@@ -101,5 +125,35 @@ export class PhotosService {
       order: p.order,
       moderationStatus: p.moderationStatus,
     }));
+  }
+
+  private async supabaseUpload(filename: string, buffer: Buffer, mimetype: string): Promise<void> {
+    const resp = await fetch(this.storageUrl(filename), {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${this.supabaseKey}`,
+        'Content-Type': mimetype,
+        'x-upsert': 'true',
+      },
+      body: buffer,
+    });
+    if (!resp.ok) {
+      const text = await resp.text().catch(() => 'unknown');
+      logger.error(`Supabase upload failed (${resp.status}): ${text}`);
+      throw new BadRequestException('Photo upload to storage failed');
+    }
+  }
+
+  private async supabaseDelete(filename: string): Promise<void> {
+    const resp = await fetch(this.storageUrl(filename), {
+      method: 'DELETE',
+      headers: {
+        Authorization: `Bearer ${this.supabaseKey}`,
+      },
+    });
+    if (!resp.ok && resp.status !== 404) {
+      const text = await resp.text().catch(() => 'unknown');
+      logger.warn(`Supabase delete failed (${resp.status}): ${text}`);
+    }
   }
 }
