@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, HttpCode, HttpStatus, Param, Patch, Post, Req, UploadedFile, UseGuards, UseInterceptors } from '@nestjs/common';
+import { Body, Controller, Delete, Get, HttpCode, HttpStatus, Param, Patch, Post, Req, Res, UploadedFile, UseGuards, UseInterceptors } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ApiBearerAuth, ApiConsumes, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { JwtAuthGuard, getUserFromRequest } from '../shared';
@@ -98,6 +98,27 @@ export class ProfileController {
   updatePreferences(@Req() request: JwtRequest, @Body() dto: UpdatePreferencesDto): Promise<PreferencesDto> {
     const { sub } = getUserFromRequest(request);
     return this.preferences.updatePreferences(sub, dto);
+  }
+
+  @Get('photo-proxy/:userId/:filename')
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({ summary: 'Serve a profile photo via backend proxy' })
+  async servePhoto(
+    @Param('userId') userId: string,
+    @Param('filename') filename: string,
+    @Res() res: any,
+  ): Promise<void> {
+    const path = `${userId}/${filename}`;
+    const result = await this.photos.getPhotoBuffer(path);
+    if (!result) {
+      res.status(404).json({ message: 'Photo not found' });
+      return;
+    }
+    res.set({
+      'Content-Type': result.contentType,
+      'Cache-Control': 'public, max-age=86400',
+    });
+    res.send(result.buffer);
   }
 
   @Get(':id')

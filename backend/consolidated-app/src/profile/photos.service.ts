@@ -120,4 +120,31 @@ export class PhotosService {
     if (storagePath.startsWith('http') || storagePath.startsWith('data:')) return storagePath;
     return this.buildPublicUrl(storagePath);
   }
+
+  async getPhotoBuffer(storagePath: string): Promise<{ buffer: Buffer; contentType: string } | null> {
+    if (!storagePath) return null;
+    try {
+      const url = `${this.supabaseUrl}/storage/v1/object/${BUCKET}/${storagePath}`;
+      const res = await fetch(url, {
+        method: 'GET',
+        headers: { Authorization: `Bearer ${this.serviceKey}` },
+      });
+      if (!res.ok) return null;
+      const arrayBuffer = await res.arrayBuffer();
+      const buffer = Buffer.from(arrayBuffer);
+      const ext = storagePath.split('.').pop()?.toLowerCase() || 'jpg';
+      const contentTypeMap: Record<string, string> = {
+        jpg: 'image/jpeg',
+        jpeg: 'image/jpeg',
+        png: 'image/png',
+        webp: 'image/webp',
+        gif: 'image/gif',
+      };
+      const contentType = contentTypeMap[ext] || 'image/jpeg';
+      return { buffer, contentType };
+    } catch (err: any) {
+      console.warn(`Failed to fetch photo buffer for ${storagePath}: ${err.message}`);
+      return null;
+    }
+  }
 }
