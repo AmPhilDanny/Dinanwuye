@@ -141,7 +141,7 @@ export const profileApi = {
     formData.append('photo', file);
     try {
       return await profileClient.post('/profiles/me/photos', formData, {
-        headers: { 'Content-Type': undefined }
+        headers: { 'Content-Type': 'multipart/form-data' }
       });
     } catch (error) {
       console.error("Photo upload failed:", error.response?.data || error.message);
