@@ -1,5 +1,5 @@
 const SUPABASE_URL = 'https://ysvqvrskwyyjbeepbyuc.supabase.co';
-const BUCKET = 'photos%20bucket';
+const BUCKET = 'profile-photos';
 const PUBLIC_BASE = `${SUPABASE_URL}/storage/v1/object/public/${BUCKET}`;
 
 export function photoUrl(s3Key, fallbackName) {

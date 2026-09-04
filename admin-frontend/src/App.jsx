@@ -9,7 +9,7 @@ function photoUrl(s3Key) {
   if (!s3Key) return null;
   if (s3Key.startsWith('http')) return s3Key;
   if (s3Key.startsWith('data:')) return s3Key;
-  return `${PUBLIC_BASE}/${encodeURIComponent(s3Key)}`;
+  return `${PUBLIC_BASE}/${s3Key}`;
 }
 
 async function apiFetch(path, options = {}) {
