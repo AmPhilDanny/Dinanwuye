@@ -41,7 +41,7 @@ export default function ProfileAndSettings({ user, onChange, onPhotoUploaded, to
 
   const handlePhotoUpload = async (event) => {
     const file = event.target.files?.[0];
-    if (!file) return;
+    if (!file || uploading) return;
 
     if (!file.type.startsWith('image/')) {
       setPhotoToast({ open: true, message: 'Please select an image file', color: 'danger' });
