@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion, useReducedMotion } from 'framer-motion';
-import { Heart, X, Star, MapPin, ShieldCheck, Play, Pause } from '@phosphor-icons/react';
+import { Heart, X, Star, MapPin, ShieldCheck } from '@phosphor-icons/react';
 import { photoUrl } from '@utils/photoUrl';
 
 export default function DiscoveryFeed({ profiles, onLike, onPass, onSuperSpark, onExhausted }) {
@@ -8,7 +8,6 @@ export default function DiscoveryFeed({ profiles, onLike, onPass, onSuperSpark, 
   const [exitX, setExitX] = useState(null);
   const reduced = useReducedMotion();
   const current = profiles[index];
-  const [playing, setPlaying] = useState(false);
 
   const advance = (dir) => {
     setExitX(dir);
@@ -56,8 +55,8 @@ export default function DiscoveryFeed({ profiles, onLike, onPass, onSuperSpark, 
   };
 
   return (
-    <div className="relative flex min-h-[72dvh] flex-col px-4 pb-4">
-      <div className="relative mx-auto aspect-[3/4] w-full max-w-sm min-h-[480px]">
+    <div className="relative flex flex-col px-4 pb-2">
+      <div className="relative mx-auto w-full max-w-sm" style={{ height: 'calc(100dvh - 220px)', maxHeight: '560px' }}>
         {profiles.slice(index, index + 2).map((p, i) => {
           const isFront = i === 0;
           const photoSrc = photoUrl(p.photo || p.photo_url);
@@ -113,17 +112,9 @@ export default function DiscoveryFeed({ profiles, onLike, onPass, onSuperSpark, 
                   <div>
                     <h3 className="text-2xl font-extrabold tracking-tight drop-shadow-sm">{p.name}, {p.age}</h3>
                     <p className="flex items-center gap-1 text-sm text-white/90">
-                      <MapPin size={13} weight="fill" /> {p.city || p.location || 'Unknown'}, {p.country} · {Math.round(distance)}km
+                      <MapPin size={13} weight="fill" /> {p.location || 'Unknown'}{distance ? ` · ${Math.round(distance)}km` : ''}
                     </p>
-                    <p className="mt-1 text-xs font-bold text-secondary-light drop-shadow-sm">{p.job}</p>
                   </div>
-                  <button
-                    onClick={() => setPlaying((v) => !v)}
-                    className="grid h-11 w-11 place-items-center rounded-full bg-white/25 text-white backdrop-blur-sm transition active:scale-90"
-                    aria-label="Play voice intro"
-                  >
-                    {playing ? <Pause size={18} weight="fill" /> : <Play size={18} weight="fill" />}
-                  </button>
                 </div>
               </div>
             </motion.div>
@@ -131,7 +122,7 @@ export default function DiscoveryFeed({ profiles, onLike, onPass, onSuperSpark, 
         })}
       </div>
 
-      <div className="mx-auto mt-4 flex w-full max-w-sm items-center justify-center gap-4 py-3">
+      <div className="mx-auto mt-3 flex w-full max-w-sm items-center justify-center gap-5 pt-2 pb-2">
         <motion.button
           whileTap={{ scale: 0.85 }}
           onClick={() => { if (onPass) onPass(current); advance(-1); }}

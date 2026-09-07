@@ -151,7 +151,7 @@ const Discover = () => {
 
   return (
     <IonPage>
-      <IonContent className="ion-padding">
+      <IonContent className="ion-padding" scrollY={false}>
         <HeaderNav activeTab="discover" unread={unreadCount} streak={streak} />
 
         {loading && deck.length === 0 ? (
