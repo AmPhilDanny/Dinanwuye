@@ -109,8 +109,8 @@ export default function DiscoveryFeed({ profiles, onLike, onPass, onSuperSpark, 
                   )}
                 </div>
                 <div className="flex items-end justify-between">
-                  <div>
-                    <h3 className="text-2xl font-extrabold tracking-tight drop-shadow-sm">{p.name}, {p.age}</h3>
+                  <div className="rounded-xl bg-black/50 px-3 py-2 backdrop-blur-sm">
+                    <h3 className="text-2xl font-extrabold tracking-tight text-white drop-shadow-sm">{p.name}, {p.age}</h3>
                     <p className="flex items-center gap-1 text-sm text-white/90">
                       <MapPin size={13} weight="fill" /> {p.location || 'Unknown'}{distance ? ` · ${Math.round(distance)}km` : ''}
                     </p>
