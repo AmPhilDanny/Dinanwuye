@@ -82,7 +82,7 @@ export class ProfileService {
   async getPublicProfile(profileId: string): Promise<PublicProfileDto> {
     const profile = await this.prisma.profile.findFirst({
       where: { OR: [{ id: profileId }, { userId: profileId }] },
-      include: { photos: { where: { moderationStatus: 'approved' }, orderBy: { order: 'asc' } } },
+      include: { photos: { where: { moderationStatus: { not: 'rejected' } }, orderBy: { order: 'asc' } } },
     });
     if (!profile) {
       throw new NotFoundException('Profile not found');
@@ -120,7 +120,7 @@ export class ProfileService {
         onboardingComplete: true,
         ...(requester?.gender ? { seeking: { has: requester.gender } } : {}),
       },
-      include: { photos: { where: { moderationStatus: 'approved' }, orderBy: { order: 'asc' }, take: 1 } },
+      include: { photos: { where: { moderationStatus: { not: 'rejected' } }, orderBy: { order: 'asc' }, take: 1 } },
       take: 200,
     });
 
