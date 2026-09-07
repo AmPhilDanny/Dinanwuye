@@ -14,7 +14,7 @@ logger = logging.getLogger(__name__)
 
 
 class ProfileClient:
-    def __init__(self, base_url: str | None = None, timeout: float = 3.0) -> None:
+    def __init__(self, base_url: str | None = None, timeout: float = 15.0) -> None:
         self.base_url = base_url or settings.PROFILE_SERVICE_URL
         self.timeout = timeout
 
@@ -54,7 +54,7 @@ class ProfileClient:
                 )
                 resp.raise_for_status()
             payload = resp.json()
-            items = payload.get("items", payload if isinstance(payload, list) else [])
+            items = payload if isinstance(payload, list) else payload.get("items", [])
             return [CandidateProfile.model_validate(c) for c in items]
         except Exception as exc:
             logger.warning("profile service unreachable (%s); using mock pool", exc)
