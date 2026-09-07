@@ -3,7 +3,6 @@ import { IonPage, IonContent } from '@ionic/react';
 import { motion } from 'framer-motion';
 import { Heart, ShieldCheck, ChatCircle, ArrowRight, Star } from '@phosphor-icons/react';
 import { useNavigate } from 'react-router-dom';
-import { PHOTOS } from '@utils/constants';
 
 const FEATURES = [
   { icon: ShieldCheck, label: 'ID Verified', sub: 'Every profile authenticated' },
@@ -19,16 +18,8 @@ const Landing = () => {
     <IonPage>
       <IonContent fullscreen>
         <div className="relative min-h-[100dvh] overflow-hidden">
-          {/* Hero background — collage of real faces */}
-          <div className="absolute inset-0 grid grid-cols-3 gap-0.5">
-            {PHOTOS.slice(0, 9).map((src, i) => (
-              <div key={i} className="overflow-hidden bg-gray-200">
-                <img src={src} alt="" className="h-full w-full object-cover" draggable={false} />
-              </div>
-            ))}
-          </div>
-          {/* Overlay gradient — stronger for text legibility */}
-          <div className="absolute inset-0 bg-gradient-to-b from-onyx/85 via-onyx/80 to-onyx/95" />
+          {/* Solid dark background for text legibility */}
+          <div className="absolute inset-0 bg-onyx" />
 
           <div className="relative z-10 flex min-h-[100dvh] flex-col items-center justify-between px-6 py-safe-top-6">
             {/* Top: Logo */}
