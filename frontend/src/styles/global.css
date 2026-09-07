@@ -428,3 +428,22 @@ button {
 @media print {
   .no-print { display: none !important; }
 }
+
+/* ========================================
+   IONIC CONTENT TRANSPARENCY FIX
+   Ionic's IonContent renders a shadow-DOM scroll container that
+   paints --ion-background-color on top of custom backgrounds.
+   We override the scroll part to be transparent so our own
+   background layers (e.g. bg-onyx on the Landing page) show through.
+   ======================================== */
+ion-content::part(scroll) {
+  background: transparent;
+}
+
+ion-content {
+  --background: transparent;
+}
+
+ion-page {
+  background: transparent;
+}

@@ -154,6 +154,14 @@
   /* ========================================
      IONIC THEME OVERRIDES
      ======================================== */
+  /* Core Ionic background / text — prevents Ionic from painting its own
+     white background inside IonContent or IonPage and overriding our dark
+     landing page design. */
+  --ion-background-color: var(--color-background);
+  --ion-background-color-rgb: 245, 245, 247;
+  --ion-text-color: var(--color-gray-900);
+  --ion-text-color-rgb: 29, 29, 31;
+
   /* These map to Ionic's CSS custom properties */
   --ion-color-primary: var(--color-primary);
   --ion-color-primary-rgb: 228, 23, 43;
@@ -225,6 +233,13 @@
    ======================================== */
 @media (prefers-color-scheme: dark) {
   :root {
+    /* Ionic core — must be updated in dark mode too so IonContent
+       doesn't paint a white background over our dark surfaces */
+    --ion-background-color: #121214;
+    --ion-background-color-rgb: 18, 18, 20;
+    --ion-text-color: #F5F5F7;
+    --ion-text-color-rgb: 245, 245, 247;
+
     /* Backgrounds - dark surfaces */
     --color-background: #121214;
     --color-background-alt: #1D1D1F;
