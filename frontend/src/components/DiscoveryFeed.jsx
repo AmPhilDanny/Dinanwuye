@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion, useReducedMotion } from 'framer-motion';
-import { Heart, X, Star, MapPin, ShieldCheck } from '@phosphor-icons/react';
+import { Heart, X, Star, MapPin, ShieldCheck, Inbox } from '@phosphor-icons/react';
 import { photoUrl } from '@utils/photoUrl';
 
 export default function DiscoveryFeed({ profiles, onLike, onPass, onSuperSpark, onExhausted }) {
@@ -28,7 +28,9 @@ export default function DiscoveryFeed({ profiles, onLike, onPass, onSuperSpark, 
         animate={{ opacity: 1, y: 0 }}
         className="flex flex-col items-center justify-center gap-4 px-8 py-24 text-center"
       >
-        <span className="grid h-16 w-16 place-items-center rounded-3xl bg-primary/15 text-3xl text-primary">💌</span>
+        <div className="grid h-16 w-16 place-items-center rounded-3xl bg-primary/15 text-primary">
+          <Inbox size={32} weight="light" />
+        </div>
         <h3 className="text-xl font-bold text-foreground">You caught up on everyone near you</h3>
         <p className="text-sm leading-relaxed text-gray-600 dark:text-gray-300">
           Tweak your filters to see more intentional people, or check your new matches in the chat tab.

@@ -142,8 +142,7 @@ export default function ChatAndDates({ matches, profiles, onSend }) {
                   onClick={() => active && onSend && onSend(active.id, `Shall we try ${v.name}? It's got a ${v.vibe} vibe.`)}
                   className="w-40 shrink-0 rounded-2xl border border-gray-200 bg-background p-3 text-left shadow-sm transition hover:border-primary/40 dark:border-gray-600"
                 >
-                  <span className="text-2xl">{v.emoji}</span>
-                  <p className="mt-1 text-sm font-bold leading-tight text-foreground">{v.name}</p>
+                  <p className="text-sm font-bold leading-tight text-foreground">{v.name}</p>
                   <p className="mt-0.5 flex items-center gap-1 text-[11px] font-medium text-gray-500 dark:text-gray-400">
                     <MapPin size={10} weight="fill" />{v.area} · ⭐ {v.rating}
                   </p>

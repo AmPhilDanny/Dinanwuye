@@ -24,10 +24,10 @@ export const DEFAULT_FILTERS = {
 };
 
 export const DATE_VENUES = [
-  { id: "v1", name: "Nok by Alara", emoji: "🍽️", area: "Lagos Island", rating: 4.8, category: "Fine Dining", vibe: "upscale" },
-  { id: "v2", name: "The Wheatbaker", emoji: "🌿", area: "Ikoyi", rating: 4.7, category: "Rooftop Bar", vibe: "relaxed" },
-  { id: "v3", name: "Yellow Chilli", emoji: "🌶️", area: "Victoria Island", rating: 4.6, category: "Nigerian Cuisine", vibe: "vibrant" },
-  { id: "v4", name: "Sky Bar", emoji: "🌃", area: "Eko Hotel", rating: 4.9, category: "Cocktail Bar", vibe: "romantic" },
-  { id: "v5", name: "Terra Kulture", emoji: "🎭", area: "Victoria Island", rating: 4.5, category: "Arts & Culture", vibe: "creative" },
-  { id: "v6", name: "Craft Grill", emoji: "🥩", area: "Lekki Phase 1", rating: 4.7, category: "BBQ & Grill", vibe: "casual" },
+  { id: "v1", name: "Nok by Alara", area: "Lagos Island", rating: 4.8, category: "Fine Dining", vibe: "upscale" },
+  { id: "v2", name: "The Wheatbaker", area: "Ikoyi", rating: 4.7, category: "Rooftop Bar", vibe: "relaxed" },
+  { id: "v3", name: "Yellow Chilli", area: "Victoria Island", rating: 4.6, category: "Nigerian Cuisine", vibe: "vibrant" },
+  { id: "v4", name: "Sky Bar", area: "Eko Hotel", rating: 4.9, category: "Cocktail Bar", vibe: "romantic" },
+  { id: "v5", name: "Terra Kulture", area: "Victoria Island", rating: 4.5, category: "Arts & Culture", vibe: "creative" },
+  { id: "v6", name: "Craft Grill", area: "Lekki Phase 1", rating: 4.7, category: "BBQ & Grill", vibe: "casual" },
 ];

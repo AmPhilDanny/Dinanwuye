@@ -1,20 +1,20 @@
 import React from 'react';
 import { IonPage, IonContent } from '@ionic/react';
 import { motion } from 'framer-motion';
-import { ArrowRight, CheckCircle } from '@phosphor-icons/react';
+import { ArrowRight, CheckCircle, User, Users, UserPlus } from '@phosphor-icons/react';
 import { useNavigate } from 'react-router-dom';
 import useAppStore from '@store/useAppStore';
 
 const GENDER_OPTIONS = [
-  { value: 'male', label: 'Man', emoji: '👨' },
-  { value: 'female', label: 'Woman', emoji: '👩' },
-  { value: 'non_binary', label: 'Non-binary', emoji: '🧑' },
+  { value: 'male', label: 'Man', icon: User },
+  { value: 'female', label: 'Woman', icon: User },
+  { value: 'non_binary', label: 'Non-binary', icon: Users },
 ];
 
 const SEEKING_OPTIONS = [
-  { value: 'women', label: 'Women', emoji: '💃' },
-  { value: 'men', label: 'Men', emoji: '🕺' },
-  { value: 'everyone', label: 'Everyone', emoji: '💑' },
+  { value: 'women', label: 'Women', icon: User },
+  { value: 'men', label: 'Men', icon: User },
+  { value: 'everyone', label: 'Everyone', icon: Users },
 ];
 
 const SelectCard = ({ option, selected, onSelect }) => (
@@ -28,7 +28,9 @@ const SelectCard = ({ option, selected, onSelect }) => (
     }`}
   >
     <div className="flex items-center gap-3">
-      <span className="text-2xl">{option.emoji}</span>
+      <div className="grid h-10 w-10 place-items-center rounded-xl bg-primary/10 text-primary">
+        <option.icon size={20} weight="fill" />
+      </div>
       <span className={`text-base font-bold ${selected === option.value ? 'text-primary' : 'text-foreground'}`}>
         {option.label}
       </span>

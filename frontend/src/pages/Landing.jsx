@@ -1,12 +1,12 @@
 import React from 'react';
 import { IonPage, IonContent } from '@ionic/react';
 import { motion } from 'framer-motion';
-import { ShieldCheck, ChatCircle, ArrowRight, Star } from '@phosphor-icons/react';
+import { ShieldCheck, Target, ChatCircle, ArrowRight, Star } from '@phosphor-icons/react';
 import { useNavigate } from 'react-router-dom';
 
 const FEATURES = [
   { icon: ShieldCheck, label: 'ID Verified', sub: 'Every profile authenticated' },
-  { icon: Heart, label: 'Intentional', sub: 'Serious people only' },
+  { icon: Target, label: 'Intentional', sub: 'Serious people only' },
   { icon: Star, label: 'Curated Matches', sub: 'AI-powered compatibility' },
   { icon: ChatCircle, label: 'Real Conversations', sub: 'No ghosting culture' },
 ];
