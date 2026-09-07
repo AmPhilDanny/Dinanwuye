@@ -14,9 +14,9 @@
   --color-secondary: #1B4CE0;       /* Primary Blue - verification, trust, secondary CTA */
   --color-secondary-light: #E8EDFC; /* Light Blue - backgrounds, info states */
 
-  /* ========================================
-     NEUTRALS / SURFACES
-     ======================================== */
+/* ========================================
+   NEUTRALS / SURFACES
+   ======================================== */
   --color-white: #FFFFFF;
   --color-surface: #FFFFFF;
   --color-surface-elevated: #FFFFFF;
@@ -33,6 +33,9 @@
   --color-gray-700: #424245;
   --color-gray-800: #2D2D30;
   --color-gray-900: #1D1D1F;        /* Text primary */
+
+  /* Overlay color - stays dark in both modes for gradients/overlays */
+  --color-onyx: #1D1D1F;
 
   /* ========================================
      SEMANTIC COLORS
@@ -218,17 +221,42 @@
 }
 
 /* ========================================
-   DARK MODE (optional, for future)
+   DARK MODE
    ======================================== */
 @media (prefers-color-scheme: dark) {
   :root {
-    --color-background: #1D1D1F;
-    --color-background-alt: #2D2D30;
-    --color-surface: #2D2D30;
-    --color-surface-elevated: #3A3A3C;
-    --color-gray-50: #1D1D1F;
-    --color-gray-100: #2D2D30;
-    --color-gray-900: #F5F5F7;
-    /* Adjust other tokens as needed */
+    /* Backgrounds - dark surfaces */
+    --color-background: #121214;
+    --color-background-alt: #1D1D1F;
+    --color-surface: #1D1D1F;
+    --color-surface-elevated: #2D2D30;
+
+    /* Neutral scale - inverted for dark mode */
+    --color-gray-50: #121214;
+    --color-gray-100: #1D1D1F;
+    --color-gray-200: #2D2D30;
+    --color-gray-300: #3A3A3C;
+    --color-gray-400: #8A8A8E;
+    --color-gray-500: #A0A0A4;
+    --color-gray-600: #B8B8BC;
+    --color-gray-700: #D0D0D4;
+    --color-gray-800: #E8E8EB;
+    --color-gray-900: #F5F5F7;  /* Primary text - light in dark mode */
+
+    /* White stays white */
+    --color-white: #FFFFFF;
+
+    /* Overlay color - stays dark in both modes */
+    --color-onyx: #1D1D1F;
+
+    /* Semantic colors adjusted for dark backgrounds */
+    --color-success: #4CD964;
+    --color-success-light: #1B3D1B;
+    --color-warning: #FFCC00;
+    --color-warning-light: #3D3300;
+    --color-error: #FF6B5A;
+    --color-error-light: #3D1A1A;
+    --color-info: #5A8CFF;
+    --color-info-light: #1A2D4D;
   }
 }

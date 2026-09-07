@@ -21,8 +21,8 @@ export default {
         background: 'var(--color-background)',
         // foreground — resolves to the dark text token; .dark class flips to near-white
         foreground: 'var(--color-gray-900)',
-        // onyx — rich near-black used for overlays and dark mode bg
-        onyx: 'var(--color-gray-900)',
+        // onyx — rich near-black used for overlays and dark mode bg (stays dark in both modes)
+        onyx: 'var(--color-onyx)',
         // ivory — warm off-white, same as page background
         ivory: 'var(--color-background)',
         // coral — alias for primary red (keeps Finished-Sample class names working)
