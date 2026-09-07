@@ -1,7 +1,7 @@
 import React from 'react';
 import { IonPage, IonContent } from '@ionic/react';
 import { motion } from 'framer-motion';
-import { Heart, ShieldCheck, ChatCircle, ArrowRight, Star } from '@phosphor-icons/react';
+import { ShieldCheck, ChatCircle, ArrowRight, Star } from '@phosphor-icons/react';
 import { useNavigate } from 'react-router-dom';
 
 const FEATURES = [
@@ -29,8 +29,8 @@ const Landing = () => {
               transition={{ duration: 0.5 }}
               className="mt-12 flex flex-col items-center gap-3 text-white"
             >
-              <div className="grid h-16 w-16 place-items-center rounded-3xl bg-gradient-to-br from-primary to-secondary shadow-2xl shadow-primary/40">
-                <Heart size={32} weight="fill" className="text-white" />
+              <div className="h-20 w-20 overflow-hidden rounded-3xl shadow-2xl shadow-primary/40">
+                <img src="/logo-symbol.png" alt="Dinanwuye" className="h-full w-full object-contain" />
               </div>
               <div className="text-center">
                 <h1 className="text-4xl font-black tracking-tight drop-shadow-lg">Dinanwuye</h1>

@@ -341,8 +341,8 @@ const Auth = () => {
         <div className="mx-auto flex min-h-[100dvh] max-w-md flex-col justify-center py-10">
           {/* Logo mark */}
           <div className="mb-8 text-center">
-            <div className="mx-auto mb-4 grid h-16 w-16 place-items-center rounded-3xl bg-gradient-to-br from-primary to-secondary shadow-xl shadow-primary/30">
-              <span className="text-2xl">💑</span>
+            <div className="mx-auto mb-4 h-16 w-16 overflow-hidden rounded-3xl shadow-xl shadow-primary/30">
+              <img src="/logo-symbol.png" alt="Dinanwuye" className="h-full w-full object-contain" />
             </div>
             <h1 className="text-2xl font-black text-foreground">{titles[mode]}</h1>
             <p className="mt-1.5 text-sm text-gray-600 dark:text-gray-300">

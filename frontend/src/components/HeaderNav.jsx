@@ -17,9 +17,9 @@ export default function HeaderNav({ activeTab, unread, streak, dark, onToggleThe
     <header className="sticky top-0 z-30 border-b border-gray-200/70 bg-surface/90 backdrop-blur-xl dark:border-gray-800 dark:bg-onyx/90">
       <div className="mx-auto flex h-14 w-full max-w-md items-center justify-between px-4">
         <div className="flex items-center gap-2">
-          <span className="grid h-8 w-8 place-items-center rounded-xl bg-gradient-to-br from-primary to-secondary text-sm font-black text-white shadow-md">
-            D
-          </span>
+          <div className="h-8 w-8 overflow-hidden rounded-xl shadow-md">
+            <img src="/logo-64.png" alt="D" className="h-full w-full object-contain" />
+          </div>
           <div className="leading-tight">
             <p className="text-[11px] font-bold tracking-[0.18em] text-foreground">{BRAND}</p>
             <p className="text-[10px] font-semibold text-gray-600 dark:text-gray-300">{titles[activeTab] || titles.discover}</p>
