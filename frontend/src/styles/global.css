@@ -46,7 +46,7 @@ h1, h2, h3, h4, h5, h6 {
   font-family: var(--font-family-display);
   font-weight: var(--font-weight-bold);
   line-height: var(--line-height-tight);
-  color: var(--color-gray-900);
+  /* color intentionally omitted — let Tailwind utility classes (e.g. text-white) control heading color per context */
 }
 
 h1 { font-size: var(--font-size-4xl); }
