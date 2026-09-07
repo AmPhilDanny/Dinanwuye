@@ -235,6 +235,12 @@ export class CandidateDto {
   @ApiProperty({ example: 'uuid', description: 'Auth service user ID used by matching and messaging' })
   userId!: string;
 
+  @ApiProperty({ example: 'Chinelo' })
+  name!: string;
+
+  @ApiPropertyOptional({ example: 'a1b2c3d4-e5f6-7890-abcd-ef1234567890.jpg' })
+  photo?: string | null;
+
   @ApiProperty({ example: 29 })
   age!: number;
 
