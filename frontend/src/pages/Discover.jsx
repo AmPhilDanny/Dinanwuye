@@ -29,6 +29,7 @@ import useAppStore from '@store/useAppStore';
 import DiscoveryFeed from '@components/DiscoveryFeed';
 import HeaderNav from '@components/HeaderNav';
 import BottomNav from '@components/BottomNav';
+import { photoUrl } from '@utils/photoUrl';
 
 const DECK_PAGE_SIZE = 10;
 const GENDER_LABELS = { male: 'Man', female: 'Woman', non_binary: 'Non-binary' };
@@ -53,12 +54,14 @@ const Discover = () => {
   const [cursor, setCursor] = useState(null);
   const [hasMore, setHasMore] = useState(false);
   const [swiping, setSwiping] = useState(false);
-  const [matchedUser, setMatchedUser] = useState(null); // DeckItem of the mutual match
+  const [matchedUser, setMatchedUser] = useState(null);
   const [showMatchModal, setShowMatchModal] = useState(false);
   const [toast, setToast] = useState({ open: false, message: '', color: 'danger' });
   const [likesRemaining, setLikesRemaining] = useState(null);
   const [unreadCount, setUnreadCount] = useState(0);
   const [streak, setStreak] = useState(0);
+  const [viewedProfiles, setViewedProfiles] = useState([]);
+  const [showViewed, setShowViewed] = useState(false);
   const fetchingRef = useRef(false);
 
   const loadDeck = useCallback(
@@ -108,6 +111,20 @@ const Discover = () => {
     return () => { active = false; };
   }, []);
 
+  const loadViewedProfiles = async () => {
+    try {
+      const { data } = await matchingApi.getViewed();
+      setViewedProfiles(data || []);
+      setShowViewed(true);
+    } catch (err) {
+      setToast({
+        open: true,
+        message: 'Could not load viewed profiles',
+        color: 'danger',
+      });
+    }
+  };
+
   const handleAction = async (action) => {
     const profile = deck[currentIndex];
     if (!profile || swiping) return;
@@ -154,7 +171,58 @@ const Discover = () => {
       <IonContent className="ion-padding" scrollY={false}>
         <HeaderNav activeTab="discover" unread={unreadCount} streak={streak} />
 
-        {loading && deck.length === 0 ? (
+        {showViewed ? (
+          <div className="flex flex-col gap-3 px-4 pt-2">
+            <div className="flex items-center justify-between">
+              <h2 className="text-lg font-bold text-foreground">Previously Viewed</h2>
+              <button
+                onClick={() => setShowViewed(false)}
+                className="text-sm font-semibold text-primary"
+              >
+                Back to Discover
+              </button>
+            </div>
+            {viewedProfiles.length === 0 ? (
+              <p className="text-center text-gray-500 py-8">No viewed profiles yet</p>
+            ) : (
+              <div className="grid grid-cols-2 gap-3">
+                {viewedProfiles.map((profile) => (
+                  <div
+                    key={profile.user_id}
+                    className="relative overflow-hidden rounded-2xl bg-white shadow-md dark:bg-gray-800"
+                  >
+                    <div className="aspect-[3/4] w-full">
+                      {profile.photo ? (
+                        <img
+                          src={photoUrl(profile.photo)}
+                          alt={profile.name}
+                          className="h-full w-full object-cover"
+                        />
+                      ) : (
+                        <div className="flex h-full w-full items-center justify-center bg-gradient-to-br from-primary to-secondary">
+                          <span className="text-3xl font-bold text-white">
+                            {(profile.name || '?').split(' ').map(w => w[0]).slice(0, 2).join('').toUpperCase()}
+                          </span>
+                        </div>
+                      )}
+                    </div>
+                    <div className="absolute bottom-0 inset-x-0 bg-gradient-to-t from-black/70 to-transparent p-3">
+                      <p className="text-sm font-bold text-white">{profile.name}, {profile.age}</p>
+                      <p className="text-xs text-white/80">{profile.location || 'Unknown'}</p>
+                      <span className={`mt-1 inline-block rounded-full px-2 py-0.5 text-[10px] font-semibold ${
+                        profile.action === 'like' ? 'bg-emerald-500/80 text-white' :
+                        profile.action === 'superlike' ? 'bg-blue-500/80 text-white' :
+                        'bg-gray-500/80 text-white'
+                      }`}>
+                        {profile.action === 'like' ? 'Liked' : profile.action === 'superlike' ? 'Super Liked' : 'Passed'}
+                      </span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        ) : loading && deck.length === 0 ? (
           <div className="flex items-center justify-center min-h-[60vh]">
             <IonSpinner name="crescent" />
           </div>
@@ -182,6 +250,14 @@ const Discover = () => {
               disabled={loading}
             >
               {loading ? <IonSpinner name="crescent" /> : 'Refresh'}
+            </IonButton>
+            <IonButton
+              fill="clear"
+              color="medium"
+              className="mt-2"
+              onClick={loadViewedProfiles}
+            >
+              View Previously Seen
             </IonButton>
           </div>
         )}

@@ -60,5 +60,19 @@ class ProfileClient:
             logger.warning("profile service unreachable (%s); using mock pool", exc)
             return mock_candidates_for(user_id)
 
+    async def get_profile_by_id(self, user_id: str, token: str) -> dict | None:
+        """Fetch a single profile by user ID."""
+        try:
+            async with httpx.AsyncClient(timeout=self.timeout) as client:
+                resp = await client.get(
+                    f"{self.base_url}/api/v1/profiles/{user_id}",
+                    headers={"Authorization": f"Bearer {token}"},
+                )
+                resp.raise_for_status()
+            return resp.json()
+        except Exception as exc:
+            logger.warning("profile service unreachable for %s (%s)", user_id, exc)
+            return None
+
 
 profile_client = ProfileClient()

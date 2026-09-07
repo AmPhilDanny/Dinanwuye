@@ -80,3 +80,15 @@ class MatchResponse(BaseModel):
     user_id: str  # the other user
     created_at: str
     status: str
+
+
+class ViewedProfile(BaseModel):
+    user_id: str
+    name: str | None = None
+    photo: str | None = None
+    age: int
+    gender: str
+    location: str | None = None
+    is_verified: bool = False
+    action: str
+    viewed_at: str

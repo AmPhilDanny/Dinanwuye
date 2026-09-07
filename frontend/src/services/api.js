@@ -162,6 +162,7 @@ export const matchingApi = {
   getMatches: () => matchingClient.get('/matching/matches'),
   getMatch: (matchId) => matchingClient.get(`/matching/matches/${matchId}`),
   unmatch: (matchId) => matchingClient.delete(`/matching/matches/${matchId}`),
+  getViewed: () => matchingClient.get('/matching/viewed'),
 };
 
 // ============================================================

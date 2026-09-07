@@ -19,8 +19,10 @@ from app.schemas.schemas import (
     SwipeAction,
     SwipeRequest,
     SwipeResponse,
+    ViewedProfile,
 )
 from app.services.deck import build_deck
+from app.services.profile_client import profile_client
 
 router = APIRouter()
 
@@ -186,3 +188,45 @@ async def unmatch(
     match_row.status = "unmatched"
     await db.commit()
     return {"success": True}
+
+
+@router.get("/viewed", response_model=list[ViewedProfile])
+async def get_viewed_profiles(
+    user_id: str = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db),
+    credentials: HTTPAuthorizationCredentials | None = Depends(bearer_scheme),
+):
+    """Profiles the current user has previously swiped on."""
+    token = credentials.credentials if credentials else ""
+
+    result = await db.execute(
+        select(Swipe)
+        .where(Swipe.actor_id == user_id)
+        .order_by(Swipe.created_at.desc())
+        .limit(50)
+    )
+    swipes = result.scalars().all()
+
+    if not swipes:
+        return []
+
+    viewed = []
+    for swipe in swipes:
+        try:
+            profile = await profile_client.get_profile_by_id(swipe.target_id, token)
+            if profile:
+                viewed.append(ViewedProfile(
+                    user_id=swipe.target_id,
+                    name=profile.get("name"),
+                    photo=profile.get("photo"),
+                    age=profile.get("age", 0),
+                    gender=profile.get("gender", "unknown"),
+                    location=profile.get("locationName"),
+                    is_verified=profile.get("isVerified", False),
+                    action=swipe.action,
+                    viewed_at=swipe.created_at.isoformat(),
+                ))
+        except Exception:
+            continue
+
+    return viewed
