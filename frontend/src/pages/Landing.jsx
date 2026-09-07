@@ -20,15 +20,15 @@ const Landing = () => {
       <IonContent fullscreen>
         <div className="relative min-h-[100dvh] overflow-hidden">
           {/* Hero background — collage of real faces */}
-          <div className="absolute inset-0 grid grid-cols-3 gap-0.5 opacity-40">
+          <div className="absolute inset-0 grid grid-cols-3 gap-0.5">
             {PHOTOS.slice(0, 9).map((src, i) => (
               <div key={i} className="overflow-hidden bg-gray-200">
                 <img src={src} alt="" className="h-full w-full object-cover" draggable={false} />
               </div>
             ))}
           </div>
-          {/* Overlay gradient */}
-          <div className="absolute inset-0 bg-gradient-to-b from-onyx/70 via-onyx/60 to-onyx/90" />
+          {/* Overlay gradient — stronger for text legibility */}
+          <div className="absolute inset-0 bg-gradient-to-b from-onyx/85 via-onyx/80 to-onyx/95" />
 
           <div className="relative z-10 flex min-h-[100dvh] flex-col items-center justify-between px-6 py-safe-top-6">
             {/* Top: Logo */}
@@ -56,13 +56,13 @@ const Landing = () => {
             >
               <div className="grid grid-cols-2 gap-2.5">
                 {FEATURES.map(({ icon: Icon, label, sub }) => (
-                  <div key={label} className="flex items-center gap-2.5 rounded-2xl bg-white/10 p-3 backdrop-blur-sm">
+                  <div key={label} className="flex items-center gap-2.5 rounded-2xl bg-white/15 p-3 backdrop-blur-sm border border-white/10">
                     <div className="grid h-9 w-9 shrink-0 place-items-center rounded-xl bg-gradient-to-br from-primary to-secondary">
                       <Icon size={18} weight="fill" className="text-white" />
                     </div>
                     <div>
-                      <p className="text-sm font-bold text-white">{label}</p>
-                      <p className="text-[10px] text-white/70">{sub}</p>
+                      <p className="text-sm font-bold text-white drop-shadow-lg">{label}</p>
+                      <p className="text-[10px] text-white/85 drop-shadow-md">{sub}</p>
                     </div>
                   </div>
                 ))}
@@ -88,7 +88,7 @@ const Landing = () => {
               >
                 I Already Have an Account
               </button>
-              <p className="mt-1 text-center text-[11px] text-white/50">
+              <p className="mt-1 text-center text-[11px] text-white/70 drop-shadow-md">
                 By continuing you agree to our Terms & Privacy Policy
               </p>
             </motion.div>
