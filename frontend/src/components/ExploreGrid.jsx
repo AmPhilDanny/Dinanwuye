@@ -1,6 +1,6 @@
 import React, { useMemo, useState } from 'react';
 import { motion } from 'framer-motion';
-import { MapPin, ShieldCheck, Sparkle, Flame, Heart, Compass } from '@phosphor-icons/react';
+import { MapPin, ShieldCheck, Sparkle, Flame, Bookmark, Compass } from '@phosphor-icons/react';
 import { photoUrl } from '@utils/photoUrl';
 
 const CURATED_COLLECTIONS = [
@@ -103,7 +103,7 @@ export default function ExploreGrid({ profiles, onLike }) {
                     likedSet.has(id) ? "bg-primary text-white shadow-md" : "bg-white/25 text-white"
                   }`}
                 >
-                  <Heart size={16} weight={likedSet.has(id) ? "fill" : "bold"} />
+                  <Bookmark size={16} weight={likedSet.has(id) ? "fill" : "bold"} />
                 </button>
                 {isVerified && (
                   <span className="absolute left-2 top-2 flex items-center gap-0.5 rounded-full bg-secondary/90 px-1.5 py-0.5 text-[9px] font-bold text-white shadow-sm">

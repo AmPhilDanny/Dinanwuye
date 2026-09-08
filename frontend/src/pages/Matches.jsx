@@ -12,7 +12,9 @@ import {
   IonToast,
   IonBadge,
 } from '@ionic/react';
-import { heartOutline, personAddOutline, chatbubblesOutline } from 'ionicons/icons';
+
+
+import { UsersThree, Plus } from '@phosphor-icons/react';
 import { useNavigate } from 'react-router-dom';
 import { matchingApi, messagingApi, profileApi } from '@services/api';
 import { MatchSchema, ConversationSummarySchema } from '@utils/schemas';
@@ -128,14 +130,18 @@ const Matches = () => {
             <IonSpinner name="crescent" />
           </div>
         ) : rows.length === 0 ? (
-          <div className="flex flex-col items-center justify-center py-12 text-center text-gray-600">
-            <IonIcon icon={heartOutline} size="large" className="mb-4" />
-            <h2 className="text-lg font-medium">No matches yet</h2>
-            <p className="text-sm mb-4">Start swiping to find your match!</p>
-            <IonButton color="primary" onClick={() => navigate('/discover')}>
-              <IonIcon icon={personAddOutline} slot="start" />
-              Start Discovering
-            </IonButton>
+        <div className="flex flex-col items-center justify-center py-16 text-center text-gray-600 dark:text-gray-400">
+            <div className="grid h-16 w-16 place-items-center rounded-3xl bg-primary/10 text-primary mb-4">
+              <UsersThree size={32} weight="regular" />
+            </div>
+            <h2 className="text-lg font-semibold text-foreground">No matches yet</h2>
+            <p className="text-sm mb-5 mt-1 text-gray-500 dark:text-gray-400">Start swiping to find your match!</p>
+            <button
+              onClick={() => navigate('/discover')}
+              className="flex items-center gap-2 rounded-full bg-gradient-to-r from-primary to-secondary px-6 py-3 text-sm font-bold text-white shadow-lg shadow-primary/25 transition active:scale-95"
+            >
+              <Plus size={16} weight="bold" /> Start Discovering
+            </button>
           </div>
         ) : (
           <ChatAndDates
