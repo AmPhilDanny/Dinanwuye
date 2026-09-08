@@ -64,14 +64,7 @@ export default function ChatAndDates({ matches, profiles, onSend }) {
 
   return (
     <div className="mx-auto flex w-full max-w-md flex-col gap-4 px-4 pb-4">
-      <div className="flex items-center justify-between">
-        <div>
-          <h2 className="flex items-center gap-1.5 text-lg font-extrabold text-foreground">
-            <Flame size={18} weight="fill" className="text-primary" /> Matches & Chat
-          </h2>
-          <p className="text-xs font-medium text-gray-500 dark:text-gray-400">{(matches || []).length} active matches, keep the streak alive</p>
-        </div>
-      </div>
+      {/* Removed redundant Matches & Chat title */}
 
       <div className="-mx-4 flex gap-3 overflow-x-auto px-4 pb-1 [scrollbar-width:none]">
         {(matches || []).map((m) => {
@@ -156,14 +149,14 @@ export default function ChatAndDates({ matches, profiles, onSend }) {
         )}
       </AnimatePresence>
 
-      <div className="flex flex-wrap gap-1.5">
+      <div className="-mx-4 flex gap-2 overflow-x-auto px-4 pb-2 [scrollbar-width:none]">
         {icebreakers.map((ib) => (
           <button
             key={ib}
             onClick={() => active && onSend && onSend(active.id, ib)}
-            className="rounded-full border border-dashed border-primary/50 bg-primary/5 px-2.5 py-1 text-[11px] font-semibold text-primary transition active:scale-95 hover:bg-primary/10"
+            className="shrink-0 max-w-[240px] whitespace-normal text-left rounded-2xl bg-gray-100 px-3 py-2 text-[12px] font-medium text-gray-700 transition active:scale-95 hover:bg-gray-200 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700"
           >
-            💬 {ib}
+            <span className="text-primary mr-1">💬</span> {ib}
           </button>
         ))}
       </div>
