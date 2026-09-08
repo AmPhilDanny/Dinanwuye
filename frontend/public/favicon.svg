@@ -1,10 +1,19 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
   <defs>
-    <linearGradient id="matchGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" style="stop-color:#E4172B;stop-opacity:1" />
-      <stop offset="100%" style="stop-color:#1B4CE0;stop-opacity:1" />
+    <linearGradient id="rg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#E4172B;stop-opacity:1"/>
+      <stop offset="100%" style="stop-color:#1B4CE0;stop-opacity:1"/>
+    </linearGradient>
+    <linearGradient id="bg" x1="100%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#1B4CE0;stop-opacity:1"/>
+      <stop offset="100%" style="stop-color:#E4172B;stop-opacity:1"/>
     </linearGradient>
   </defs>
-  <circle cx="50" cy="50" r="45" fill="url(#matchGradient)"/>
-  <path d="M30 50 Q40 35 50 45 Q60 55 70 50" stroke="white" stroke-width="4" fill="none" stroke-linecap="round"/>
+  <!-- Dark navy background -->
+  <rect width="100" height="100" rx="22" fill="#0A0A18"/>
+  <!-- Infinity-heart: two overlapping lobes forming heart + infinity shape -->
+  <!-- Red lobe (left/top) -->
+  <path d="M50 72 C50 72 18 52 18 34 C18 24 26 18 35 18 C42 18 47 22 50 27 C53 22 58 18 65 18 C74 18 82 24 82 34 C82 52 50 72 50 72Z" fill="url(#rg)" opacity="0.92"/>
+  <!-- Infinity loop overlay -->
+  <path d="M32 42 C32 36 38 32 44 35 C47 37 49 40 50 43 C51 40 53 37 56 35 C62 32 68 36 68 42 C68 48 62 52 56 49 C53 47 51 44 50 41 C49 44 47 47 44 49 C38 52 32 48 32 42Z" fill="url(#bg)" opacity="0.95"/>
 </svg>
