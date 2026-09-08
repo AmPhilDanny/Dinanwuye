@@ -1,7 +1,7 @@
 import React from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { Heart, Compass, ChatCircle, User, Flame } from '@phosphor-icons/react';
+import { Compass, ChatCircle, User, Flame } from '@phosphor-icons/react';
 import useAppStore from '@store/useAppStore';
 
 const NAV = [

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion, useReducedMotion } from 'framer-motion';
-import { Heart, X, Star, MapPin, ShieldCheck, Inbox } from '@phosphor-icons/react';
+import { CheckFat, X, Star, MapPin, ShieldCheck, Tray } from '@phosphor-icons/react';
 import { photoUrl } from '@utils/photoUrl';
 
 export default function DiscoveryFeed({ profiles, onLike, onPass, onSuperSpark, onExhausted }) {
@@ -29,7 +29,7 @@ export default function DiscoveryFeed({ profiles, onLike, onPass, onSuperSpark, 
         className="flex flex-col items-center justify-center gap-4 px-8 py-24 text-center"
       >
         <div className="grid h-16 w-16 place-items-center rounded-3xl bg-primary/15 text-primary">
-          <Inbox size={32} weight="light" />
+          <Tray size={32} weight="light" />
         </div>
         <h3 className="text-xl font-bold text-foreground">You caught up on everyone near you</h3>
         <p className="text-sm leading-relaxed text-gray-600 dark:text-gray-300">
@@ -147,7 +147,7 @@ export default function DiscoveryFeed({ profiles, onLike, onPass, onSuperSpark, 
           aria-label="Like"
           className="grid h-14 w-14 place-items-center rounded-full bg-gradient-to-tr from-primary to-primary-pressed text-white shadow-lg shadow-primary/30 active:scale-90"
         >
-          <Heart size={24} weight="fill" />
+          <CheckFat size={24} weight="fill" />
         </motion.button>
       </div>
     </div>
