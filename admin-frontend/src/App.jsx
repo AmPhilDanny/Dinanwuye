@@ -262,9 +262,9 @@ function Users({ users, loading, token, onRefresh }) {
     if (!window.confirm('This will instantly log the user out and force them to take a selfie liveness check upon their next login. Continue?')) return;
     setActionPending(userId);
     try {
-      const response = await fetch(${API_URL}/users//force-liveness, {
+      const response = await fetch(`${API_URL}/users/${userId}/force-liveness`, {
         method: 'PUT',
-        headers: { Authorization: Bearer  },
+        headers: { Authorization: `Bearer ${token}` },
       });
       if (!response.ok) throw new Error('Failed to force liveness check');
       if (selectedUser?.id === userId) await viewUser(userId);
