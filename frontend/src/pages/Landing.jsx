@@ -121,13 +121,14 @@ const Landing = () => {
             draggable={false}
             style={{
               width: '100%', height: '100%',
-              objectFit: 'cover', objectPosition: 'center center',
+              objectFit: 'cover',
+              objectPosition: '38% 35%',
             }}
           />
           {/* Light gradient overlay — transparent at centre (couple stays visible), gentle darkening at edges */}
           <div style={{
             position: 'absolute', inset: 0,
-            background: 'radial-gradient(ellipse at center center, transparent 25%, rgba(8,8,15,0.4) 65%, rgba(8,8,15,0.7) 100%)',
+            background: 'radial-gradient(ellipse at 38% 35%, transparent 25%, rgba(8,8,15,0.4) 65%, rgba(8,8,15,0.7) 100%)',
           }} />
           {/* Top fade for header readability */}
           <div style={{
