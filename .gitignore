@@ -1,4 +1,4 @@
-# Dependencies
+﻿# Dependencies
 node_modules/
 pnpm-lock.yaml
 
@@ -42,3 +42,6 @@ Thumbs.db
 
 # Docs (local only, not deployed)
 docs/
+
+# Local scratch scripts
+scratch/
