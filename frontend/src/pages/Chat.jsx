@@ -346,8 +346,8 @@ const Chat = () => {
             )}
             <div ref={messagesEndRef} />
           </div>
-          </div>{/* end lg:pl-64 */}
         )}
+        </div>{/* end lg:pl-64 */}
       </IonContent>
 
       <IonFooter className="ion-no-border">
