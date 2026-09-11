@@ -110,30 +110,6 @@ const Landing = () => {
           background: 'radial-gradient(circle, rgba(228,23,43,0.09) 0%, transparent 65%)',
         }} />
 
-        {/* ── BLURRED BACKGROUND IMAGE ── */}
-        {/* TODO: Replace BACKGROUND_IMAGE_URL with your chosen image */}
-        <div style={{
-          position: 'fixed', inset: 0, zIndex: 0, pointerEvents: 'none',
-          overflow: 'hidden',
-        }}>
-          <img
-            src="/landing-bg.jpg"
-            alt=""
-            draggable={false}
-            style={{
-              width: '100%', height: '100%',
-              objectFit: 'cover', objectPosition: 'center 30%',
-              filter: 'blur(18px) brightness(0.35) saturate(1.2)',
-              transform: 'scale(1.15)', /* Prevents blur edge artifacts */
-            }}
-          />
-          {/* Dark overlay gradient for text readability */}
-          <div style={{
-            position: 'absolute', inset: 0,
-            background: 'linear-gradient(180deg, rgba(8,8,15,0.6) 0%, rgba(8,8,15,0.3) 35%, rgba(8,8,15,0.5) 70%, rgba(8,8,15,0.85) 100%)',
-          }} />
-        </div>
-
         {/* ── FLOATING PARTICLES ── */}
         {[
           { top: '17%', left: '7%',  size: 4, color: 'rgba(228,23,43,0.55)', delay: '0s',   dur: '6s'  },
