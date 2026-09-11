@@ -4,6 +4,8 @@ import { personOutline, notificationsOutline, shieldOutline, lockClosedOutline, 
 import { useNavigate } from 'react-router-dom';
 import { authApi, tokenStorage } from '@services/api';
 import useAppStore from '@store/useAppStore';
+import HeaderNav from '@components/HeaderNav';
+import BottomNav from '@components/BottomNav';
 import { photoUrl } from '@utils/photoUrl';
 
 const Settings = () => {
@@ -42,8 +44,17 @@ const Settings = () => {
   return (
     <IonPage>
       <IonContent className="ion-padding">
-        <div className="max-w-md mx-auto">
-          <h1 className="text-2xl font-bold mb-6">Settings</h1>
+        <div className="lg:pl-64 lg:pt-8 max-w-md mx-auto lg:max-w-2xl lg:mx-0">
+          <div className="flex items-center gap-3 mb-6">
+            <button
+              onClick={() => navigate(-1)}
+              className="grid h-9 w-9 place-items-center rounded-full text-gray-500 transition hover:bg-gray-100 active:scale-90 dark:text-gray-400 dark:hover:bg-gray-800"
+            >
+              <IonIcon icon={cogOutline} style={{display: 'none'}} />
+              <span className="text-xl">←</span>
+            </button>
+            <h1 className="text-2xl font-bold">Settings</h1>
+          </div>
 
           <IonList lines="inset" className="mb-6">
             <IonItem lines="none">
@@ -187,8 +198,9 @@ const Settings = () => {
               : <IonIcon icon={logOutOutline} slot="start" />}
             {loggingOut ? 'Signing Out…' : 'Log Out'}
           </IonButton>
-        </div>
+        </div>{/* end lg:pl-64 */}
       </IonContent>
+      <BottomNav />
     </IonPage>
   );
 };

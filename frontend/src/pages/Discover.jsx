@@ -169,8 +169,11 @@ const Discover = () => {
   return (
     <IonPage>
       <IonContent className="ion-padding" scrollY={false}>
-        <HeaderNav activeTab="discover" unread={unreadCount} streak={streak} />
+        <div className="lg:pl-64">
+          <HeaderNav activeTab="discover" unread={unreadCount} streak={streak} />
+        </div>
 
+        <div className="lg:pl-64">
         {showViewed ? (
           <div className="flex flex-col gap-3 px-4 pt-2">
             <div className="flex items-center justify-between">
@@ -185,7 +188,7 @@ const Discover = () => {
             {viewedProfiles.length === 0 ? (
               <p className="text-center text-gray-500 py-8">No viewed profiles yet</p>
             ) : (
-              <div className="grid grid-cols-2 gap-3">
+              <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
                 {viewedProfiles.map((profile) => (
                   <div
                     key={profile.user_id}
@@ -312,6 +315,7 @@ const Discover = () => {
           position="bottom"
           color={toast.color}
         />
+        </div>{/* end lg:pl-64 */}
       </IonContent>
       <BottomNav unread={unreadCount} />
     </IonPage>

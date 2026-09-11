@@ -249,7 +249,7 @@ const Chat = () => {
   return (
     <IonPage>
       {/* Premium header — outside IonContent so it's always visible */}
-      <div className="sticky top-0 z-30 flex items-center gap-3 border-b border-gray-200/70 bg-surface/95 px-4 py-3 backdrop-blur-xl dark:border-gray-800 dark:bg-onyx/95">
+      <div className="sticky top-0 z-30 lg:pl-64 flex items-center gap-3 border-b border-gray-200/70 bg-surface/95 px-4 py-3 backdrop-blur-xl dark:border-gray-800 dark:bg-onyx/95">
         <button
           onClick={() => navigate(-1)}
           aria-label="Back"
@@ -292,6 +292,7 @@ const Chat = () => {
       </div>
 
       <IonContent className="ion-padding">
+        <div className="lg:pl-64 max-w-screen-lg mx-auto">
         {loading ? (
           <div className="flex items-center justify-center min-h-[60vh]">
             <IonSpinner name="crescent" />
@@ -345,11 +346,12 @@ const Chat = () => {
             )}
             <div ref={messagesEndRef} />
           </div>
+          </div>{/* end lg:pl-64 */}
         )}
       </IonContent>
 
       <IonFooter className="ion-no-border">
-        <div className="flex items-center gap-2 border-t border-gray-100 bg-surface px-3 py-3 dark:border-gray-800 dark:bg-onyx">
+        <div className="flex items-center gap-2 border-t border-gray-100 bg-surface px-3 py-3 dark:border-gray-800 dark:bg-onyx lg:pl-64">
           <button aria-label="Attach image" className="grid h-9 w-9 shrink-0 place-items-center rounded-full text-gray-400 transition hover:bg-gray-100 active:scale-90 dark:text-gray-500 dark:hover:bg-gray-800">
             <Image size={20} weight="bold" />
           </button>

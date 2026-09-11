@@ -57,12 +57,33 @@ const Onboarding = () => {
   return (
     <IonPage>
       <IonContent fullscreen className="ion-padding">
-        <motion.div
-          initial={{ opacity: 0, y: 16 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.4 }}
-          className="mx-auto flex min-h-[90dvh] max-w-md flex-col justify-between py-10"
-        >
+        <div className="flex min-h-[100dvh]">
+
+          {/* ── LEFT PANEL: Branding (tablet+) ── */}
+          <div className="hidden sm:flex sm:w-1/2 lg:w-3/5 flex-col items-center justify-center relative overflow-hidden"
+            style={{ background: 'linear-gradient(135deg, #1B4CE0 0%, #0B0B1B 60%, #E4172B 100%)' }}>
+            <img
+              src="/landing-bg.jpg"
+              alt=""
+              className="absolute inset-0 w-full h-full object-cover opacity-30"
+            />
+            <div className="relative z-10 flex flex-col items-center text-center px-12">
+              <div className="h-20 w-20 overflow-hidden rounded-3xl shadow-2xl shadow-primary/50 mb-6">
+                <img src="/logo-symbol.png" alt="Dinanwuye" className="h-full w-full object-contain" />
+              </div>
+              <h1 className="text-4xl font-black text-white tracking-tight mb-3">Welcome to Dinanwuye</h1>
+              <p className="text-lg font-semibold text-white/80 mb-2">Let's set up your profile.</p>
+            </div>
+          </div>
+
+          {/* ── RIGHT PANEL: Form ── */}
+          <div className="w-full sm:w-1/2 lg:w-2/5 flex flex-col items-center justify-center px-6 py-10">
+            <motion.div
+              initial={{ opacity: 0, y: 16 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.4 }}
+              className="w-full max-w-md flex flex-col justify-between min-h-[70vh] sm:min-h-0 sm:gap-12"
+            >
           <div>
             {/* Header */}
             <div className="mb-8 text-center">
@@ -104,6 +125,8 @@ const Onboarding = () => {
             Continue <ArrowRight size={18} weight="bold" />
           </motion.button>
         </motion.div>
+        </div>
+        </div>
       </IonContent>
     </IonPage>
   );

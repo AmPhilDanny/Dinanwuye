@@ -57,6 +57,7 @@ const Explore = () => {
   return (
     <IonPage>
       <IonContent className="ion-padding">
+        <div className="lg:pl-64">
         <HeaderNav activeTab="explore" unread={unreadCount} streak={streak} />
         
         {loading && deck.length === 0 ? (
@@ -70,6 +71,7 @@ const Explore = () => {
         ) : (
           <ExploreGrid profiles={deck} onLike={handleLike} />
         )}
+        </div>{/* end lg:pl-64 */}
       </IonContent>
       <BottomNav unread={unreadCount} />
     </IonPage>

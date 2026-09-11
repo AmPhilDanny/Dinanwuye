@@ -7,16 +7,18 @@ import { BRAND } from '@utils/constants';
 export default function HeaderNav({ activeTab, unread, streak, dark, onToggleTheme, onOpenFilters }) {
   const navigate = useNavigate();
   const titles = {
-    discover: "Discovery",
-    explore: "Explore",
-    chats: "Matches & Chat",
-    profile: "Your Profile",
+    discover: 'Discovery',
+    explore: 'Explore',
+    chats: 'Matches & Chat',
+    profile: 'Your Profile',
   };
 
   return (
+    // On desktop (lg+) the SideNav replaces this header — hide brand/title but keep action buttons
     <header className="sticky top-0 z-30 border-b border-gray-200/70 bg-surface/90 backdrop-blur-xl dark:border-gray-800 dark:bg-onyx/90">
-      <div className="mx-auto flex h-14 w-full max-w-md items-center justify-between px-4">
-        <div className="flex items-center gap-2">
+      <div className="mx-auto flex h-14 w-full max-w-screen-xl items-center justify-between px-4 lg:pl-72">
+        {/* Brand — hidden on desktop (SideNav shows it there) */}
+        <div className="flex items-center gap-2 lg:hidden">
           <div className="h-8 w-8 overflow-hidden rounded-xl shadow-md">
             <img src="/logo-64.png" alt="D" className="h-full w-full object-contain" />
           </div>
@@ -26,7 +28,13 @@ export default function HeaderNav({ activeTab, unread, streak, dark, onToggleThe
           </div>
         </div>
 
-        <div className="flex items-center gap-1">
+        {/* Desktop: show page title prominently */}
+        <h1 className="hidden lg:block text-xl font-black text-foreground tracking-tight">
+          {titles[activeTab] || titles.discover}
+        </h1>
+
+        {/* Action buttons — visible on all sizes */}
+        <div className="flex items-center gap-1 ml-auto">
           <button
             onClick={onToggleTheme}
             aria-label="Toggle theme"

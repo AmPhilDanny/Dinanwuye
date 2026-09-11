@@ -88,6 +88,7 @@ const Profile = () => {
   return (
     <IonPage>
       <IonContent className="ion-padding">
+        <div className="lg:pl-64">
         <HeaderNav activeTab="profile" unread={unreadCount} streak={streak} />
         <div className="pt-2">
           {loading ? (
@@ -98,6 +99,7 @@ const Profile = () => {
             <div className="flex justify-center py-10 text-gray-500 text-sm">Could not load profile</div>
           )}
         </div>
+        </div>{/* end lg:pl-64 */}
       </IonContent>
       <BottomNav unread={unreadCount} />
     </IonPage>

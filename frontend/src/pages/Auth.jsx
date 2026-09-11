@@ -338,7 +338,37 @@ const Auth = () => {
   return (
     <IonPage>
       <IonContent fullscreen className="ion-padding">
-        <div className="mx-auto flex min-h-[100dvh] max-w-md flex-col justify-center py-10">
+        <div className="flex min-h-[100dvh]">
+
+          {/* ── LEFT PANEL: Branding (tablet+) ── */}
+          <div className="hidden sm:flex sm:w-1/2 lg:w-3/5 flex-col items-center justify-center relative overflow-hidden"
+            style={{ background: 'linear-gradient(135deg, #E4172B 0%, #0B0B1B 60%, #1B4CE0 100%)' }}>
+            <img
+              src="/landing-bg.jpg"
+              alt=""
+              className="absolute inset-0 w-full h-full object-cover opacity-30"
+            />
+            <div className="relative z-10 flex flex-col items-center text-center px-12">
+              <div className="h-20 w-20 overflow-hidden rounded-3xl shadow-2xl shadow-primary/50 mb-6">
+                <img src="/logo-symbol.png" alt="Dinanwuye" className="h-full w-full object-contain" />
+              </div>
+              <h1 className="text-4xl font-black text-white tracking-tight mb-3">Dinanwuye</h1>
+              <p className="text-lg font-semibold text-white/80 mb-2">Find Your Other Half.</p>
+              <p className="text-xs font-bold text-white/50 uppercase tracking-[0.2em]">Commitment-Oriented Matchmaking</p>
+              <div className="mt-10 flex flex-col gap-3 w-full max-w-xs">
+                {['ID Verified Profiles', 'AI-Curated Matches', 'Intentional Connections'].map(f => (
+                  <div key={f} className="flex items-center gap-3 rounded-2xl bg-white/10 px-4 py-3 backdrop-blur-sm border border-white/10">
+                    <span className="h-2 w-2 rounded-full bg-white/80 shrink-0" />
+                    <span className="text-sm font-semibold text-white/90">{f}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          {/* ── RIGHT PANEL: Form ── */}
+          <div className="w-full sm:w-1/2 lg:w-2/5 flex flex-col items-center justify-center px-6 py-10">
+            <div className="w-full max-w-md">
           {/* Logo mark */}
           <div className="mb-8 text-center">
             <div className="mx-auto mb-4 h-16 w-16 overflow-hidden rounded-3xl shadow-xl shadow-primary/30">
@@ -565,6 +595,8 @@ const Auth = () => {
               </button>
             )}
           </p>
+        </div>
+          </div>
         </div>
       </IonContent>
     </IonPage>

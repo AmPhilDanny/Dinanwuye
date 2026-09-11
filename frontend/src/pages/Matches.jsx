@@ -123,6 +123,7 @@ const Matches = () => {
   return (
     <IonPage>
       <IonContent className="ion-padding">
+        <div className="lg:pl-64">
         <HeaderNav activeTab="chats" unread={rows.filter((r) => r.unreadCount > 0).length} streak={streak} />
 
         {loading ? (
@@ -186,6 +187,7 @@ const Matches = () => {
           position="bottom"
           color={toast.color}
         />
+        </div>{/* end lg:pl-64 */}
       </IonContent>
       <BottomNav unread={rows.filter((r) => r.unreadCount > 0).length} />
     </IonPage>
