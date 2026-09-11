@@ -110,6 +110,37 @@ const Landing = () => {
           background: 'radial-gradient(circle, rgba(228,23,43,0.09) 0%, transparent 65%)',
         }} />
 
+        {/* ── BACKGROUND IMAGE — couple visible, light overlay ── */}
+        <div style={{
+          position: 'fixed', inset: 0, zIndex: 0, pointerEvents: 'none',
+          overflow: 'hidden',
+        }}>
+          <img
+            src="/landing-bg.jpg"
+            alt=""
+            draggable={false}
+            style={{
+              width: '100%', height: '100%',
+              objectFit: 'cover', objectPosition: 'center 25%',
+            }}
+          />
+          {/* Light gradient overlay — transparent at centre (couple stays visible), gentle darkening at edges */}
+          <div style={{
+            position: 'absolute', inset: 0,
+            background: 'radial-gradient(ellipse at center 40%, transparent 20%, rgba(8,8,15,0.45) 70%, rgba(8,8,15,0.75) 100%)',
+          }} />
+          {/* Top fade for header readability */}
+          <div style={{
+            position: 'absolute', top: 0, left: 0, right: 0, height: '30%',
+            background: 'linear-gradient(180deg, rgba(8,8,15,0.5) 0%, transparent 100%)',
+          }} />
+          {/* Bottom fade for CTA readability */}
+          <div style={{
+            position: 'absolute', bottom: 0, left: 0, right: 0, height: '40%',
+            background: 'linear-gradient(0deg, rgba(8,8,15,0.65) 0%, transparent 100%)',
+          }} />
+        </div>
+
         {/* ── FLOATING PARTICLES ── */}
         {[
           { top: '17%', left: '7%',  size: 4, color: 'rgba(228,23,43,0.55)', delay: '0s',   dur: '6s'  },
