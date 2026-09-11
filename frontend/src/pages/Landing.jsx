@@ -110,6 +110,30 @@ const Landing = () => {
           background: 'radial-gradient(circle, rgba(228,23,43,0.09) 0%, transparent 65%)',
         }} />
 
+        {/* ── BLURRED BACKGROUND IMAGE ── */}
+        {/* TODO: Replace BACKGROUND_IMAGE_URL with your chosen image */}
+        <div style={{
+          position: 'fixed', inset: 0, zIndex: 0, pointerEvents: 'none',
+          overflow: 'hidden',
+        }}>
+          <img
+            src="/landing-bg.jpg"
+            alt=""
+            draggable={false}
+            style={{
+              width: '100%', height: '100%',
+              objectFit: 'cover', objectPosition: 'center 30%',
+              filter: 'blur(18px) brightness(0.35) saturate(1.2)',
+              transform: 'scale(1.15)', /* Prevents blur edge artifacts */
+            }}
+          />
+          {/* Dark overlay gradient for text readability */}
+          <div style={{
+            position: 'absolute', inset: 0,
+            background: 'linear-gradient(180deg, rgba(8,8,15,0.6) 0%, rgba(8,8,15,0.3) 35%, rgba(8,8,15,0.5) 70%, rgba(8,8,15,0.85) 100%)',
+          }} />
+        </div>
+
         {/* ── FLOATING PARTICLES ── */}
         {[
           { top: '17%', left: '7%',  size: 4, color: 'rgba(228,23,43,0.55)', delay: '0s',   dur: '6s'  },
@@ -135,24 +159,6 @@ const Landing = () => {
           maxWidth: '430px', margin: '0 auto',
         }}>
 
-          {/* ── TOP LANGUAGE STRIP ── */}
-          <motion.div
-            initial={{ opacity: 0, y: -8 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.45 }}
-            style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', paddingTop: '48px', paddingBottom: '2px' }}
-          >
-            <span style={{
-              display: 'inline-flex', alignItems: 'center', gap: '7px',
-              fontSize: '9.5px', fontWeight: 800, letterSpacing: '0.24em',
-              color: 'rgba(255,255,255,0.25)', textTransform: 'uppercase',
-            }}>
-              <span style={{ width: 20, height: 1, background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.22))' }} />
-              Igbo · Husband &amp; Wife
-              <span style={{ width: 20, height: 1, background: 'linear-gradient(90deg, rgba(255,255,255,0.22), transparent)' }} />
-            </span>
-          </motion.div>
-
           {/* ── HERO ── */}
           <motion.div
             initial={{ opacity: 0, scale: 0.92 }}
@@ -160,7 +166,7 @@ const Landing = () => {
             transition={{ duration: 0.65, delay: 0.08, ease: [0.22, 1, 0.36, 1] }}
             style={{
               display: 'flex', flexDirection: 'column', alignItems: 'center',
-              paddingTop: '22px', flex: 1,
+              paddingTop: '48px', flex: 1,
             }}
           >
 
@@ -246,69 +252,6 @@ const Landing = () => {
               <TrustBadge icon={<UsersThree size={13} weight="fill" />}  label="Intentional People Only" delay={0.40} />
               <TrustBadge icon={<Sparkle    size={13} weight="fill" />}  label="AI-Curated Matches"     delay={0.48} />
             </div>
-
-            {/* ── FEATURE ROWS ── */}
-            <div style={{ width: '100%', display: 'flex', flexDirection: 'column', gap: '9px', marginTop: '22px' }}>
-              <FeatureRow
-                title="Every profile is government-verified"
-                body="Real identity. Real commitment."
-                accent="No catfishing. Ever."
-                delay={0.52}
-              />
-              <FeatureRow
-                title="Only meet people who want commitment"
-                body="Everyone here is here for the same reason."
-                accent="No casual encounters."
-                delay={0.60}
-              />
-              <FeatureRow
-                title="Your AI matchmaker learns your values"
-                body="Deep compatibility — not just photos."
-                accent="Not just your type. Your match."
-                delay={0.68}
-              />
-            </div>
-
-            {/* ── SOCIAL PROOF STRIP ── */}
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ duration: 0.55, delay: 0.82 }}
-              style={{
-                display: 'flex', alignItems: 'center', justifyContent: 'space-around',
-                width: '100%', marginTop: '24px',
-                padding: '15px 20px', borderRadius: '18px',
-                background: 'rgba(255,255,255,0.025)',
-                border: '1px solid rgba(255,255,255,0.055)',
-              }}
-            >
-              {[
-                { num: '50K+', label: 'Members'      },
-                { num: '12K+', label: 'Matches Made' },
-                { num: '4.9★', label: 'User Rating'  },
-              ].map(({ num, label }, i) => (
-                <div key={label} style={{ textAlign: 'center' }}>
-                  {i > 0 && (
-                    /* divider */
-                    <span style={{
-                      position: 'absolute', left: 0, top: '50%', transform: 'translateY(-50%)',
-                      width: 1, height: 28, background: 'rgba(255,255,255,0.07)',
-                    }} />
-                  )}
-                  <p style={{
-                    margin: 0, fontSize: '19px', fontWeight: 800,
-                    background: 'linear-gradient(150deg, #FFFFFF, rgba(255,255,255,0.72))',
-                    WebkitBackgroundClip: 'text',
-                    WebkitTextFillColor: 'transparent',
-                    backgroundClip: 'text',
-                  }}>{num}</p>
-                  <p style={{
-                    margin: 0, fontSize: '9.5px', fontWeight: 600,
-                    color: 'rgba(255,255,255,0.32)', textTransform: 'uppercase', letterSpacing: '0.07em',
-                  }}>{label}</p>
-                </div>
-              ))}
-            </motion.div>
 
           </motion.div>
 
