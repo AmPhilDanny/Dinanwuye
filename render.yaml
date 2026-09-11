@@ -35,6 +35,40 @@ services:
     autoDeploy: true
     rootDir: backend/consolidated-app
 
+  # Frontend (Vite + React SPA — Static Site)
+  - type: static_site
+    name: dinanwuye-frontend
+    runtime: static
+    plan: starter
+    buildCommand: cd frontend && npm install && npm run build
+    staticPublishPath: frontend/dist
+    routes:
+      - type: rewrite
+        source: /*
+        destination: /index.html
+    envVars:
+      - key: VITE_API_URL
+        value: https://dinanwuye-api.onrender.com
+      - key: VITE_MATCHING_URL
+        value: https://dinanwuye-matching.onrender.com
+    autoDeploy: true
+
+  # Admin Frontend (Vite + React SPA — Static Site)
+  - type: static_site
+    name: dinanwuye-admin
+    runtime: static
+    plan: starter
+    buildCommand: cd admin-frontend && npm install && npm run build
+    staticPublishPath: admin-frontend/dist
+    routes:
+      - type: rewrite
+        source: /*
+        destination: /index.html
+    envVars:
+      - key: VITE_ADMIN_API_URL
+        value: https://dinanwuye-api.onrender.com/api/v1/admin
+    autoDeploy: true
+
   # Redis
   - type: redis
     name: dinanwuye-redis
