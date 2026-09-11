@@ -33,7 +33,19 @@ const Landing = () => {
           0%, 100% { opacity: 0.35; transform: scale(1); }
           50%       { opacity: 0.1;  transform: scale(1.1); }
         }
+        @keyframes float-blink {
+          0%, 100% { opacity: 0; transform: translateY(10px) scale(0.8); }
+          50%       { opacity: 0.7; transform: translateY(-20px) scale(1.2); }
+        }
       `}</style>
+
+      {/* Floating Love Icons (Mobile) */}
+      <div className="absolute inset-0 pointer-events-none z-10 overflow-hidden lg:hidden">
+        <span className="absolute top-[35%] left-[15%] text-2xl" style={{ animation: 'float-blink 4s ease-in-out infinite 0s' }}>❤️</span>
+        <span className="absolute top-[45%] right-[15%] text-3xl" style={{ animation: 'float-blink 5s ease-in-out infinite 1.5s' }}>💖</span>
+        <span className="absolute top-[60%] left-[25%] text-xl" style={{ animation: 'float-blink 4.5s ease-in-out infinite 0.7s' }}>💕</span>
+        <span className="absolute top-[70%] right-[25%] text-2xl" style={{ animation: 'float-blink 6s ease-in-out infinite 2s' }}>❤️</span>
+      </div>
 
       {/* Main Container - splits on lg screens */}
       <div className="flex min-h-[100dvh] w-full overflow-hidden">
@@ -80,9 +92,9 @@ const Landing = () => {
             
             {/* TOP SECTION: Logo & Title */}
             <motion.div
-              initial={{ opacity: 0, y: -20 }}
+              initial={{ opacity: 0, y: 150 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.65, delay: 0.08, ease: [0.22, 1, 0.36, 1] }}
+              transition={{ duration: 2.0, ease: 'easeOut' }}
               className="flex flex-col items-center pt-[35vh] lg:pt-0 lg:items-start"
             >
               {/* LOGO */}
@@ -129,9 +141,9 @@ const Landing = () => {
 
             {/* BOTTOM SECTION: CTA */}
             <motion.div
-              initial={{ opacity: 0, y: 20 }}
+              initial={{ opacity: 0, y: 150 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.45, ease: [0.22, 1, 0.36, 1] }}
+              transition={{ duration: 2.0, delay: 0.2, ease: 'easeOut' }}
               className="flex flex-col gap-3"
             >
               <button

@@ -27,6 +27,7 @@ model User {
   status            String   @default("active") // active | suspended | banned | deleted
   role              String   @default("user")
   isVerified        Boolean  @default(false) // selfie/liveness verified
+  forceLiveness     Boolean  @default(false) // admin forced liveness check
   deviceFingerprint String?
   lastLoginAt       DateTime?                  // when the user last logged in
   createdAt         DateTime @default(now())

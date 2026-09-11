@@ -134,6 +134,9 @@ export class UserManagementDto {
   @ApiProperty({ example: true })
   isVerified!: boolean;
 
+  @ApiProperty({ example: false })
+  forceLiveness!: boolean;
+
   @ApiProperty({ example: '2026-08-17T12:00:00.000Z' })
   createdAt!: Date;
 

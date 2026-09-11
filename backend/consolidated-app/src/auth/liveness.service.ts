@@ -33,7 +33,7 @@ export class LivenessService {
     });
 
     if (passed) {
-      await this.prisma.user.update({ where: { id: userId }, data: { isVerified: true } });
+      await this.prisma.user.update({ where: { id: userId }, data: { isVerified: true, forceLiveness: false } });
     }
 
     return { attemptId: attempt.id, passed, challenges: validChallenges };

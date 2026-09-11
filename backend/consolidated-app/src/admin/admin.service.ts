@@ -119,6 +119,7 @@ export class AdminService {
         status: u.status,
         role: u.role,
         isVerified: u.isVerified,
+        forceLiveness: u.forceLiveness,
         createdAt: u.createdAt,
         updatedAt: u.updatedAt,
         profile: u.profile ? {
@@ -160,6 +161,7 @@ export class AdminService {
       status: user.status,
       role: user.role,
       isVerified: user.isVerified,
+      forceLiveness: user.forceLiveness,
       createdAt: user.createdAt,
       updatedAt: user.updatedAt,
       profile: user.profile ? {
@@ -227,6 +229,38 @@ export class AdminService {
           entityId: id,
           oldData: { status: oldStatus },
           newData: { status: dto.status, reason: dto.reason },
+        },
+      });
+    }
+
+    return { success: true };
+  }
+
+  async forceUserLiveness(id: string, adminId?: string): Promise<{ success: true }> {
+    const user = await this.prisma.user.findUnique({ where: { id } });
+    if (!user) throw new NotFoundException('User not found');
+
+    await this.prisma.$transaction(async (tx) => {
+      // Set forceLiveness to true
+      await tx.user.update({
+        where: { id },
+        data: { forceLiveness: true },
+      });
+      // Delete all refresh tokens to force the user to log in again
+      await tx.refreshToken.deleteMany({
+        where: { userId: id },
+      });
+    });
+
+    if (adminId) {
+      await this.prisma.auditLog.create({
+        data: {
+          adminId,
+          action: 'update',
+          entity: 'User',
+          entityId: id,
+          oldData: { forceLiveness: user.forceLiveness },
+          newData: { forceLiveness: true, reason: 'Admin forced liveness check' },
         },
       });
     }

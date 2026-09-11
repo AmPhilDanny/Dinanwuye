@@ -78,7 +78,7 @@ export class AuthService {
 
     const now = new Date();
     const fourteenDaysMs = 14 * 24 * 60 * 60 * 1000;
-    const isStale = !user.lastLoginAt || (now.getTime() - user.lastLoginAt.getTime()) > fourteenDaysMs;
+    const isStale = (user as any).forceLiveness || !user.lastLoginAt || (now.getTime() - user.lastLoginAt.getTime()) > fourteenDaysMs;
 
     await this.prisma.user.update({ where: { id: user.id }, data: { lastLoginAt: now } });
 
@@ -104,7 +104,7 @@ export class AuthService {
 
     const now = new Date();
     const fourteenDaysMs = 14 * 24 * 60 * 60 * 1000;
-    const isStale = !user.lastLoginAt || (now.getTime() - user.lastLoginAt.getTime()) > fourteenDaysMs;
+    const isStale = (user as any).forceLiveness || !user.lastLoginAt || (now.getTime() - user.lastLoginAt.getTime()) > fourteenDaysMs;
 
     await this.prisma.user.update({ where: { id: user.id }, data: { lastLoginAt: now } });
 

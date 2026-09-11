@@ -76,6 +76,18 @@ export class AdminController {
     return this.admin.updateUserStatus(id, dto, sub);
   }
 
+  @Put('users/:id/force-liveness')
+  @UseGuards(AdminAuthGuard)
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Force a user to complete a liveness check' })
+  forceUserLiveness(
+    @Param('id') id: string,
+    @Req() request: JwtRequest,
+  ): Promise<{ success: true }> {
+    const { sub } = getUserFromRequest(request);
+    return this.admin.forceUserLiveness(id, sub);
+  }
+
   @Put('users/:id/profile')
   @UseGuards(AdminAuthGuard)
   @ApiBearerAuth()

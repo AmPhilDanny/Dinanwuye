@@ -258,6 +258,25 @@ function Users({ users, loading, token, onRefresh }) {
     }
   };
 
+  const forceLiveness = async (userId) => {
+    if (!window.confirm('This will instantly log the user out and force them to take a selfie liveness check upon their next login. Continue?')) return;
+    setActionPending(userId);
+    try {
+      const response = await fetch(${API_URL}/users//force-liveness, {
+        method: 'PUT',
+        headers: { Authorization: Bearer  },
+      });
+      if (!response.ok) throw new Error('Failed to force liveness check');
+      if (selectedUser?.id === userId) await viewUser(userId);
+      if (onRefresh) onRefresh();
+      alert('Liveness check forced. The user has been logged out.');
+    } catch (err) {
+      alert(err.message);
+    } finally {
+      setActionPending(null);
+    }
+  };
+
   const deleteUser = async (userId) => {
     setActionPending(userId);
     try {
@@ -448,6 +467,10 @@ function Users({ users, loading, token, onRefresh }) {
           <button onClick={() => setShowDeleteConfirm(selectedUser.id)}
             style={{ padding: '7px 16px', border: 0, borderRadius: 6, background: '#dc3545', color: '#fff', fontWeight: 600, fontSize: 12, cursor: 'pointer' }}>
             Delete account
+          </button>
+          <button onClick={() => forceLiveness(selectedUser.id)} disabled={actionPending === selectedUser.id}
+            style={{ padding: '7px 16px', border: '1px solid #172a27', borderRadius: 6, background: '#fff', color: '#172a27', fontWeight: 600, fontSize: 12, cursor: 'pointer' }}>
+            Force Liveness Check
           </button>
         </div>
 
