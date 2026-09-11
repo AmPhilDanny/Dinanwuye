@@ -215,10 +215,12 @@ async def get_viewed_profiles(
         try:
             profile = await profile_client.get_profile_by_id(swipe.target_id, token)
             if profile:
+                photos = profile.get("photos", [])
+                photo_s3_key = photos[0].get("s3Key") if photos else None
                 viewed.append(ViewedProfile(
                     user_id=swipe.target_id,
                     name=profile.get("name"),
-                    photo=profile.get("photo"),
+                    photo=photo_s3_key,
                     age=profile.get("age", 0),
                     gender=profile.get("gender", "unknown"),
                     location=profile.get("locationName"),
