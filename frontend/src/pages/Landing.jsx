@@ -67,7 +67,7 @@ const Landing = () => {
   const navigate = useNavigate();
 
   return (
-    <IonPage style={{ background: '#08080F' }}>
+    <IonPage style={{ background: '#08080F', overflow: 'hidden' }}>
 
       {/* Injected keyframes */}
       <style>{`
@@ -86,256 +86,207 @@ const Landing = () => {
       <div style={{
         position: 'absolute', inset: 0,
         overflowY: 'auto', WebkitOverflowScrolling: 'touch',
-        background: 'linear-gradient(170deg, #07070F 0%, #0B0B1B 45%, #090612 80%, #08080F 100%)',
+        background: '#08080F',
       }}>
 
-        {/* ── AMBIENT GLOW ORBS (fixed, decorative) ── */}
-        <div style={{
-          position: 'fixed', top: '-22%', right: '-18%',
-          width: '72vw', height: '72vw', maxWidth: '480px', maxHeight: '480px',
-          borderRadius: '50%', pointerEvents: 'none', zIndex: 0,
-          background: 'radial-gradient(circle, rgba(228,23,43,0.20) 0%, rgba(228,23,43,0.05) 50%, transparent 72%)',
-        }} />
-        <div style={{
-          position: 'fixed', bottom: '-18%', left: '-18%',
-          width: '68vw', height: '68vw', maxWidth: '440px', maxHeight: '440px',
-          borderRadius: '50%', pointerEvents: 'none', zIndex: 0,
-          background: 'radial-gradient(circle, rgba(27,76,224,0.17) 0%, rgba(27,76,224,0.04) 50%, transparent 72%)',
-        }} />
-        {/* Centre glow — glows behind the logo */}
-        <div style={{
-          position: 'fixed', top: '8%', left: '50%', transform: 'translateX(-50%)',
-          width: '60vw', height: '60vw', maxWidth: '340px', maxHeight: '340px',
-          borderRadius: '50%', pointerEvents: 'none', zIndex: 0,
-          background: 'radial-gradient(circle, rgba(228,23,43,0.09) 0%, transparent 65%)',
-        }} />
-
-        {/* ── BACKGROUND IMAGE — couple visible, light overlay ── */}
+        {/* ── BACKGROUND IMAGE — blurred edges, sharp couple ── */}
         <div style={{
           position: 'fixed', inset: 0, zIndex: 0, pointerEvents: 'none',
           overflow: 'hidden',
         }}>
+          {/* Blurred and darkened base image */}
           <img
             src="/landing-bg.jpg"
             alt=""
             draggable={false}
             style={{
+              position: 'absolute', inset: 0,
               width: '100%', height: '100%',
               objectFit: 'cover',
-              objectPosition: '38% 35%',
+              objectPosition: 'center 25%',
+              filter: 'blur(12px) brightness(0.35)',
+              transform: 'scale(1.1)', // prevent blurred edges showing bg
             }}
           />
-          {/* Light gradient overlay — transparent at centre (couple stays visible), gentle darkening at edges */}
-          <div style={{
-            position: 'absolute', inset: 0,
-            background: 'radial-gradient(ellipse at 38% 35%, transparent 25%, rgba(8,8,15,0.4) 65%, rgba(8,8,15,0.7) 100%)',
-          }} />
+          {/* Sharp, bright center using mask */}
+          <img
+            src="/landing-bg.jpg"
+            alt=""
+            draggable={false}
+            style={{
+              position: 'absolute', inset: 0,
+              width: '100%', height: '100%',
+              objectFit: 'cover',
+              objectPosition: 'center 25%',
+              WebkitMaskImage: 'radial-gradient(ellipse at center 35%, black 25%, transparent 70%)',
+              maskImage: 'radial-gradient(ellipse at center 35%, black 25%, transparent 70%)',
+            }}
+          />
           {/* Top fade for header readability */}
           <div style={{
-            position: 'absolute', top: 0, left: 0, right: 0, height: '30%',
-            background: 'linear-gradient(180deg, rgba(8,8,15,0.5) 0%, transparent 100%)',
+            position: 'absolute', top: 0, left: 0, right: 0, height: '20%',
+            background: 'linear-gradient(180deg, rgba(8,8,15,0.75) 0%, transparent 100%)',
           }} />
           {/* Bottom fade for CTA readability */}
           <div style={{
             position: 'absolute', bottom: 0, left: 0, right: 0, height: '40%',
-            background: 'linear-gradient(0deg, rgba(8,8,15,0.65) 0%, transparent 100%)',
+            background: 'linear-gradient(0deg, rgba(8,8,15,0.95) 0%, rgba(8,8,15,0.6) 60%, transparent 100%)',
           }} />
         </div>
 
-        {/* ── FLOATING PARTICLES ── */}
-        {[
-          { top: '17%', left: '7%',  size: 4, color: 'rgba(228,23,43,0.55)', delay: '0s',   dur: '6s'  },
-          { top: '30%', right: '9%', size: 3, color: 'rgba(27,76,224,0.65)', delay: '1s',   dur: '8s'  },
-          { top: '52%', left: '12%', size: 2, color: 'rgba(255,255,255,0.28)', delay: '2s', dur: '7s'  },
-          { top: '68%', right: '6%', size: 3, color: 'rgba(228,23,43,0.38)', delay: '0.5s', dur: '9s'  },
-          { top: '82%', left: '22%', size: 2, color: 'rgba(27,76,224,0.45)', delay: '1.5s', dur: '7.5s'},
-        ].map(({ top, left, right, size, color, delay, dur }, i) => (
-          <div key={i} style={{
-            position: 'fixed', top, left, right,
-            width: size, height: size, borderRadius: '50%',
-            background: color, pointerEvents: 'none', zIndex: 0,
-            animation: `dw-float ${dur} ease-in-out infinite ${delay}`,
-          }} />
-        ))}
+        {/* ── AMBIENT GLOW ORBS ── */}
+        <div style={{
+          position: 'fixed', top: '-10%', right: '-10%',
+          width: '50vw', height: '50vw', maxWidth: '300px', maxHeight: '300px',
+          borderRadius: '50%', pointerEvents: 'none', zIndex: 0,
+          background: 'radial-gradient(circle, rgba(228,23,43,0.15) 0%, transparent 70%)',
+        }} />
+        <div style={{
+          position: 'fixed', bottom: '-10%', left: '-10%',
+          width: '50vw', height: '50vw', maxWidth: '300px', maxHeight: '300px',
+          borderRadius: '50%', pointerEvents: 'none', zIndex: 0,
+          background: 'radial-gradient(circle, rgba(27,76,224,0.15) 0%, transparent 70%)',
+        }} />
 
         {/* ── PAGE CONTENT ── */}
         <div style={{
           position: 'relative', zIndex: 1,
           display: 'flex', flexDirection: 'column',
-          minHeight: '100dvh',
-          padding: '0 20px',
+          minHeight: '100dvh', // Use minHeight so it can scroll if screen is extremely small, but fits if normal
+          padding: '2vh 20px',
           maxWidth: '430px', margin: '0 auto',
+          justifyContent: 'flex-end', // Pushes everything towards the bottom naturally
         }}>
-
-          {/* ── HERO ── */}
+          
+          {/* TOP SECTION: Logo & Title (Placed below head area) */}
           <motion.div
-            initial={{ opacity: 0, scale: 0.92 }}
-            animate={{ opacity: 1, scale: 1 }}
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.65, delay: 0.08, ease: [0.22, 1, 0.36, 1] }}
             style={{
               display: 'flex', flexDirection: 'column', alignItems: 'center',
-              paddingTop: '48px', flex: 1,
+              paddingTop: '35vh', // Push below the couple's faces/chests
+              marginBottom: 'auto', // Pushes the bottom section down
             }}
           >
-
-            {/* ── LOGO SYMBOL (icon only — red+blue infinity-heart) ── */}
-            <div style={{ position: 'relative', marginBottom: '4px' }}>
-              {/* Outer pulse ring */}
+            {/* LOGO */}
+            <div style={{ position: 'relative', width: '150px', height: '150px', marginBottom: '0px' }}>
               <div style={{
-                position: 'absolute', inset: '-20px', borderRadius: '50%',
+                position: 'absolute', inset: '-15px', borderRadius: '50%',
                 border: '1px solid rgba(228,23,43,0.18)',
                 animation: 'dw-ring-pulse 3.6s ease-in-out infinite',
               }} />
-              {/* Inner pulse ring */}
-              <div style={{
-                position: 'absolute', inset: '-9px', borderRadius: '50%',
-                border: '1px solid rgba(27,76,224,0.15)',
-                animation: 'dw-ring-pulse 3.6s ease-in-out infinite 0.9s',
-              }} />
-
-              <div style={{
-                width: '160px', height: '160px',
-                display: 'flex', alignItems: 'center', justifyContent: 'center',
-                /* Glow ONLY on the outer wrapper, not on the img itself — keeps logo colors pristine */
-                filter: 'drop-shadow(0 0 28px rgba(228,23,43,0.5)) drop-shadow(0 0 56px rgba(27,76,224,0.28)) drop-shadow(0 10px 36px rgba(0,0,0,0.65))',
-              }}>
-                <img
-                  src="/logo-symbol.png"
-                  alt="Dinanwuye infinity-heart symbol"
-                  draggable={false}
-                  style={{ width: '100%', height: '100%', objectFit: 'contain' }}
-                />
-              </div>
+              <img
+                src="/logo-symbol.png"
+                alt="Dinanwuye logo"
+                draggable={false}
+                style={{
+                  width: '100%', height: '100%', objectFit: 'contain',
+                  filter: 'drop-shadow(0 0 12px rgba(228,23,43,0.5)) drop-shadow(0 0 24px rgba(27,76,224,0.28))',
+                }}
+              />
             </div>
 
-            {/* ── WORDMARK — rendered as HTML so it's always crisp on dark bg ── */}
-            <div style={{ textAlign: 'center', marginTop: '18px' }}>
+            {/* WORDMARK */}
+            <div style={{ textAlign: 'center', marginTop: '0px' }}>
               <h1 style={{
-                fontSize: '46px', fontWeight: 900, letterSpacing: '-1.8px',
-                margin: 0, lineHeight: 1,
-                /* White with a subtle luminance gradient for depth */
+                fontSize: '36px', fontWeight: 900, letterSpacing: '-1.5px', margin: 0,
                 background: 'linear-gradient(160deg, #FFFFFF 0%, rgba(255,255,255,0.82) 100%)',
-                WebkitBackgroundClip: 'text',
-                WebkitTextFillColor: 'transparent',
-                backgroundClip: 'text',
+                WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent',
               }}>
                 Dinanwuye
               </h1>
-
-              {/* Sub-headline — "Find Your Other Half." exactly from logo */}
               <p style={{
-                margin: '10px 0 0', fontSize: '16.5px', fontWeight: 600,
-                color: 'rgba(255,255,255,0.65)', letterSpacing: '0.01em', lineHeight: 1.3,
+                margin: '4px 0 0', fontSize: '15px', fontWeight: 600,
+                color: 'rgba(255,255,255,0.85)', letterSpacing: '0.01em',
               }}>
                 Find Your Other Half.
               </p>
-
+              
               {/* Brand tagline — COMMITMENT-ORIENTED MATCHMAKING in brand gradient */}
               <p style={{
                 margin: '8px 0 0', fontSize: '10px', fontWeight: 800,
                 letterSpacing: '0.22em', textTransform: 'uppercase',
                 background: 'linear-gradient(90deg, #E4172B 20%, #1B4CE0 80%)',
-                WebkitBackgroundClip: 'text',
-                WebkitTextFillColor: 'transparent',
-                backgroundClip: 'text',
+                WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent',
               }}>
                 Commitment-Oriented Matchmaking
               </p>
             </div>
-
+            
             {/* ── RED-TO-BLUE DIVIDER ── */}
             <div style={{
-              width: '48px', height: '2.5px', marginTop: '22px',
+              width: '48px', height: '2.5px', margin: '12px 0',
               background: 'linear-gradient(90deg, #E4172B, #1B4CE0)',
               borderRadius: '999px',
               boxShadow: '0 0 14px rgba(228,23,43,0.55)',
             }} />
 
-            {/* ── TRUST BADGE ROW ── */}
+            {/* TRUST BADGE ROW */}
             <div style={{
               display: 'flex', flexWrap: 'wrap', gap: '8px',
-              justifyContent: 'center', marginTop: '20px', maxWidth: '360px',
+              justifyContent: 'center', maxWidth: '360px',
             }}>
-              <TrustBadge icon={<ShieldCheck size={13} weight="fill" />} label="ID Verified Profiles"   delay={0.32} />
-              <TrustBadge icon={<UsersThree size={13} weight="fill" />}  label="Intentional People Only" delay={0.40} />
-              <TrustBadge icon={<Sparkle    size={13} weight="fill" />}  label="AI-Curated Matches"     delay={0.48} />
+              <TrustBadge icon={<ShieldCheck size={13} weight="fill" />} label="ID Verified Profiles" delay={0.32} />
+              <TrustBadge icon={<UsersThree size={13} weight="fill" />} label="Intentional People Only" delay={0.40} />
+              <TrustBadge icon={<Sparkle size={13} weight="fill" />} label="AI-Curated Matches" delay={0.48} />
             </div>
-
           </motion.div>
 
-          {/* ── CTA SECTION ── */}
+          {/* BOTTOM SECTION: CTA */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.45, ease: [0.22, 1, 0.36, 1] }}
             style={{
               display: 'flex', flexDirection: 'column',
-              gap: '11px', paddingBottom: '34px', paddingTop: '26px',
+              gap: '12px', paddingBottom: '2vh',
             }}
           >
-            {/* Primary — Red CTA */}
             <button
               id="dw-primary-btn"
               onClick={() => navigate('/onboarding')}
               style={{
-                width: '100%', padding: '17px 24px',
+                width: '100%', padding: '16px',
                 borderRadius: '999px',
                 background: 'linear-gradient(135deg, #E4172B 0%, #B00F1F 100%)',
-                color: '#FFFFFF', fontWeight: 700, fontSize: '15.5px',
+                color: '#FFFFFF', fontWeight: 700, fontSize: '15px',
                 border: 'none', cursor: 'pointer',
-                boxShadow: '0 8px 36px rgba(228,23,43,0.48), 0 2px 6px rgba(0,0,0,0.35)',
-                display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '9px',
-                letterSpacing: '0.01em',
+                boxShadow: '0 8px 24px rgba(228,23,43,0.4)',
+                display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px',
                 transition: 'transform 0.14s ease, box-shadow 0.14s ease',
               }}
-              onMouseEnter={e => {
-                e.currentTarget.style.transform = 'scale(1.025)';
-                e.currentTarget.style.boxShadow = '0 12px 48px rgba(228,23,43,0.6), 0 2px 6px rgba(0,0,0,0.35)';
-              }}
-              onMouseLeave={e => {
-                e.currentTarget.style.transform = 'scale(1)';
-                e.currentTarget.style.boxShadow = '0 8px 36px rgba(228,23,43,0.48), 0 2px 6px rgba(0,0,0,0.35)';
-              }}
             >
-              Create My Profile <ArrowRight size={19} weight="bold" />
+              Create My Profile <ArrowRight size={18} weight="bold" />
             </button>
 
-            {/* Secondary — ghost */}
             <button
               id="dw-secondary-btn"
               onClick={() => navigate('/auth')}
               style={{
-                width: '100%', padding: '17px 24px',
+                width: '100%', padding: '16px',
                 borderRadius: '999px',
-                background: 'rgba(255,255,255,0.048)',
-                border: '1.5px solid rgba(255,255,255,0.17)',
-                color: 'rgba(255,255,255,0.80)', fontWeight: 600, fontSize: '14.5px',
+                background: 'rgba(255,255,255,0.08)',
+                border: '1px solid rgba(255,255,255,0.15)',
+                color: 'rgba(255,255,255,0.9)', fontWeight: 600, fontSize: '14px',
                 cursor: 'pointer',
                 display: 'flex', alignItems: 'center', justifyContent: 'center',
-                letterSpacing: '0.01em',
-                transition: 'background 0.14s ease, border-color 0.14s ease',
-              }}
-              onMouseEnter={e => {
-                e.currentTarget.style.background = 'rgba(255,255,255,0.085)';
-                e.currentTarget.style.borderColor = 'rgba(255,255,255,0.28)';
-              }}
-              onMouseLeave={e => {
-                e.currentTarget.style.background = 'rgba(255,255,255,0.048)';
-                e.currentTarget.style.borderColor = 'rgba(255,255,255,0.17)';
+                transition: 'background 0.14s ease',
               }}
             >
-              Sign In to My Account
+              I Already Have an Account
             </button>
-
+            
             {/* Legal */}
             <p style={{
-              textAlign: 'center', fontSize: '10.5px',
-              color: 'rgba(255,255,255,0.22)', margin: 0, lineHeight: 1.5,
+              textAlign: 'center', fontSize: '12px', fontWeight: 500,
+              color: 'rgba(255,255,255,0.9)', margin: '8px 0 16px 0', lineHeight: 1.5,
+              zIndex: 10, position: 'relative'
             }}>
               By continuing you agree to our{' '}
-              <span style={{ color: 'rgba(255,255,255,0.42)', textDecoration: 'underline', cursor: 'pointer' }}>Terms</span>
+              <span style={{ color: '#FFFFFF', textDecoration: 'underline', cursor: 'pointer', fontWeight: 600 }}>Terms</span>
               {' '}&amp;{' '}
-              <span style={{ color: 'rgba(255,255,255,0.42)', textDecoration: 'underline', cursor: 'pointer' }}>Privacy Policy</span>
+              <span style={{ color: '#FFFFFF', textDecoration: 'underline', cursor: 'pointer', fontWeight: 600 }}>Privacy Policy</span>
             </p>
           </motion.div>
 
